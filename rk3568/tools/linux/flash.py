@@ -16,7 +16,7 @@ class FlashTool:
         self.rootDir = os.getcwd()
         self.outDir = '%s/out/ohos-%s-release' % (self.rootDir, arch)
         self.imageDir = '%s/packages/phone/images' % self.outDir
-        self.toolDir = '%s/device/rockchip/rk3566/tools' % self.rootDir
+        self.toolDir = '%s/device/hihope/rk3568/tools' % self.rootDir
         self.flashTool = 'sudo %s/linux/bin/flash.%s' % (self.toolDir, os.uname().machine)
 
     def QueryFlashMode(self):

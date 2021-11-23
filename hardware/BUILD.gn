@@ -15,8 +15,8 @@ import("//build/ohos.gni")
 
 group("hardware_group") {
   deps = [
-    "//device/rockchip/hardware/wifi:ap6xxx",
-    "//device/rockchip/hardware/isp:isp",
-    "//device/rockchip/hardware/mpp:mpp",
+    "//device/hihope/hardware/wifi:ap6xxx",
+    "//device/hihope/hardware/isp:isp",
+    "//device/hihope/hardware/mpp:mpp",
   ]
 }

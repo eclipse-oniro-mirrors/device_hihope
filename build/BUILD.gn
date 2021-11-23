@@ -15,11 +15,11 @@ import("//build/ohos.gni")
 group("products_group") {
   if (device_name == "rk3568") {
     deps = [
-      "//device/rockchip/rk3568:rk3568_group",
+      "//device/hihope/rk3568:rk3568_group",
     ]
   } 
 
   deps += [
-    "//device/rockchip/hardware:hardware_group",
+    "//device/hihope/hardware:hardware_group",
   ]
 }

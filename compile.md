@@ -101,4 +101,4 @@ bash build/prebuilts_download.sh
 
 ## 镜像烧录<a name="section1667485963517"></a>
 
-   具体请参见[镜像烧录](https://gitee.com/hihope-rockchip/rkdownload/tree/master/%E7%83%A7%E5%86%99%E5%B7%A5%E5%85%B7)。
+   具体请参见[镜像烧录](rk3568/tools)。
