@@ -3,7 +3,7 @@
     "parts": {
         "rockchip_products": {
             "module_list": [
-                "//device/rockchip/build:products_group"
+                "//device/hihope/build:products_group"
             ]
         }
     }

@@ -10,7 +10,7 @@ Currently, rk3568 are supported.
 
 ## Repositories Involved
 
-1.  device/rockchip/build
-2.  device/rockchip/common
-3.  device/rockchip/hardware
-4.  device/rockchip/rk3568
+1.  device/hihope/build
+2.  device/hihope/common
+3.  device/hihope/hardware
+4.  device/hihope/rk3568

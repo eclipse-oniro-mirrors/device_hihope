@@ -12,10 +12,10 @@
 # limitations under the License.
 import("//build/ohos.gni")
 
-AP6XXX_ETC_DIR = "//device/rockchip/hardware/wifi/ap6xxx"
-DNS_CONFIG_DIR = "//device/rockchip/hardware/wifi"
-WIFI_LIB_DIR = "//device/rockchip/hardware/wifi/lib"
-WIFI_BIN_DIR = "//device/rockchip/hardware/wifi/bin"
+AP6XXX_ETC_DIR = "//device/hihope/hardware/wifi/ap6xxx"
+DNS_CONFIG_DIR = "//device/hihope/hardware/wifi"
+WIFI_LIB_DIR = "//device/hihope/hardware/wifi/lib"
+WIFI_BIN_DIR = "//device/hihope/hardware/wifi/bin"
 
 ohos_prebuilt_etc("clm_bcm43752a2_ag.blob") {
   source = "$AP6XXX_ETC_DIR/clm_bcm43752a2_ag.blob"

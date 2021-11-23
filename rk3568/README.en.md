@@ -7,7 +7,7 @@ This repository stores scripts for compiling and packing kernel image,burn tools
 ## contents
 
 ```
-/device/rockchip/rk3568
+/device/hihope/rk3568
 ├── build   # Compilation and construction of key cfg files
 ├── kernel  # Compilation and packaging of the kernel image
 ├── loader  # Pre-made image and instructions for use
@@ -18,4 +18,4 @@ This repository stores scripts for compiling and packing kernel image,burn tools
 
 ## Repositories Involved
 
-**device/rockchip/rk3568**
+**device/hihope/rk3568**

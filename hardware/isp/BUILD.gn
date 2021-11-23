@@ -12,7 +12,7 @@
 # limitations under the License.
 import("//build/ohos.gni")
 
-ISP_DIR="//device/rockchip/hardware/isp"
+ISP_DIR="//device/hihope/hardware/isp"
 
 ohos_prebuilt_shared_library("librkaiq") {
   if (target_cpu == "arm") {

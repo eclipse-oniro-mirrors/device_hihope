@@ -12,7 +12,7 @@
 # limitations under the License.
 import("//build/ohos.gni")
 
-BOOTANIMATION_DIR = "//device/rockchip/rk3568/bootanimation"
+BOOTANIMATION_DIR = "//device/hihope/rk3568/bootanimation"
 
 ohos_prebuilt_etc("bootanimation-720x1280") {
   source = "$BOOTANIMATION_DIR/bootanimation-720x1280.raw"

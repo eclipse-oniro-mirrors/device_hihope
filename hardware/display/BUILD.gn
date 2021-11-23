@@ -88,7 +88,7 @@ ohos_shared_library("display_gfx") {
     "//drivers/adapter/uhdf2/adapter/osal/include/",
     "//utils/native/base/include",
     "//foundation/graphic/standard/utils/include",
-    "//device/rockchip/hardware/rga/include/",
+    "//device/hihope/hardware/rga/include/",
     "//base/hiviewdfx/interfaces/innerkits/libhilog/include",
   ]
   output_name = "display_gfx"
@@ -96,7 +96,7 @@ ohos_shared_library("display_gfx") {
   deps = [
     ":display_gralloc",
     "//utils/native/base:utils",
-    "//device/rockchip/hardware/rga:librga",
+    "//device/hihope/hardware/rga:librga",
   ]
 
   external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
