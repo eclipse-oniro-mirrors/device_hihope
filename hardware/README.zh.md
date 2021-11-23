@@ -1,4 +1,4 @@
-# rockchip hardware组件
+# hihope hardware组件
 
 #### 简介
 媒体及wifi南向接口实现、框架及对接层库目录。
@@ -6,9 +6,9 @@
 目前支持rk3568
 #### 对应仓库
 
-1.  device_rockchip/hardware/display
-2.  device_rockchip/hardware/gpu
-3.  device_rockchip/hardware/isp
-4.  device_rockchip/hardware/mpp
-5.  device_rockchip/hardware/rga
-6.  device_rockchip/hardware/wifi
+1.  device_hihope/hardware/display
+2.  device_hihope/hardware/gpu
+3.  device_hihope/hardware/isp
+4.  device_hihope/hardware/mpp
+5.  device_hihope/hardware/rga
+6.  device_hihope/hardware/wifi
