@@ -33,7 +33,7 @@ extern "C" {
 #define LOG_DOMAIN 0xD001400
 
 #ifndef DISPLAY_UNUSED
-#define DISPLAY_UNUSED(x) (void)x
+#define DISPLAY_UNUSED(x) (void)(x)
 #endif
 
 #define __FILENAME__ (strrchr(__FILE__, '/') ? (strrchr(__FILE__, '/') + 1) : __FILE__)

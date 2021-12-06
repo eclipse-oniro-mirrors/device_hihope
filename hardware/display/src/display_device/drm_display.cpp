@@ -15,7 +15,7 @@
 
 #include "drm_display.h"
 #include <string>
-#include <errno.h>
+#include <cerrno>
 #include <memory>
 #include <xf86drm.h>
 #include <xf86drmMode.h>

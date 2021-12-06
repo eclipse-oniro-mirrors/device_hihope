@@ -42,7 +42,7 @@ public:
     static uint32_t ConvertToDrmFormat(PixelFormat fmtIn);
     static int GetDrmFd();
     DrmDevice();
-    virtual ~DrmDevice() {}
+    ~DrmDevice() override {}
 
     std::vector<std::shared_ptr<DrmPlane>> GetDrmPlane(uint32_t pipe, uint32_t type);
 
@@ -55,9 +55,9 @@ public:
     std::shared_ptr<DrmConnector> GetDrmConnectorFromId(uint32_t id);
     std::shared_ptr<DrmCrtc> GetDrmCrtcFromId(uint32_t id);
     void CreateCrtc(drmModeCrtcPtr c);
-    virtual std::unordered_map<uint32_t, std::shared_ptr<HdiDisplay>> DiscoveryDisplay();
-    virtual int32_t Init();
-    virtual void DeInit();
+    std::unordered_map<uint32_t, std::shared_ptr<HdiDisplay>> DiscoveryDisplay() override;
+    int32_t Init() override;
+    void DeInit() override;
 
 private:
     static FdPtr mDrmFd;

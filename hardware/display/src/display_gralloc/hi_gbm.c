@@ -94,6 +94,7 @@ void InitGbmBo(struct gbm_bo *bo, const struct drm_mode_create_dumb *dumb)
 
 static uint32_t AdjustStrideFromFormat(uint32_t format, uint32_t height)
 {
+    uint32_t tmpHeight = height;
     const FormatInfo *fmtInfo = GetFormatInfo(format);
     if ((fmtInfo != NULL) && (fmtInfo->planes != NULL)) {
         uint32_t sum = fmtInfo->planes->radio[0];
@@ -101,11 +102,11 @@ static uint32_t AdjustStrideFromFormat(uint32_t format, uint32_t height)
             sum += fmtInfo->planes->radio[i];
         }
         if (sum > 0) {
-            height = DIV_ROUND_UP((height * sum), fmtInfo->planes->radio[0]);
+            tmpHeight = DIV_ROUND_UP((height * sum), fmtInfo->planes->radio[0]);
         }
-        DISPLAY_LOGD("height adjust to : %{public}d", height);
+        DISPLAY_LOGD("height adjust to : %{public}d", tmpHeight);
     }
-    return height;
+    return tmpHeight;
 }
 
 struct gbm_bo *hdi_gbm_bo_create(struct gbm_device *gbm, uint32_t width, uint32_t height, uint32_t format,

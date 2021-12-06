@@ -32,7 +32,7 @@ public:
     DrmDisplay(std::shared_ptr<DrmConnector> connector, std::shared_ptr<DrmCrtc> crtc,
         std::shared_ptr<DrmDevice> drmDevice);
 
-    virtual ~DrmDisplay();
+    ~DrmDisplay() override;
 
     int32_t Init() override;
     int32_t GetDisplayCapability(DisplayCapability *info) override;
@@ -44,10 +44,10 @@ public:
     int32_t GetDisplayBacklight(uint32_t *value) override;
     int32_t SetDisplayBacklight(uint32_t value) override;
     int32_t ChosePreferenceMode();
-    virtual int32_t RegDisplayVBlankCallback(VBlankCallback cb, void *data) override;
-    virtual int32_t WaitForVBlank(uint64_t *ns) override;
-    virtual bool IsConnected() override;
-    virtual int32_t SetDisplayVsyncEnabled(bool enabled) override;
+    int32_t RegDisplayVBlankCallback(VBlankCallback cb, void *data) override;
+    int32_t WaitForVBlank(uint64_t *ns) override;
+    bool IsConnected() override;
+    int32_t SetDisplayVsyncEnabled(bool enabled) override;
     HdiDrmComposition *GetDrmComposition();
 
 protected:

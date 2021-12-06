@@ -111,7 +111,8 @@ int32_t GrallocInitialize(GrallocFuncs **funcs)
     // initialize gbm gralloc
 #ifdef GRALLOC_GBM_SUPPORT
     int ret = GbmGrallocInitialize();
-    DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), ret, DISPLAY_LOGE("gbm initial"); free(grallocFuncs));
+    DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), ret, DISPLAY_LOGE("gbm initial");
+        free(grallocFuncs));
 #endif
     grallocFuncs->AllocMem = AllocMem;
     grallocFuncs->FreeMem = FreeMem;

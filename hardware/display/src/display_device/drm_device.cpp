@@ -15,7 +15,7 @@
 
 #include "drm_device.h"
 #include <string>
-#include <errno.h>
+#include <cerrno>
 #include <fcntl.h>
 #include <memory>
 #include <drm_fourcc.h>
@@ -33,7 +33,7 @@ std::shared_ptr<HdiDeviceInterface> DrmDevice::Create()
     DISPLAY_LOGD();
     if (mDrmFd == nullptr) {
         const std::string name("rockchip");
-        int drmFd = open("/dev/dri/card0", O_RDWR | O_CLOEXEC);//drmOpen(name.c_str(), nullptr);
+        int drmFd = open("/dev/dri/card0", O_RDWR | O_CLOEXEC); // drmOpen(name.c_str(), nullptr);
         if (drmFd < 0) {
             DISPLAY_LOGE("drm file:%{public}s open failed %{public}s", name.c_str(), strerror(errno));
             return nullptr;
@@ -102,7 +102,7 @@ int32_t DrmDevice::GetPlaneProperty(const DrmPlane &plane, const std::string &na
     return GetProperty(plane.GetId(), DRM_MODE_OBJECT_PLANE, name, prop);
 }
 
-int32_t DrmDevice::GetProperty(const uint32_t objId, uint32_t objType, const std::string &name, DrmProperty &prop)
+int32_t DrmDevice::GetProperty(uint32_t objId, uint32_t objType, const std::string &name, DrmProperty &prop)
 {
     drmModeObjectPropertiesPtr props = drmModeObjectGetProperties(GetDrmFd(), objId, objType);
     DISPLAY_CHK_RETURN((!props), DISPLAY_FAILURE, DISPLAY_LOGE("can not get properties"));
@@ -235,31 +235,31 @@ void DrmDevice::FindAllPlane()
 
 std::shared_ptr<DrmEncoder> DrmDevice::GetDrmEncoderFromId(uint32_t id)
 {
-    /*int32_t ret = DISPLAY_FAILURE;
+    /* int32_t ret = DISPLAY_FAILURE;
     auto iter = mEncoders.find(id);
     if (iter == mEncoders.end()) {
         ret = DISPLAY_SUCCESS;
-    }*/
+    } */
     return nullptr;
 }
 
 std::shared_ptr<DrmConnector> DrmDevice::GetDrmConnectorFromId(uint32_t id)
 {
-    /*int32_t ret = DISPLAY_FAILURE;
+    /* int32_t ret = DISPLAY_FAILURE;
     auto iter = mConnectors.find(id);
     if (iter == mConnectors.end()) {
         ret = DISPLAY_SUCCESS;
-    }*/
+    } */
     return nullptr;
 }
 
 std::shared_ptr<DrmCrtc> DrmDevice::GetDrmCrtcFromId(uint32_t id)
 {
-    /*int32_t ret = DISPLAY_FAILURE;
+    /* int32_t ret = DISPLAY_FAILURE;
     auto iter = mCrtcs.find(id);
     if (iter == mCrtcs.end()) {
         ret = DISPLAY_SUCCESS;
-    }*/
+    } */
     return nullptr;
 }
 
