@@ -37,4 +37,4 @@ void mpp_mem_pool_put(MppMemPool pool, void *p);
 }
 #endif
 
-#endif /*__MPP_MEM_POOL_H__*/
+#endif /* __MPP_MEM_POOL_H__ */

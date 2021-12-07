@@ -135,4 +135,4 @@ void _mpp_err(const char *tag, const char *fmt, const char *func, ...);
 }
 #endif
 
-#endif /*__MPP_LOG_H__*/
+#endif /* __MPP_LOG_H__ */

@@ -482,9 +482,6 @@ typedef struct MppEncPrepCfg_t {
      */
     RK_S32              mirroring;
 
-    /*
-     * TODO:
-     */
     RK_S32              denoise;
 
     MppEncPrepSharpenCfg sharpen;
@@ -758,7 +755,7 @@ typedef struct MppEncH265RoiCfg_t {
      */
     RK_S32              num;
 
-    /* delat qp using in roi region*/
+    /* delat qp using in roi region */
     RK_U32              delta_qp;
 
     /* roi region */
@@ -841,10 +838,10 @@ typedef enum MppEncH265CfgChange_e {
 } MppEncH265CfgChange;
 
 typedef struct MppEncH265SliceCfg_t {
-    /* default value: 0, means no slice split*/
+    /* default value: 0, means no slice split */
     RK_U32  split_enable;
 
-    /* 0: by bits number; 1: by lcu line number*/
+    /* 0: by bits number; 1: by lcu line number */
     RK_U32  split_mode;
 
     /*
@@ -856,23 +853,22 @@ typedef struct MppEncH265SliceCfg_t {
 } MppEncH265SliceCfg;
 
 typedef struct MppEncH265CuCfg_t {
-    RK_U32  cu32x32_en;                             /*default: 1 */
-    RK_U32  cu16x16_en;                             /*default: 1 */
-    RK_U32  cu8x8_en;                               /*default: 1 */
-    RK_U32  cu4x4_en;                               /*default: 1 */
+    RK_U32  cu32x32_en;                             /* default: 1 */
+    RK_U32  cu16x16_en;                             /* default: 1 */
+    RK_U32  cu8x8_en;                               /* default: 1 */
+    RK_U32  cu4x4_en;                               /* default: 1 */
 
     // intra pred
-    RK_U32  constrained_intra_pred_flag;            /*default: 0 */
-    RK_U32  strong_intra_smoothing_enabled_flag;    /*INTRA_SMOOTH*/
-    RK_U32  pcm_enabled_flag;                       /*default: 0, enable ipcm*/
+    RK_U32  constrained_intra_pred_flag;            /* default: 0 */
+    RK_U32  strong_intra_smoothing_enabled_flag;    /* INTRA_SMOOTH */
+    RK_U32  pcm_enabled_flag;                       /* default: 0, enable ipcm */
     RK_U32  pcm_loop_filter_disabled_flag;
 
 } MppEncH265CuCfg;
 
 typedef struct MppEncH265RefCfg_t {
-    RK_U32  num_lt_ref_pic;                         /*default: 0*/
+    RK_U32  num_lt_ref_pic;                         /* default: 0 */
 } MppEncH265RefCfg;
-
 
 typedef struct MppEncH265DblkCfg_t {
     RK_U32  slice_deblocking_filter_disabled_flag;  /* default value: 0. {0,1} */
@@ -1122,11 +1118,11 @@ typedef struct MppEncROICfg_t {
  * alpha : 8 bits
  */
 #define MPP_ENC_OSD_PLT_WHITE           ((255<<24)|(128<<16)|(128<<8)|235)
-#define MPP_ENC_OSD_PLT_YELLOW          ((255<<24)|(146<<16)|( 16<<8)|210)
-#define MPP_ENC_OSD_PLT_CYAN            ((255<<24)|( 16<<16)|(166<<8)|170)
-#define MPP_ENC_OSD_PLT_GREEN           ((255<<24)|( 34<<16)|( 54<<8)|145)
-#define MPP_ENC_OSD_PLT_TRANS           ((  0<<24)|(222<<16)|(202<<8)|106)
-#define MPP_ENC_OSD_PLT_RED             ((255<<24)|(240<<16)|( 90<<8)| 81)
+#define MPP_ENC_OSD_PLT_YELLOW          ((255<<24)|(146<<16)|(16<<8)|210)
+#define MPP_ENC_OSD_PLT_CYAN            ((255<<24)|(16<<16)|(166<<8)|170)
+#define MPP_ENC_OSD_PLT_GREEN           ((255<<24)|(34<<16)|(54<<8)|145)
+#define MPP_ENC_OSD_PLT_TRANS           ((0<<24)|(222<<16)|(202<<8)|106)
+#define MPP_ENC_OSD_PLT_RED             ((255<<24)|(240<<16)|(90<<8)| 81)
 #define MPP_ENC_OSD_PLT_BLUE            ((255<<24)|(110<<16)|(240<<8)| 41)
 #define MPP_ENC_OSD_PLT_BLACK           ((255<<24)|(128<<16)|(128<<8)| 16)
 
@@ -1218,4 +1214,4 @@ typedef struct MppEncUserDataSet_t {
     MppEncUserDataFull  *datas;
 } MppEncUserDataSet;
 
-#endif /*__RK_VENC_CMD_H__*/
+#endif /* __RK_VENC_CMD_H__ */

@@ -37,7 +37,7 @@ typedef void* MppStopwatch;
 extern "C" {
 #endif
 
-RK_S64 mpp_time();
+RK_S64 mpp_time(void);
 void mpp_time_diff(RK_S64 start, RK_S64 end, RK_S64 limit, const char *fmt);
 
 /*
@@ -135,4 +135,4 @@ private:
 #define AUTO_TIMER_NAME(name)               AUTO_TIMER_NAME_STRING(name, __COUNTER__)
 #define AUTO_TIMING()                       AutoTiming AUTO_TIMER_NAME(auto_timing)(__FUNCTION__)
 
-#endif /*__MPP_TIME_H__*/
+#endif /* __MPP_TIME_H__ */

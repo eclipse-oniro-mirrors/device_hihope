@@ -33,5 +33,4 @@ RK_U32 mpp_rt_allcator_is_valid(MppBufferType type);
 }
 #endif
 
-#endif /*__MPP_RUNTIME__*/
-
+#endif /* __MPP_RUNTIME__ */

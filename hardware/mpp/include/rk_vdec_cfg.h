@@ -47,4 +47,4 @@ void mpp_dec_cfg_show(void);
 }
 #endif
 
-#endif /*__RK_VDEC_CFG_H__*/
+#endif /* __RK_VDEC_CFG_H__ */

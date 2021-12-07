@@ -50,4 +50,4 @@ RK_U32 mpp_get_client_hw_id(RK_S32 client_type);
 }
 #endif
 
-#endif /*__MPP_PLATFORM__*/
+#endif /* __MPP_PLATFORM__ */

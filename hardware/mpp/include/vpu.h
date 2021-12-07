@@ -40,16 +40,16 @@ extern "C" {
 #define VPU_REG_NUM_ENC                 (96)
 
 typedef enum {
-    VPU_ENC                 = 0x0,
-    VPU_DEC                 = 0x1,
-    VPU_PP                  = 0x2,
-    VPU_DEC_PP              = 0x3,
-    VPU_DEC_HEVC            = 0x4,
-    VPU_DEC_RKV             = 0x5,
-    VPU_ENC_RKV             = 0x6,
-    VPU_DEC_AVS             = 0x7,
-    VPU_ENC_VEPU22          = 0x8,
-    VPU_TYPE_BUTT           ,
+    VPU_ENC = 0x0,
+    VPU_DEC = 0x1,
+    VPU_PP = 0x2,
+    VPU_DEC_PP = 0x3,
+    VPU_DEC_HEVC = 0x4,
+    VPU_DEC_RKV = 0x5,
+    VPU_ENC_RKV = 0x6,
+    VPU_DEC_AVS = 0x7,
+    VPU_ENC_VEPU22 = 0x8,
+    VPU_TYPE_BUTT,
 } VPU_CLIENT_TYPE;
 
 /* Hardware decoder configuration description */
@@ -91,20 +91,20 @@ typedef struct VPUHwEndConfig {
 
 typedef enum {
     // common command
-    VPU_CMD_REGISTER            ,
-    VPU_CMD_REGISTER_ACK_OK     ,
-    VPU_CMD_REGISTER_ACK_FAIL   ,
-    VPU_CMD_UNREGISTER          ,
+    VPU_CMD_REGISTER,
+    VPU_CMD_REGISTER_ACK_OK,
+    VPU_CMD_REGISTER_ACK_FAIL,
+    VPU_CMD_UNREGISTER,
 
-    VPU_SEND_CONFIG             ,
-    VPU_SEND_CONFIG_ACK_OK      ,
-    VPU_SEND_CONFIG_ACK_FAIL    ,
+    VPU_SEND_CONFIG,
+    VPU_SEND_CONFIG_ACK_OK,
+    VPU_SEND_CONFIG_ACK_FAIL,
 
-    VPU_GET_HW_INFO             ,
-    VPU_GET_HW_INFO_ACK_OK      ,
-    VPU_GET_HW_INFO_ACK_FAIL    ,
+    VPU_GET_HW_INFO,
+    VPU_GET_HW_INFO_ACK_OK,
+    VPU_GET_HW_INFO_ACK_FAIL,
 
-    VPU_CMD_BUTT                ,
+    VPU_CMD_BUTT,
 } VPU_CMD_TYPE;
 
 int VPUClientInit(VPU_CLIENT_TYPE type);
@@ -113,8 +113,8 @@ RK_S32 VPUClientSendReg(int socket, RK_U32 *regs, RK_U32 nregs);
 RK_S32 VPUClientSendReg2(RK_S32 socket, RK_S32 offset, RK_S32 size, void *param);
 RK_S32 VPUClientWaitResult(int socket, RK_U32 *regs, RK_U32 nregs, VPU_CMD_TYPE *cmd, RK_S32 *len);
 RK_S32 VPUClientGetHwCfg(int socket, RK_U32 *cfg, RK_U32 cfg_size);
-RK_S32 VPUClientGetIOMMUStatus();
-RK_U32 VPUCheckSupportWidth();
+RK_S32 VPUClientGetIOMMUStatus(void);
+RK_U32 VPUCheckSupportWidth(void);
 
 #ifdef __cplusplus
 }

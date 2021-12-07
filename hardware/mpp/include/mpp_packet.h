@@ -96,4 +96,4 @@ RK_U32  mpp_packet_is_eoi(const MppPacket packet);
 }
 #endif
 
-#endif /*__MPP_PACKET_H__*/
+#endif /* __MPP_PACKET_H__ */

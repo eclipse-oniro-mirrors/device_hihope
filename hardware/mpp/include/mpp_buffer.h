@@ -144,11 +144,11 @@ typedef enum {
  * flags originate from drm_rockchip_gem_mem_type
  */
 
-#define MPP_BUFFER_FLAGS_MASK           0x000f0000      //ROCKCHIP_BO_MASK << 16
-#define MPP_BUFFER_FLAGS_CONTIG         0x00010000      //ROCKCHIP_BO_CONTIG << 16
-#define MPP_BUFFER_FLAGS_CACHABLE       0x00020000      //ROCKCHIP_BO_CACHABLE << 16
-#define MPP_BUFFER_FLAGS_WC             0x00040000      //ROCKCHIP_BO_WC << 16
-#define MPP_BUFFER_FLAGS_SECURE         0x00080000      //ROCKCHIP_BO_SECURE << 16
+#define MPP_BUFFER_FLAGS_MASK           0x000f0000      // ROCKCHIP_BO_MASK << 16
+#define MPP_BUFFER_FLAGS_CONTIG         0x00010000      // ROCKCHIP_BO_CONTIG << 16
+#define MPP_BUFFER_FLAGS_CACHABLE       0x00020000      // ROCKCHIP_BO_CACHABLE << 16
+#define MPP_BUFFER_FLAGS_WC             0x00040000      // ROCKCHIP_BO_WC << 16
+#define MPP_BUFFER_FLAGS_SECURE         0x00080000      // ROCKCHIP_BO_SECURE << 16
 
 /*
  * MppBufferInfo variable's meaning is different in different MppBufferType
@@ -309,11 +309,11 @@ MppBufferType mpp_buffer_group_type(MppBufferGroup group);
  */
 MPP_RET mpp_buffer_group_limit_config(MppBufferGroup group, size_t size, RK_S32 count);
 
-RK_U32 mpp_buffer_total_now();
-RK_U32 mpp_buffer_total_max();
+RK_U32 mpp_buffer_total_now(void);
+RK_U32 mpp_buffer_total_max(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*__MPP_BUFFER_H__*/
+#endif /* __MPP_BUFFER_H__ */

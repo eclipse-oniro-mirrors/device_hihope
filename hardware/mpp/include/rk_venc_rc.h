@@ -54,4 +54,4 @@ typedef enum MppEncRcGopMode_e {
     MPP_ENC_RC_GOP_MODE_BUTT,
 } MppEncRcGopMode;
 
-#endif /*__RK_VENC_RC_H__*/
+#endif /* __RK_VENC_RC_H__ */

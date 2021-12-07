@@ -100,4 +100,4 @@ RK_U32 mpp_check_soc_cap(MppCtxType type, MppCodingType coding);
 }
 #endif
 
-#endif /*__MPP_SOC_H__*/
+#endif /* __MPP_SOC_H__ */
