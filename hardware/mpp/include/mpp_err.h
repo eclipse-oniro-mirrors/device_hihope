@@ -51,4 +51,4 @@ typedef enum {
     MPP_ERR_DISPLAY_FULL        = MPP_ERR_BASE - 13,
 } MPP_RET;
 
-#endif /*__MPP_ERR_H__*/
+#endif /* __MPP_ERR_H__ */

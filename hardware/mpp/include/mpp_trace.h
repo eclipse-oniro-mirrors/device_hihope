@@ -34,4 +34,4 @@ void mpp_trace_int64(const char* name, RK_S64 value);
 }
 #endif
 
-#endif /*__MPP_TRACE_H__*/
+#endif /* __MPP_TRACE_H__ */

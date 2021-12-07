@@ -469,4 +469,4 @@ void release_vpu_memory_pool_allocator(vpu_display_mem_pool *ipool);
 }
 #endif
 
-#endif /*__VPU_API_H__*/
+#endif /* __VPU_API_H__ */

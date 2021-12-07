@@ -51,5 +51,5 @@ MPP_RET mpp_allocator_put(MppAllocator *allocator);
 }
 #endif
 
-#endif /*__MPP_ALLOCATOR_H__*/
+#endif /* __MPP_ALLOCATOR_H__ */
 

@@ -62,4 +62,4 @@ typedef struct MppDecQueryCfg_t {
     RK_U32      dec_out_frm_cnt;
 } MppDecQueryCfg;
 
-#endif /*__RK_VDEC_CMD_H__*/
+#endif /* __RK_VDEC_CMD_H__ */

@@ -85,4 +85,4 @@ int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size);
 void *hal_mpp_ctx_create(MpiEncTestArgs *args);
 void hal_mpp_ctx_delete(void *ctx);
 
-#endif /*__MPI_ENC_UTILS_H__*/
+#endif /* __MPI_ENC_UTILS_H__ */

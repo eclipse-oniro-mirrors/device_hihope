@@ -33,5 +33,5 @@ RK_S32 mpp_env_set_str(const char *name, char *value);
 }
 #endif
 
-#endif /*__MPP_ENV_H__*/
+#endif /* __MPP_ENV_H__ */
 

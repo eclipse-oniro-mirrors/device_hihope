@@ -49,4 +49,4 @@ void mpp_enc_cfg_show(void);
 }
 #endif
 
-#endif /*__RK_VENC_CFG_H__*/
+#endif /* __RK_VENC_CFG_H__ */

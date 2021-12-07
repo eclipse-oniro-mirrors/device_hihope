@@ -239,4 +239,4 @@ MPP_RET mpp_enc_ref_cfg_show(MppEncRefCfg ref);
 }
 #endif
 
-#endif /*__RK_VENC_REF_H__*/
+#endif /* __RK_VENC_REF_H__ */

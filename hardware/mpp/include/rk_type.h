@@ -137,4 +137,4 @@ typedef void* MppBufferGroup;
 typedef void* MppTask;
 typedef void* MppMeta;
 
-#endif /*__RK_TYPE_H__*/
+#endif /* __RK_TYPE_H__ */

@@ -298,4 +298,4 @@ void    mpp_show_color_format(void);
 }
 #endif
 
-#endif /*__RK_MPI_H__*/
+#endif /* __RK_MPI_H__ */

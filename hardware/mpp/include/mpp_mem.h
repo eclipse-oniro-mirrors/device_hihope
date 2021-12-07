@@ -43,8 +43,8 @@
 #define mpp_free(ptr) \
     mpp_osal_free(__FUNCTION__, ptr)
 
-#define MPP_FREE(ptr)   do { if(ptr) mpp_free(ptr); ptr = NULL; } while (0)
-#define MPP_FCLOSE(fp)  do { if(fp)  fclose(fp);     fp = NULL; } while (0)
+#define MPP_FREE(ptr)   do { if (ptr) mpp_free(ptr); ptr = NULL; } while (0)
+#define MPP_FCLOSE(fp)  do { if (fp)  fclose(fp);     fp = NULL; } while (0)
 
 #ifdef __cplusplus
 extern "C" {
@@ -55,9 +55,9 @@ void *mpp_osal_calloc(const char *caller, size_t size);
 void *mpp_osal_realloc(const char *caller, void *ptr, size_t size);
 void mpp_osal_free(const char *caller, void *ptr);
 
-void mpp_show_mem_status();
-RK_U32 mpp_mem_total_now();
-RK_U32 mpp_mem_total_max();
+void mpp_show_mem_status(void);
+RK_U32 mpp_mem_total_now(void);
+RK_U32 mpp_mem_total_max(void);
 
 /*
  * mpp memory usage snapshot tool
@@ -78,5 +78,4 @@ MPP_RET mpp_mem_squash_snapshot(MppMemSnapshot hnd0, MppMemSnapshot hnd1);
 }
 #endif
 
-#endif /*__MPP_MEM_H__*/
-
+#endif /* __MPP_MEM_H__ */

@@ -154,20 +154,28 @@ typedef enum {
     MPP_ENC_SET_RC_API_CURRENT          = MPP_ENC_CFG_RC_API + 5,
 
     MPP_ENC_CFG_MISC                    = CMD_MODULE_CODEC | CMD_CTX_ID_ENC | CMD_ENC_CFG_MISC,
-    MPP_ENC_SET_HEADER_MODE,            /* set MppEncHeaderMode */
-    MPP_ENC_GET_HEADER_MODE,            /* get MppEncHeaderMode */
+    /* set MppEncHeaderMode */
+    MPP_ENC_SET_HEADER_MODE,
+    /* get MppEncHeaderMode */
+    MPP_ENC_GET_HEADER_MODE,
 
-    MPP_ENC_CFG_SPLIT                   = CMD_MODULE_CODEC | CMD_CTX_ID_ENC | CMD_ENC_CFG_SPLIT,
-    MPP_ENC_SET_SPLIT,                  /* set MppEncSliceSplit structure */
-    MPP_ENC_GET_SPLIT,                  /* get MppEncSliceSplit structure */
+    MPP_ENC_CFG_SPLIT = CMD_MODULE_CODEC | CMD_CTX_ID_ENC | CMD_ENC_CFG_SPLIT,
+    /* set MppEncSliceSplit structure */
+    MPP_ENC_SET_SPLIT,
+    /* get MppEncSliceSplit structure */
+    MPP_ENC_GET_SPLIT,
 
-    MPP_ENC_CFG_REF                     = CMD_MODULE_CODEC | CMD_CTX_ID_ENC | CMD_ENC_CFG_REF,
-    MPP_ENC_SET_REF_CFG,                /* set MppEncRefCfg structure */
+    MPP_ENC_CFG_REF = CMD_MODULE_CODEC | CMD_CTX_ID_ENC | CMD_ENC_CFG_REF,
+    /* set MppEncRefCfg structure */
+    MPP_ENC_SET_REF_CFG,
 
-    MPP_ENC_CFG_OSD                     = CMD_MODULE_CODEC | CMD_CTX_ID_ENC | CMD_ENC_CFG_OSD,
-    MPP_ENC_SET_OSD_PLT_CFG,            /* set OSD palette, parameter should be pointer to MppEncOSDPltCfg */
-    MPP_ENC_GET_OSD_PLT_CFG,            /* get OSD palette, parameter should be pointer to MppEncOSDPltCfg */
-    MPP_ENC_SET_OSD_DATA_CFG,           /* set OSD data with at most 8 regions, parameter should be pointer to MppEncOSDData */
+    MPP_ENC_CFG_OSD = CMD_MODULE_CODEC | CMD_CTX_ID_ENC | CMD_ENC_CFG_OSD,
+    /* set OSD palette, parameter should be pointer to MppEncOSDPltCfg */
+    MPP_ENC_SET_OSD_PLT_CFG,
+    /* get OSD palette, parameter should be pointer to MppEncOSDPltCfg */
+    MPP_ENC_GET_OSD_PLT_CFG,
+    /* set OSD data with at most 8 regions, parameter should be pointer to MppEncOSDData */
+    MPP_ENC_SET_OSD_DATA_CFG,
 
     MPP_ENC_CMD_END,
 
@@ -186,4 +194,4 @@ typedef enum {
 #include "rk_venc_cfg.h"
 #include "rk_venc_ref.h"
 
-#endif /*__RK_MPI_CMD_H__*/
+#endif /* __RK_MPI_CMD_H__ */

@@ -19,7 +19,7 @@
 
 #include "mpp_list.h"
 
-class MppQueue: public mpp_list
+class MppQueue : public mpp_list
 {
 private:
     sem_t mQueuePending;

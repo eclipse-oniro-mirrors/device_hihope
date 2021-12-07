@@ -68,4 +68,4 @@ typedef enum MppClientType_e {
 #define HAVE_RGA            (0x00000002)
 #define HAVE_RGA2           (0x00000004)
 
-#endif /*__MPP_DEV_DEFS_H__*/
+#endif /* __MPP_DEV_DEFS_H__ */

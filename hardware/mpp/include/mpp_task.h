@@ -234,4 +234,4 @@ MPP_RET mpp_task_meta_get_buffer(MppTask task, MppMetaKey key, MppBuffer *buffer
 }
 #endif
 
-#endif /*__MPP_QUEUE_H__*/
+#endif /* __MPP_QUEUE_H__ */

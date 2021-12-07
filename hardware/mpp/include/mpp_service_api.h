@@ -22,9 +22,6 @@
 #ifdef  __cplusplus
 extern "C" {
 #endif
-
-extern const MppDevApi mpp_service_api;
-
 #ifdef  __cplusplus
 }
 #endif
