@@ -34,6 +34,7 @@ int32_t DrmEncoder::PickIdleCrtcId(IdMapPtr<DrmCrtc> &crtcs, uint32_t &crtcId)
     if (crtcIter == crtcs.end()) {
         DISPLAY_LOGW("can not find crtc for id %{public}d", mCrtcId);
         crtcIter = crtcs.begin();
+        return DISPLAY_FAILURE;
     }
     DISPLAY_CHK_RETURN((crtcIter == crtcs.end()), DISPLAY_FAILURE,
         DISPLAY_LOGE("have no crtc %{public}zu ", crtcs.size()));
