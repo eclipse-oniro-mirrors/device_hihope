@@ -126,4 +126,4 @@ MPP_RET mpp_meta_get_buffer(MppMeta meta, MppMetaKey key, MppBuffer *buffer);
 }
 #endif
 
-#endif /*__MPP_META_H__*/
+#endif /* __MPP_META_H__ */

@@ -80,8 +80,9 @@ static inline void __hlist_del(struct hlist_node *n)
     struct hlist_node **pprev = n->pprev;
 
     WRITE_ONCE(*pprev, next);
-    if (next)
+    if (next) {
         next->pprev = pprev;
+    }
 }
 
 static inline void hlist_del(struct hlist_node *n)
@@ -103,8 +104,9 @@ static inline void hlist_add_head(struct hlist_node *n, struct hlist_head *h)
 {
     struct hlist_node *first = h->first;
     n->next = first;
-    if (first)
+    if (first) {
         first->pprev = &n->next;
+    }
     WRITE_ONCE(h->first, n);
     n->pprev = &h->first;
 }
@@ -123,8 +125,9 @@ static inline void hlist_add_behind(struct hlist_node *n, struct hlist_node *pre
     WRITE_ONCE(prev->next, n);
     n->pprev = &prev->next;
 
-    if (n->next)
+    if (n->next) {
         n->next->pprev  = &n->next;
+    }
 }
 
 static inline void hlist_add_fake(struct hlist_node *n)
@@ -137,8 +140,7 @@ static inline int hlist_fake(struct hlist_node *h)
     return h->pprev == &h->next;
 }
 
-static inline int
-hlist_is_singular_node(struct hlist_node *n, struct hlist_head *h)
+static inline int hlist_is_singular_node(struct hlist_node *n, struct hlist_head *h)
 {
     return !n->next && n->pprev == &h->first;
 }
@@ -147,43 +149,44 @@ static inline void hlist_move_list(struct hlist_head *old,
                                    struct hlist_head *_new)
 {
     _new->first = old->first;
-    if (_new->first)
+    if (_new->first) {
         _new->first->pprev = &_new->first;
+    }
     old->first = NULL;
 }
 
-#define hlist_entry(ptr, type, member) container_of(ptr,type,member)
+#define hlist_entry(ptr, type, member) container_of(ptr, type, member)
 
 #define hlist_for_each(pos, head) \
-    for (pos = (head)->first; pos ; pos = pos->next)
+    for ((pos) = (head)->first; (pos) ; (pos) = (pos)->next)
 
 #define hlist_for_each_safe(pos, n, head) \
-    for (pos = (head)->first; pos && ({ n = pos->next; 1; }); \
-         pos = n)
+    for ((pos) = (head)->first; (pos) && ( { n = (pos)->next; 1; } ); \
+         (pos) = n)
 
 #define hlist_entry_safe(ptr, type, member) \
-    ({ typeof(ptr) ____ptr = (ptr); \
+    ( { typeof(ptr) ____ptr = (ptr); \
        ____ptr ? hlist_entry(____ptr, type, member) : NULL; \
     })
 
-#define hlist_for_each_entry(pos, head, member)             \
-    for (pos = hlist_entry_safe((head)->first, typeof(*(pos)), member);\
-         pos;                           \
-         pos = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
+#define hlist_for_each_entry(pos, head, member) \
+    for ((pos) = hlist_entry_safe((head)->first, typeof(*(pos)), member); \
+         (pos); \
+         (pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
 
-#define hlist_for_each_entry_continue(pos, member)          \
-    for (pos = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member);\
-         pos;                           \
-         pos = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
+#define hlist_for_each_entry_continue(pos, member) \
+    for ((pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member); \
+         (pos); \
+         (pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
 
-#define hlist_for_each_entry_from(pos, member)              \
-    for (; pos;                         \
-         pos = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
+#define hlist_for_each_entry_from(pos, member) \
+    for (; (pos); \
+         (pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
 
-#define hlist_for_each_entry_safe(pos, n, head, member)         \
-    for (pos = hlist_entry_safe((head)->first, typeof(*pos), member);\
-         pos && ({ n = pos->member.next; 1; });         \
-         pos = hlist_entry_safe(n, typeof(*pos), member))
+#define hlist_for_each_entry_safe(pos, n, head, member) \
+    for ((pos) = hlist_entry_safe((head)->first, typeof(*(pos)), member); \
+         (pos) && ( { n = (pos)->member.next; 1; }); \
+         (pos) = hlist_entry_safe(n, typeof(*(pos)), member))
 
 #define DEFINE_HASHTABLE(name, bits) \
     struct hlist_head name[1 << (bits)] = \
@@ -192,7 +195,7 @@ static inline void hlist_move_list(struct hlist_head *old,
 #define DECLARE_HASHTABLE(name, bits) \
     struct hlist_head name[1 << (bits)]
 
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
+#define ARRAY_SIZE(x) (sizeof((x)) / sizeof((x)[0]))
 
 #define ilog2(n) \
     ( \
@@ -269,7 +272,7 @@ static inline void hlist_move_list(struct hlist_head *old,
     (sizeof(val) <= 4 ? hash_32(val, bits) : hash_long(val, bits))
 
 #define hash_add(hashtable, node, key) \
-    hlist_add_head(node, &hashtable[hash_min(key, HASH_BITS(hashtable))])
+    hlist_add_head(node, &(hashtable)[hash_min(key, HASH_BITS(hashtable))])
 
 /**
  * hash_empty - check whether a hashtable is empty
@@ -287,10 +290,10 @@ static inline void hlist_move_list(struct hlist_head *old,
  * @obj: the type * to use as a loop cursor for each entry
  * @member: the name of the hlist_node within the struct
  */
-#define hash_for_each(name, bkt, obj, member)                           \
-    for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name); \
-         (bkt)++)                                                       \
-    hlist_for_each_entry(obj, &name[bkt], member)
+#define hash_for_each(name, bkt, obj, member) \
+    for ((bkt) = 0, (obj) = NULL; (obj) == NULL && (bkt) < HASH_SIZE(name); \
+         (bkt)++) \
+    hlist_for_each_entry((obj), &(name)[bkt], member)
 
 /**
  * hash_for_each_safe - iterate over a hashtable safe against removal of
@@ -301,13 +304,13 @@ static inline void hlist_move_list(struct hlist_head *old,
  * @obj: the type * to use as a loop cursor for each entry
  * @member: the name of the hlist_node within the struct
  */
-#define hash_for_each_safe(name, bkt, tmp, obj, member)                 \
-    for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name); \
-         (bkt)++)                                                       \
-    hlist_for_each_entry_safe(obj, tmp, &name[bkt], member)
+#define hash_for_each_safe(name, bkt, tmp, obj, member) \
+    for ((bkt) = 0, (obj) = NULL; (obj) == NULL && (bkt) < HASH_SIZE(name); \
+         (bkt)++) \
+    hlist_for_each_entry_safe((obj), tmp, &(name)[bkt], member)
 
 #define hash_for_each_possible(name, obj, member, key) \
-    hlist_for_each_entry(obj, &name[hash_min(key, HASH_BITS(name))], member)
+    hlist_for_each_entry((obj), &(name)[hash_min(key, HASH_BITS(name))], member)
 
 static inline RK_U32 hash_32(RK_U32 val, unsigned int bits)
 {
@@ -315,7 +318,7 @@ static inline RK_U32 hash_32(RK_U32 val, unsigned int bits)
     RK_U32 hash = val * GOLDEN_RATIO_32;
 
     /* High bits are more random, so use them. */
-    return hash >> (32 - bits);
+    return hash >> (32 - bits); // 32:32bits
 }
 
 static inline RK_U32 __hash_32(RK_U32 val)
@@ -325,7 +328,7 @@ static inline RK_U32 __hash_32(RK_U32 val)
 
 static inline RK_U32 hash_64(RK_U64 val, unsigned int bits)
 {
-#if __SIZEOF_POINTER__ == 8
+#if __SIZEOF_POINTER__ == 8 // 8:sizeof pointer
     /* 64x64-bit multiply is efficient on all 64-bit processors */
     return val * GOLDEN_RATIO_64 >> (64 - bits);
 #else
@@ -345,7 +348,7 @@ static inline RK_U32 hash32_ptr(const void *ptr)
     unsigned long val = (unsigned long)ptr;
 
 #if __SIZEOF_POINTER__ == 8
-    val ^= (val >> 32);
+    val ^= (val >> 32); // 32:Shift 32 bits right
 #endif
     return (RK_U32)val;
 }
@@ -363,10 +366,11 @@ static inline bool __hash_empty(struct hlist_head *ht, unsigned int sz)
 {
     unsigned int i;
 
-    for (i = 0; i < sz; i++)
-        if (!hlist_empty(&ht[i]))
+    for (i = 0; i < sz; i++) {
+        if (!hlist_empty(&ht[i])) {
             return false;
-
+        }
+    }
     return true;
 }
 
@@ -383,4 +387,4 @@ static inline void hash_del(struct hlist_node *node)
 }
 #endif
 
-#endif /*__MPP_HASH_H__*/
+#endif /* __MPP_HASH_H__ */

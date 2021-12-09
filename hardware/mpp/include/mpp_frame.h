@@ -99,7 +99,8 @@ typedef enum {
     MPP_FRAME_TRC_RESERVED     = 3,
     MPP_FRAME_TRC_GAMMA22      = 4,     ///< also ITU-R BT470M / ITU-R BT1700 625 PAL & SECAM
     MPP_FRAME_TRC_GAMMA28      = 5,     ///< also ITU-R BT470BG
-    MPP_FRAME_TRC_SMPTE170M    = 6,     ///< also ITU-R BT601-6 525 or 625 / ITU-R BT1358 525 or 625 / ITU-R BT1700 NTSC
+    ///< also ITU-R BT601-6 525 or 625 / ITU-R BT1358 525 or 625 / ITU-R BT1700 NTSC
+    MPP_FRAME_TRC_SMPTE170M    = 6,
     MPP_FRAME_TRC_SMPTE240M    = 7,
     MPP_FRAME_TRC_LINEAR       = 8,     ///< "Linear transfer characteristics"
     MPP_FRAME_TRC_LOG          = 9,     ///< "Logarithmic transfer characteristic (100:1 range)"
@@ -124,8 +125,10 @@ typedef enum {
     MPP_FRAME_SPC_UNSPECIFIED = 2,
     MPP_FRAME_SPC_RESERVED    = 3,
     MPP_FRAME_SPC_FCC         = 4,      ///< FCC Title 47 Code of Federal Regulations 73.682 (a)(20)
-    MPP_FRAME_SPC_BT470BG     = 5,      ///< also ITU-R BT601-6 625 / ITU-R BT1358 625 / ITU-R BT1700 625 PAL & SECAM / IEC 61966-2-4 xvYCC601
-    MPP_FRAME_SPC_SMPTE170M   = 6,      ///< also ITU-R BT601-6 525 / ITU-R BT1358 525 / ITU-R BT1700 NTSC / functionally identical to above
+    ///< also ITU-R BT601-6 625 / ITU-R BT1358 625 / ITU-R BT1700 625 PAL & SECAM / IEC 61966-2-4 xvYCC601
+    MPP_FRAME_SPC_BT470BG     = 5,
+    ///< also ITU-R BT601-6 525 / ITU-R BT1358 525 / ITU-R BT1700 NTSC / functionally identical to above
+    MPP_FRAME_SPC_SMPTE170M   = 6,
     MPP_FRAME_SPC_SMPTE240M   = 7,
     MPP_FRAME_SPC_YCOCG       = 8,      ///< Used by Dirac / VC-2 and H.264 FRext, see ITU-T SG16
     MPP_FRAME_SPC_BT2020_NCL  = 9,      ///< ITU-R BT2020 non-constant luminance system
@@ -186,18 +189,18 @@ typedef enum {
 
 #define MPP_FRAME_FMT_LE_MASK       (0x01000000)
 
-#define MPP_FRAME_FMT_IS_YUV(fmt)   (((fmt & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_YUV) && \
-                                     ((fmt & MPP_FRAME_FMT_MASK) < MPP_FMT_YUV_BUTT))
-#define MPP_FRAME_FMT_IS_RGB(fmt)   (((fmt & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_RGB) && \
-                                     ((fmt & MPP_FRAME_FMT_MASK) < MPP_FMT_RGB_BUTT))
+#define MPP_FRAME_FMT_IS_YUV(fmt)   ((((fmt) & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_YUV) && \
+                                     (((fmt) & MPP_FRAME_FMT_MASK) < MPP_FMT_YUV_BUTT))
+#define MPP_FRAME_FMT_IS_RGB(fmt)   ((((fmt) & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_RGB) && \
+                                     (((fmt) & MPP_FRAME_FMT_MASK) < MPP_FMT_RGB_BUTT))
 
 /*
  * For MPP_FRAME_FBC_AFBC_V1 the 16byte aligned stride is used.
  */
-#define MPP_FRAME_FMT_IS_FBC(fmt)   (fmt & MPP_FRAME_FBC_MASK)
+#define MPP_FRAME_FMT_IS_FBC(fmt)   ((fmt) & MPP_FRAME_FBC_MASK)
 
-#define MPP_FRAME_FMT_IS_LE(fmt)    ((fmt & MPP_FRAME_FMT_LE_MASK) == MPP_FRAME_FMT_LE_MASK)
-#define MPP_FRAME_FMT_IS_BE(fmt)    ((fmt & MPP_FRAME_FMT_LE_MASK) == 0)
+#define MPP_FRAME_FMT_IS_LE(fmt)    (((fmt) & MPP_FRAME_FMT_LE_MASK) == MPP_FRAME_FMT_LE_MASK)
+#define MPP_FRAME_FMT_IS_BE(fmt)    (((fmt) & MPP_FRAME_FMT_LE_MASK) == 0)
 
 /* mpp color format index definition */
 typedef enum {
@@ -387,4 +390,4 @@ void    mpp_frame_set_content_light(MppFrame frame, MppFrameContentLightMetadata
 }
 #endif
 
-#endif /*__MPP_FRAME_H__*/
+#endif /* __MPP_FRAME_H__ */
