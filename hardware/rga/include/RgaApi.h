@@ -51,19 +51,19 @@ extern "C"{
     ret;\
 })
 #define RgaDeInit(ctx) { \
-    (void)ctx;        /* unused */ \
+    (void)(ctx);        /* unused */ \
     c_RkRgaDeInit(); \
 }
 #define RgaBlit(...) c_RkRgaBlit(__VA_ARGS__)
 #define RgaCollorFill(...) c_RkRgaColorFill(__VA_ARGS__)
 #define RgaFlush() c_RkRgaFlush()
 
-int  c_RkRgaInit();
-void c_RkRgaDeInit();
+int  c_RkRgaInit(void);
+void c_RkRgaDeInit(void);
 void c_RkRgaGetContext(void **ctx);
 int  c_RkRgaBlit(rga_info_t *src, rga_info_t *dst, rga_info_t *src1);
 int  c_RkRgaColorFill(rga_info_t *dst);
-int  c_RkRgaFlush();
+int  c_RkRgaFlush(void);
 
 #ifndef ANDROID /* linux */
 int c_RkRgaGetAllocBuffer(bo_t *bo_info, int width, int height, int bpp);

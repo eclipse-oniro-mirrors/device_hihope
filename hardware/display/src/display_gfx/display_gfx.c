@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-#include "display_gfx.h"
+#include <stdio.h>
+#include <string.h>
 #include "im2d.h"
 #include "rga.h"
 #include "display_common.h"
-#include <stdio.h>
-#include <string.h>
 #include "display_gralloc.h"
+#include "securec.h"
+#include "display_gfx.h"
 
 #define ALIGN_UP(x, a) ((((x) + ((a)-1)) / (a)) * (a))
 GrallocFuncs *grallocFucs = NULL;
@@ -156,13 +157,21 @@ int32_t rkFillRect(ISurface *surface, IRect *rect, uint32_t color, GfxOpt *opt)
     IM_STATUS ret;
     uint8_t isYuv;
 
-    memset((void *)&imRect, 0, sizeof(imRect));
+    errno_t eok = memset_s((void *)&imRect, sizeof(imRect), 0, sizeof(imRect));
+    if (eok != EOK) {
+        DISPLAY_LOGE("memset_s failed");
+        return false;
+    }
     imRect.x = rect->x;
     imRect.y = rect->y;
     imRect.width = rect->w;
     imRect.height = rect->h;
 
-    memset((void *)&dst, 0, sizeof(dst));
+    eok = memset_s((void *)&dst, sizeof(dst), 0, sizeof(dst));
+    if (eok != EOK) {
+        DISPLAY_LOGE("memset_s failed");
+        return false;
+    }
     dst.phy_addr = 0;//(void*)surface->phyAddr;
     dst.vir_addr = 0;//surface->virAddr;
     dst.fd = (int32_t)surface->phyAddr;
@@ -276,12 +285,36 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
     int32_t rkRotateType = 0;
     int32_t rkMirrorType = 0;
 
-    memset(&dstRgaBuffer,  0, sizeof(dstRgaBuffer));
-    memset(&srcRgaBuffer,  0, sizeof(srcRgaBuffer));
-    memset(&bRgbBuffer,  0, sizeof(bRgbBuffer));
-    memset(&srect,  0, sizeof(srect));
-    memset(&drect,  0, sizeof(drect));
-    memset(&prect,  0, sizeof(prect));
+    errno_t eok = memset_s(&dstRgaBuffer, sizeof(dstRgaBuffer), 0, sizeof(dstRgaBuffer));
+    if (eok != EOK) {
+        DISPLAY_LOGE("memset_s failed");
+        return false;
+    }
+    eok = memset_s(&srcRgaBuffer, sizeof(srcRgaBuffer), 0, sizeof(srcRgaBuffer));
+    if (eok != EOK) {
+        DISPLAY_LOGE("memset_s failed");
+        return false;
+    }
+    eok = memset_s(&bRgbBuffer, sizeof(bRgbBuffer), 0, sizeof(bRgbBuffer));
+    if (eok != EOK) {
+        DISPLAY_LOGE("memset_s failed");
+        return false;
+    }
+    eok = memset_s(&srect, sizeof(srect), 0, sizeof(srect));
+    if (eok != EOK) {
+        DISPLAY_LOGE("memset_s failed");
+        return false;
+    }
+    eok = memset_s(&drect, sizeof(drect), 0, sizeof(drect));
+    if (eok != EOK) {
+        DISPLAY_LOGE("memset_s failed");
+        return false;
+    }
+    eok = memset_s(&prect, sizeof(prect), 0, sizeof(prect));
+    if (eok != EOK) {
+        DISPLAY_LOGE("memset_s failed");
+        return false;
+    }
     if (opt->enGlobalAlpha) {
         dstRgaBuffer.global_alpha = opt->globalAlpha;
         srcRgaBuffer.global_alpha = opt->globalAlpha;
@@ -315,10 +348,12 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
         return DISPLAY_PARAM_ERR;
     }
 
-    DISPLAY_LOGE("gfx src fd %{public}d, w %{public}d, h %{publuc}d, sw %{public}d sh %{public}d vir %{public}p",(int32_t)srcSurface->phyAddr, srcSurface->width,
-                 srcSurface->height, ALIGN_UP(srcSurface->width, 16), ALIGN_UP(srcSurface->height, 16), srcRgaBuffer.vir_addr);
-    DISPLAY_LOGE("gfx dst fd %{public}d, w %{public}d, h %{public}d, sw %{public}d sh %{public}d vir %{public}p",(int32_t)dstSurface->phyAddr, dstSurface->width,
-                 dstSurface->height, ALIGN_UP(dstSurface->width, 16), ALIGN_UP(dstSurface->height, 16), dstRgaBuffer.vir_addr);
+    DISPLAY_LOGE("gfx src fd %{public}d, w %{public}d, h %{publuc}d, sw %{public}d sh %{public}d vir %{public}p",
+        (int32_t)srcSurface->phyAddr, srcSurface->width, srcSurface->height, ALIGN_UP(srcSurface->width, 16),
+        ALIGN_UP(srcSurface->height, 16), srcRgaBuffer.vir_addr);
+    DISPLAY_LOGE("gfx dst fd %{public}d, w %{public}d, h %{public}d, sw %{public}d sh %{public}d vir %{public}p",
+        (int32_t)dstSurface->phyAddr, dstSurface->width, dstSurface->height, ALIGN_UP(dstSurface->width, 16),
+        ALIGN_UP(dstSurface->height, 16), dstRgaBuffer.vir_addr);
 
     srect.x = srcRect->x;
     srect.y = srcRect->y;
@@ -358,11 +393,19 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
         if (rkBlendType == IM_ALPHA_BLEND_SRC_OVER || rkBlendType == IM_ALPHA_BLEND_SRC) {
             usage = 0;
             if (opt->enableScale == 0) {
-                memset(&srect, 0, sizeof(srect));
+                eok = memset_s(&srect, sizeof(srect), 0, sizeof(srect));
+                if (eok != EOK) {
+                    DISPLAY_LOGE("memset_s failed");
+                    return false;
+                }
                 srect.width = srcRgaBuffer.width;
                 srect.height = srcRgaBuffer.height;
 
-                memset(&drect, 0, sizeof(drect));
+                eok = memset_s(&drect, sizeof(drect), 0, sizeof(drect));
+                if (eok != EOK) {
+                    DISPLAY_LOGE("memset_s failed");
+                    return false;
+                }
                 drect.x = dstRgaBuffer.width - srcRgaBuffer.width;
                 drect.y = dstRgaBuffer.height - srcRgaBuffer.height;
                 drect.width = srcRgaBuffer.width;
@@ -398,8 +441,10 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
             bRgbBuffer.vir_addr = 0;//buffer->virAddr;
             bRgbBuffer.color_space_mode = dstRgaBuffer.color_space_mode;
             bRgbBuffer.fd = (int32_t)buffer->phyAddr;
-            memcpy(&prect, &drect, sizeof(drect));
-
+            int ret = memcpy_s(&prect, sizeof(drect), &drect, sizeof(drect));
+            if (!ret) {
+                printf("memcpy_s failed!\n");
+            }
             ret = improcess(srcRgaBuffer, bRgbBuffer, dstRgaBuffer, srect, prect, drect, usage);
             if (ret != IM_STATUS_SUCCESS) {
                 DISPLAY_LOGE("gfx improcess %{public}s", imStrError(ret));
@@ -446,8 +491,11 @@ int32_t GfxInitialize(GfxFuncs **funcs)
 {
     DISPLAY_CHK_RETURN((funcs == NULL), DISPLAY_PARAM_ERR, DISPLAY_LOGE("info is null"));
     GfxFuncs *gfxFuncs = (GfxFuncs *)malloc(sizeof(GfxFuncs));
-    memset((void *)gfxFuncs,  0, sizeof(GfxFuncs));
-
+    errno_t eok = memset_s((void *)gfxFuncs, sizeof(GfxFuncs), 0, sizeof(GfxFuncs));
+    if (eok != EOK) {
+        DISPLAY_LOGE("memset_s failed");
+        return false;
+    }
     gfxFuncs->InitGfx = rkInitGfx;
     gfxFuncs->DeinitGfx = rkDeinitGfx;
     gfxFuncs->FillRect = rkFillRect;
@@ -465,4 +513,3 @@ int32_t GfxUninitialize(GfxFuncs *funcs)
     DISPLAY_LOGI("%s: gfx uninitialize success", __func__);
     return DISPLAY_SUCCESS;
 }
-
