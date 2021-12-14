@@ -33,7 +33,8 @@
         </policylist>
         <filefilterlist>
             <filefilter name="defaultFilter" desc="Files not to check">
-		<!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
+                <filteritem type="filepath" name="rk3568/build/rootfs/fstab.rk3568" desc="配置文件，不能加其他注释"/>
+                <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
                 <!--filteritem type="filepath" name="abcdefg/.*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
 		<!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
             </filefilter>
@@ -73,7 +74,7 @@
                 <filteritem type="filepath" name="hardware/gra/lib/*" desc="gra 32bit libs file"/>
                 <filteritem type="filepath" name="hardware/gra/lib64/*" desc="gra 64bit libs file"/>
                 <filteritem type="filepath" name="hardware/wifi/*" desc="wifi lib and bin files"/>
-				<!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
+                <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
                 <!--filteritem type="filepath" name="abcdefg/.*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
                 <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
             </filefilter>
