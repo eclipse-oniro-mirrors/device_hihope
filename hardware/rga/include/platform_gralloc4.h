@@ -46,7 +46,7 @@
  *  Include Files
  * ---------------------------------------------------------------------------------------------------------
  */
-// #include <linux/kernel.h>
+#include <linux/kernel.h>
 
 #include <stdint.h>
 

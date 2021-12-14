@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include "ipp_algo.h"
 #include <stdio.h>
+#include "ipp_algo.h"
 #include "securec.h"
 
 #define MAX_BUFFER_COUNT 100
@@ -25,13 +25,13 @@ int Init(const IppAlgoMeta *meta)
     return 0;
 }
 
-int Start()
+int Start(void)
 {
     printf("ipp algo example Start ...\n");
     return 0;
 }
 
-int Flush()
+int Flush(void)
 {
     printf("ipp algo example Flush ...\n");
     return 0;
@@ -89,7 +89,7 @@ int Process(IppAlgoBuffer *inBuffer[], int inBufferCount, IppAlgoBuffer *outBuff
     return 0;
 }
 
-int Stop()
+int Stop(void)
 {
     printf("ipp algo example Stop ...\n");
     return 0;

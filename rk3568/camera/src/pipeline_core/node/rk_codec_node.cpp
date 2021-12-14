@@ -12,7 +12,7 @@
  */
 
 #include "rk_codec_node.h"
-#include "securec.h"
+#include <securec.h>
 
 namespace OHOS::Camera {
 uint32_t RKCodecNode::previewWidth_ = 0;
@@ -171,7 +171,10 @@ void RKCodecNode::Yuv420ToRGBA8888(std::shared_ptr<IBuffer>& buffer)
 
     previewWidth_ = buffer->GetWidth();
     previewHeight_ = buffer->GetHeight();
-    memcpy(temp, (const void *)buffer->GetVirAddress(), buffer->GetSize());
+    int ret = memcpy_s(temp, buffer->GetSize(), (const void *)buffer->GetVirAddress(), buffer->GetSize());
+    if (ret != 0) {
+        printf("memcpy_s failed!\n");
+    }
     RockchipRga rkRga;
 
     rga_info_t src = {};
@@ -187,11 +190,9 @@ void RKCodecNode::Yuv420ToRGBA8888(std::shared_ptr<IBuffer>& buffer)
     dst.virAddr = 0;
 
     rga_set_rect(&src.rect, 0, 0, buffer->GetWidth(), buffer->GetHeight(),
-                buffer->GetWidth(), buffer->GetHeight(),
-                RK_FORMAT_YCbCr_420_P);
+        buffer->GetWidth(), buffer->GetHeight(), RK_FORMAT_YCbCr_420_P);
     rga_set_rect(&dst.rect, 0, 0, buffer->GetWidth(), buffer->GetHeight(),
-                buffer->GetWidth(), buffer->GetHeight(),
-                RK_FORMAT_RGBA_8888);
+        buffer->GetWidth(), buffer->GetHeight(), RK_FORMAT_RGBA_8888);
 
     rkRga.RkRgaBlit(&src, &dst, NULL);
     rkRga.RkRgaFlush();
@@ -232,16 +233,17 @@ void RKCodecNode::Yuv420ToJpeg(std::shared_ptr<IBuffer>& buffer)
     dst.virAddr = temp;
 
     rga_set_rect(&src.rect, 0, 0, previewWidth_, previewHeight_,
-                previewWidth_, previewHeight_,
-                RK_FORMAT_YCbCr_420_P);
+        previewWidth_, previewHeight_, RK_FORMAT_YCbCr_420_P);
     rga_set_rect(&dst.rect, 0, 0, previewWidth_, previewHeight_,
-                previewWidth_, previewHeight_,
-                RK_FORMAT_RGB_888);
+        previewWidth_, previewHeight_, RK_FORMAT_RGB_888);
 
     rkRga.RkRgaBlit(&src, &dst, NULL);
     rkRga.RkRgaFlush();
-    encodeJpegToMemory((unsigned char *)temp, previewWidth_, previewHeight_, NULL, &jpegSize, &jBuf);
-    memcpy((unsigned char*)buffer->GetVirAddress(), jBuf, jpegSize);
+    encodeJpegToMemory((unsigned char *)temp, previewWidth_, previewHeight_, nullptr, &jpegSize, &jBuf);
+    int ret = memcpy_s((unsigned char*)buffer->GetVirAddress(), jpegSize, jBuf, jpegSize);
+    if (ret != 0) {
+        printf("memcpy_s failed!\n");
+    }
     buffer->SetEsFrameSize(jpegSize);
     free(jBuf);
     free(temp);

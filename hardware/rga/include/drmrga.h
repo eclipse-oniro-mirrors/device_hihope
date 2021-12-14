@@ -20,7 +20,6 @@
 #define _rk_drm_rga_
 
 #include <stdint.h>
-//#include <sys/cdefs.h>
 
 #ifdef ANDROID
 #define DRMRGA_HARDWARE_MODULE_ID "librga"
@@ -64,7 +63,7 @@
 #define DRM_RGA_TRANSFORM_FLIP_V        HAL_TRANSFORM_FLIP_V
 
 enum {
-    AWIDTH                      = 0,
+    AWIDTH = 0,
     AHEIGHT,
     ASTRIDE,
     AFORMAT,
@@ -180,11 +179,11 @@ typedef struct drm_rga {
    rga_set_rect(rects.src,0,0,1920,1080,1920,NV12);
    mean to set the src rect to the value.
  */
-static inline int rga_set_rect(rga_rect_t *rect,
-                               int x, int y, int w, int h, int sw, int sh, int f) {
-    if (!rect)
+static inline int rga_set_rect(rga_rect_t *rect, int x, int y, int w, int h, int sw, int sh, int f)
+{
+    if (!rect) {
         return -EINVAL;
-
+    }
     rect->xoffset = x;
     rect->yoffset = y;
     rect->width = w;
@@ -192,18 +191,19 @@ static inline int rga_set_rect(rga_rect_t *rect,
     rect->wstride = sw;
     rect->hstride = sh;
     rect->format = f;
-
     return 0;
 }
 
 #ifndef ANDROID /* LINUX */
-static inline void rga_set_rotation(rga_info_t *info, int angle) {
-    if (angle == 90)
+static inline void rga_set_rotation(rga_info_t *info, int angle)
+{
+    if (angle == 90) { // 90:HAL_TRANSFORM_ROT
         info->rotation = HAL_TRANSFORM_ROT_90;
-    else if (angle == 180)
+    } else if (angle == 180) { // 180:HAL_TRANSFORM_ROT
         info->rotation = HAL_TRANSFORM_ROT_180;
-    else if (angle == 270)
+    } else if (angle == 270) { // 270:HAL_TRANSFORM_ROT
         info->rotation = HAL_TRANSFORM_ROT_270;
+    }
 }
 #endif
 /*****************************************************************************/
