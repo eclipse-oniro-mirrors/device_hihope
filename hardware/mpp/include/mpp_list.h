@@ -94,9 +94,12 @@ struct list_head {
         (ptr)->next = (ptr); (ptr)->prev = (ptr); \
     } while (0)
 
-#define list_for_each_safe(pos, n, head) \
-    for (pos = (head)->next, n = pos->next; pos != (head); \
-         pos = n, n = pos->next)
+
+#define list_for_each_safe(pos, n, head) do { \
+    for ((pos) = (head)->next, (n) = (pos)->next; (pos) != (head); \
+        (pos) = (n), (n) = (pos)->next) \
+    } while (0)
+
 
 #define list_entry(ptr, type, member) \
     ((type *)((char *)(ptr)-(unsigned long)(&((type *)0)->member)))
@@ -120,26 +123,26 @@ struct list_head {
         list_entry((pos)->member.prev, type, member)
 
 #define list_for_each_entry(pos, head, type, member) \
-    for (pos = list_entry((head)->next, type, member); \
-         &pos->member != (head); \
-         pos = list_next_entry(pos, type, member))
+    for ((pos) = list_entry((head)->next, type, member); \
+         &(pos)->member != (head); \
+         (pos) = list_next_entry((pos), type, member))
 
 #define list_for_each_entry_safe(pos, n, head, type, member) \
-    for (pos = list_first_entry(head, type, member),  \
-         n = list_next_entry(pos, type, member); \
-         &pos->member != (head);                    \
-         pos = n, n = list_next_entry(n, type, member))
+    for ((pos) = list_first_entry(head, type, member),  \
+         (n) = list_next_entry((pos), type, member); \
+         &(pos)->member != (head);                    \
+         (pos) = (n), (n) = list_next_entry(n, type, member))
 
 #define list_for_each_entry_reverse(pos, head, type, member) \
-    for (pos = list_last_entry(head, type, member); \
-         &pos->member != (head); \
-         pos = list_prev_entry(pos, type, member))
+    for ((pos) = list_last_entry(head, type, member); \
+         &(pos)->member != (head); \
+         (pos) = list_prev_entry((pos), type, member))
 
 #define list_for_each_entry_safe_reverse(pos, n, head, type, member) \
-    for (pos = list_last_entry(head, type, member),  \
-         n = list_prev_entry(pos, type, member); \
-         &pos->member != (head);                    \
-         pos = n, n = list_prev_entry(n, type, member))
+    for ((pos) = list_last_entry(head, type, member),  \
+         (n) = list_prev_entry((pos), type, member); \
+         &(pos)->member != (head);                    \
+         (pos) = (n), (n) = list_prev_entry(n, type, member))
 
 static __inline void __list_add(struct list_head * _new,
                                 struct list_head * prev,
@@ -189,4 +192,4 @@ static __inline int list_empty(struct list_head *head)
 #endif
 
 
-#endif /*__MPP_LIST_H__*/
+#endif /* __MPP_LIST_H__ */

@@ -17,8 +17,8 @@
 #ifndef __MPP_SERVICE_H__
 #define __MPP_SERVICE_H__
 
-#include "rk_type.h"
 #include <asm/ioctl.h>
+#include "rk_type.h"
 
 /* Use 'v' as magic number */
 #define MPP_IOC_MAGIC                       'v'
@@ -26,9 +26,9 @@
 #define MAX_REQ_NUM                         16
 
 #if __SIZEOF_POINTER__ == 4
-#define REQ_DATA_PTR(ptr) ((RK_U32)ptr)
+#define REQ_DATA_PTR(ptr) ((RK_U32)(ptr))
 #elif __SIZEOF_POINTER__ == 8
-#define REQ_DATA_PTR(ptr) ((RK_U64)ptr)
+#define REQ_DATA_PTR(ptr) ((RK_U64)(ptr))
 #endif
 
 /* define flags for mpp_request */
