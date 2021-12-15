@@ -100,7 +100,8 @@ int32_t DrmConnector::Init(DrmDevice &drmDevice)
     return DISPLAY_SUCCESS;
 }
 
-int32_t DrmConnector::GetBrightness(uint32_t& level) {
+int32_t DrmConnector::GetBrightness(uint32_t& level)
+{
     if (mPropBrightnessId == DRM_INVALID_ID) {
         DISPLAY_LOGE("the prop id of brightness is invalid");
         return DISPLAY_NOT_SUPPORT;
@@ -227,7 +228,7 @@ int32_t DrmConnector::GetDisplaySuppportedModes(int *num, DisplayModeInfo *modes
     DISPLAY_CHK_RETURN((num == nullptr), DISPLAY_NULL_PTR, DISPLAY_LOGE("num is nullptr"));
     *num = static_cast<int32_t>(mModes.size());
     if (modes != nullptr) {
-        int i = 0;	    
+        int i = 0;
         for (const auto &modeMap : mModes) {
             DrmMode mode = modeMap.second;
             mode.ConvertToHdiMode(*(modes + i));

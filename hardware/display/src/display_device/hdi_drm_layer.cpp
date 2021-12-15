@@ -15,13 +15,13 @@
 
 #include "hdi_drm_layer.h"
 #include <cinttypes>
-#include <errno.h>
+#include <cerrno>
 #include "drm_device.h"
 
 namespace OHOS {
 namespace HDI {
 namespace DISPLAY {
-DrmGemBuffer::DrmGemBuffer(int drmfd, HdiLayerBuffer &hdl) : mDrmFd(drmfd)
+DrmGemBuffer::DrmGemBuffer(int drmFd, HdiLayerBuffer &hdl) : mDrmFd(drmFd)
 {
     DISPLAY_LOGD();
     Init(mDrmFd, hdl);

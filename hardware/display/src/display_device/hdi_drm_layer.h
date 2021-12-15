@@ -48,7 +48,7 @@ private:
 class HdiDrmLayer : public HdiLayer {
 public:
     explicit HdiDrmLayer(LayerType type) : HdiLayer(type) {}
-    virtual ~HdiDrmLayer() {}
+    ~HdiDrmLayer() override {}
     // Return value optimization
     DrmGemBuffer *GetGemBuffer();
 

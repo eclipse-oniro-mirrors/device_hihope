@@ -13,11 +13,11 @@
  * limitations under the License.
  */
 
-#include "hdi_gfx_composition.h"
 #include <cinttypes>
 #include <dlfcn.h>
-#include <errno.h>
+#include <cerrno>
 #include "display_gfx.h"
+#include "hdi_gfx_composition.h"
 
 #define LIB_HDI_GFX_NAME "libdisplay_gfx.z.so"
 #define LIB_GFX_FUNC_INIT "GfxInitialize"
@@ -110,16 +110,17 @@ void HdiGfxComposition::InitGfxSurface(ISurface &surface, HdiLayerBuffer &buffer
 {
     surface.width = buffer.GetWight();
     surface.height = buffer.GetHeight();
-    surface.phyAddr = buffer.GetFb();//buffer.GetPhysicalAddr();
-//    surface.fd = buffer.GetFb();
+    surface.phyAddr = buffer.GetFb(); // buffer.GetPhysicalAddr();
     surface.enColorFmt = (PixelFormat)buffer.GetFormat();
     surface.stride = buffer.GetStride();
     surface.bAlphaExt1555 = true;
     surface.bAlphaMax255 = true;
     surface.alpha0 = 0XFF;
     surface.alpha1 = 0XFF;
-    DISPLAY_LOGD("surface fd %{public}d w:%{public}d h:%{public}d addr:0x%{public}" PRIx64 " fmt:%{public}d stride:%{public}d",
-        buffer.GetFb(), surface.width, surface.height, buffer.GetPhysicalAddr(), surface.enColorFmt, surface.stride);
+    DISPLAY_LOGD("surface fd %{public}d w:%{public}d h:%{public}d addr:0x%{public}" \
+        PRIx64 " fmt:%{public}d stride:%{public}d",
+        buffer.GetFb(), surface.width, surface.height,
+        buffer.GetPhysicalAddr(), surface.enColorFmt, surface.stride);
 }
 
 // now not handle the alpha of layer

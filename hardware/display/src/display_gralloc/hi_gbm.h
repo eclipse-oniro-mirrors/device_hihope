@@ -87,7 +87,8 @@ enum gbm_bo_flags {
 
 struct gbm_device *hdi_gbm_create_device(int fd);
 void hdi_gbm_device_destroy(struct gbm_device *gbm);
-struct gbm_bo *hdi_gbm_bo_create(struct gbm_device *gbm, uint32_t width, uint32_t height, uint32_t format, uint32_t usage);
+struct gbm_bo *hdi_gbm_bo_create(struct gbm_device *gbm, uint32_t width, uint32_t height,
+    uint32_t format, uint32_t usage);
 uint32_t hdi_gbm_bo_get_stride(struct gbm_bo *bo);
 uint32_t hdi_gbm_bo_get_width(struct gbm_bo *bo);
 uint32_t hdi_gbm_bo_get_height(struct gbm_bo *bo);

@@ -40,8 +40,8 @@ void *GbmMmap(BufferHandle *buffer);
 int32_t GbmUnmap(BufferHandle *buffer);
 int32_t GbmInvalidateCache(BufferHandle *buffer);
 int32_t GbmFlushCache(BufferHandle *buffer);
-int32_t GbmGrallocUninitialize();
-int32_t GbmGrallocInitialize();
+int32_t GbmGrallocUninitialize(void);
+int32_t GbmGrallocInitialize(void);
 
 #ifdef GRALLOC_LOCK_DEBUG
 #define GRALLOC_LOCK(format, ...)                                                                                    \

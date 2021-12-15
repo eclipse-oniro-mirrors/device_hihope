@@ -25,7 +25,7 @@ public:
     int32_t Init(void) override;
     int32_t SetLayers(std::vector<HdiLayer *> &layers, HdiLayer &clientLayer) override;
     int32_t Apply(bool modeSet) override;
-    virtual ~HdiGfxComposition()
+    ~HdiGfxComposition() override
     {
         (void)GfxModuleDeinit();
     }

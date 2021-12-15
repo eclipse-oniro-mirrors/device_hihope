@@ -73,7 +73,7 @@ void DeInitWaylandClient(WaylandDisplay *display)
     free(display);
 }
 
-WaylandDisplay *InitWaylandClient()
+WaylandDisplay *InitWaylandClient(void)
 {
     WaylandDisplay *dsp;
     int ret;
@@ -83,7 +83,8 @@ WaylandDisplay *InitWaylandClient()
     DISPLAY_CHK_RETURN((dsp->display == NULL), NULL, DISPLAY_LOGE("display connect failed, errno: %{public}d", errno);
         DeInitWaylandClient(dsp));
     dsp->registry = wl_display_get_registry(dsp->display);
-    DISPLAY_CHK_RETURN((dsp->registry == NULL), NULL, DISPLAY_LOGE("can not get registry"); DeInitWaylandClient(dsp));
+    DISPLAY_CHK_RETURN((dsp->registry == NULL), NULL, DISPLAY_LOGE("can not get registry");
+        DeInitWaylandClient(dsp));
     ret = wl_registry_add_listener(dsp->registry, &g_registrListener, dsp);
     DISPLAY_CHK_RETURN((ret < 0), NULL, DISPLAY_LOGE("add listener failed"));
     wl_display_roundtrip(dsp->display); // for get registry

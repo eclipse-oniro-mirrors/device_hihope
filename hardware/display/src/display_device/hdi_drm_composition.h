@@ -48,10 +48,10 @@ class HdiDrmComposition : public HdiComposition {
 public:
     HdiDrmComposition(std::shared_ptr<DrmConnector> connector, std::shared_ptr<DrmCrtc> crtc,
         std::shared_ptr<DrmDevice> drmDevice);
-    virtual ~HdiDrmComposition() {}
-    int32_t Init();
-    int32_t SetLayers(std::vector<HdiLayer *> &layers, HdiLayer &clientLayer);
-    int32_t Apply(bool modeSet);
+    ~HdiDrmComposition() override {}
+    int32_t Init() override;
+    int32_t SetLayers(std::vector<HdiLayer *> &layers, HdiLayer &clientLayer) override;
+    int32_t Apply(bool modeSet) override;
     int32_t UpdateMode(std::unique_ptr<DrmModeBlock> &modeBlock, drmModeAtomicReq &pset);
 
 private:

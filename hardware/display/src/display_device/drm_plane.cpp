@@ -54,7 +54,8 @@ int DrmPlane::GetCrtcProp(DrmDevice &drmDevice)
     mPropCrtc_hId = prop.propId;
     crtc_h = prop.value;
 
-    DISPLAY_LOGE("plane %{public}d crtc_x %{public}d crtc_y %{public}d crtc_w %{public}d crtc_h %{public}d",GetId(), crtc_x, crtc_y, crtc_w, crtc_h);
+    DISPLAY_LOGE("plane %{public}d crtc_x %{public}d crtc_y %{public}d crtc_w %{public}d crtc_h %{public}d",
+        GetId(), crtc_x, crtc_y, crtc_w, crtc_h);
 
     return 0;
 }
@@ -85,7 +86,8 @@ int  DrmPlane::GetSrcProp(DrmDevice &drmDevice)
     mPropSrc_hId = prop.propId;
     src_h = prop.value;
 
-    DISPLAY_LOGE("plane %{public}d src_x %{public}d src_y %{public}d src_w %{public}d src_h %{public}d",GetId(), src_x, src_y, src_w, src_h);
+    DISPLAY_LOGE("plane %{public}d src_x %{public}d src_y %{public}d src_w %{public}d src_h %{public}d",
+        GetId(), src_x, src_y, src_w, src_h);
 
     return 0;
 }
