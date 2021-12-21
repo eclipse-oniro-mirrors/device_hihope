@@ -236,7 +236,7 @@ int32_t DrmDisplay::RegDisplayVBlankCallback(VBlankCallback cb, void *data)
 {
     DISPLAY_LOGD("the VBlankCallback %{public}p ", cb);
     (void)data;
-    std::shared_ptr<VsyncCallBack> vsyncCb = std::make_shared<VsyncCallBack>(cb, nullptr);
+    std::shared_ptr<VsyncCallBack> vsyncCb = std::make_shared<VsyncCallBack>(cb, nullptr, mCrtc->GetPipe());
     DrmVsyncWorker::GetInstance().ReqesterVBlankCb(vsyncCb);
     return DISPLAY_SUCCESS;
 }

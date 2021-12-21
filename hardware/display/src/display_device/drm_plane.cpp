@@ -20,7 +20,8 @@ namespace OHOS {
 namespace HDI {
 namespace DISPLAY {
 DrmPlane::DrmPlane(drmModePlane &p)
-    : mId(p.plane_id), mPossibleCrtcs(p.possible_crtcs), mFormats(p.formats, p.formats + p.count_formats)
+    : mId(p.plane_id), mPossibleCrtcs(p.possible_crtcs), mCrtcId(p.crtc_id),
+    mFormats(p.formats, p.formats + p.count_formats)
 {}
 
 DrmPlane::~DrmPlane()
@@ -108,6 +109,10 @@ int32_t DrmPlane::Init(DrmDevice &drmDevice)
     ret = drmDevice.GetPlaneProperty(*this, PROP_CRTC_ID, prop);
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("cat not get pane crtc prop id"));
     mPropCrtcId = prop.propId;
+
+    ret = drmDevice.GetPlaneProperty(*this, PROP_ZPOS_ID, prop);
+    DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("cat not get pane crtc prop id"));
+    mPropZposId = prop.propId;
 
     ret = drmDevice.GetPlaneProperty(*this, PROP_TYPE, prop);
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("cat not get pane crtc prop id"));

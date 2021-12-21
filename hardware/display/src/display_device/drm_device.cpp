@@ -268,7 +268,6 @@ std::vector<std::shared_ptr<DrmPlane>> DrmDevice::GetDrmPlane(uint32_t pipe, uin
     std::vector<std::shared_ptr<DrmPlane>> planes;
     for (const auto &plane : mPlanes) {
         if (plane->IsIdle() && ((1 << pipe) & plane->GetPossibleCrtcs()) && (type == plane->GetType())) {
-            plane->BindToPipe(pipe);
             planes.push_back(plane);
         }
     }
