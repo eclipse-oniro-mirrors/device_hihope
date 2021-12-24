@@ -39,7 +39,13 @@ void HdiSession::Init()
     mHdiDisplays.clear();
     for (auto device : mHdiDevices) {
         auto displays = device->DiscoveryDisplay();
-        mHdiDisplays.insert(displays.begin(), displays.end());
+        /* Register the connectors instead of display device.
+         * There are several connectors in one display device
+         * in rockchip platform.
+         */
+        for (auto display : displays) {
+            mHdiDisplays[display.first] = display.second;
+        }
     }
 }
 

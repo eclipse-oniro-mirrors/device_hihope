@@ -170,10 +170,16 @@ int32_t HdiDisplay::PrepareDisplayLayers(bool *needFlushFb)
     DISPLAY_LOGD();
     mChangeLayers.clear();
     std::vector<HdiLayer *> layers;
+    uint32_t topZpos = 3;
     for (auto c : mLayers) {
         layers.push_back(c);
     }
     DISPLAY_LOGD(" mLayers  size %{public}zu layers size %{public}zu", mLayers.size(), layers.size());
+
+    /* Set the target layer to the top.
+     *  It would not by cover by other layer.
+     */
+    mClientLayer->SetLayerZorder(topZpos);
 
     mComposer->Prepare(layers, *mClientLayer);
     // get the change layers
@@ -211,7 +217,8 @@ HdiLayer *HdiDisplay::GetHdiLayer(uint32_t id)
     return iter->second.get();
 }
 
-VsyncCallBack::VsyncCallBack(VBlankCallback cb, void *data) : mVBlankCb(cb), mData(data)
+VsyncCallBack::VsyncCallBack(VBlankCallback cb, void *data, uint32_t displayId) : mVBlankCb(cb),
+    mData(data), mPipe(displayId)
 {
     DISPLAY_LOGD("VsyncCallBack %{public}p", cb);
 }

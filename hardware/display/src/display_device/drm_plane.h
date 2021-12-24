@@ -39,6 +39,8 @@ const std::string PROP_SRC_Y_ID = "SRC_Y";
 const std::string PROP_SRC_W_ID = "SRC_W";
 const std::string PROP_SRC_H_ID = "SRC_H";
 
+const std::string PROP_ZPOS_ID = "zpos";
+
 class DrmDevice;
 
 class DrmPlane {
@@ -88,6 +90,10 @@ public:
     {
         return mPropSrc_hId;
     }
+    uint32_t GetPropZposId() const
+    {
+        return mPropZposId;
+    }
     uint32_t GetPropFenceInId() const
     {
         return mPropFenceInId;
@@ -116,10 +122,18 @@ public:
     {
         return (mPipe == 0);
     }
-
+    uint32_t GetCrtcId()
+    {
+        return mCrtcId;
+    }
+    uint32_t GetPipe()
+    {
+        return mPipe;
+    }
 private:
     uint32_t mId = 0;
     uint32_t mPossibleCrtcs = 0;
+    uint32_t mCrtcId = 0;
     uint32_t mPropFbId = 0;
     uint32_t mPropFenceInId = 0;
     uint32_t mPropCrtcId = 0;
@@ -133,6 +147,8 @@ private:
     uint32_t mPropSrc_yId = 0;
     uint32_t mPropSrc_wId = 0;
     uint32_t mPropSrc_hId = 0;
+
+    uint32_t mPropZposId = 0;
 
     uint32_t mPipe = 0;
     uint32_t mType = 0;
