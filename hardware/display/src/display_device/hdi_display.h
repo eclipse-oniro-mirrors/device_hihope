@@ -31,13 +31,17 @@ const uint32_t DISPLAY_TYPE_DRM = (1 << 31);
 
 class VsyncCallBack {
 public:
-    VsyncCallBack(VBlankCallback cb, void *data);
+    VsyncCallBack(VBlankCallback cb, void *data, uint32_t pipe);
     virtual void Vsync(unsigned int sequence, uint64_t ns);
     virtual ~VsyncCallBack() {}
-
+    uint32_t GetPipe()
+    {
+        return mPipe;
+    }
 private:
     VBlankCallback mVBlankCb;
     void *mData;
+    uint32_t mPipe;
 };
 
 
