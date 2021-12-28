@@ -30,7 +30,7 @@ std::shared_ptr<DrmDevice> DrmDevice::mInstance;
 
 std::shared_ptr<HdiDeviceInterface> DrmDevice::Create()
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     if (mDrmFd == nullptr) {
         const std::string name("rockchip");
         int drmFd = open("/dev/dri/card0", O_RDWR | O_CLOEXEC); // drmOpen(name.c_str(), nullptr);
@@ -38,7 +38,7 @@ std::shared_ptr<HdiDeviceInterface> DrmDevice::Create()
             DISPLAY_LOGE("drm file:%{public}s open failed %{public}s", name.c_str(), strerror(errno));
             return nullptr;
         }
-        DISPLAY_LOGD("the drm fd is %{public}d", drmFd);
+        DISPLAY_DEBUGLOG("the drm fd is %{public}d", drmFd);
         mDrmFd = std::make_shared<HdiFd>(drmFd);
     }
     if (mInstance == nullptr) {
@@ -81,7 +81,7 @@ uint32_t DrmDevice::ConvertToDrmFormat(PixelFormat fmtIn)
             fmtOut = convertTable[i].drmFormat;
         }
     }
-    DISPLAY_LOGD("fmtIn %{public}d, outFmt %{public}d", fmtIn, fmtOut);
+    DISPLAY_DEBUGLOG("fmtIn %{public}d, outFmt %{public}d", fmtIn, fmtOut);
     return fmtOut;
 }
 
@@ -180,7 +180,7 @@ void DrmDevice::FindAllEncoder(const drmModeResPtr &res)
         mEncoders.emplace(encoder->encoder_id, std::move(drmEncoder));
         drmModeFreeEncoder(encoder);
     }
-    DISPLAY_LOGD("find encoder count %{public}zd", mEncoders.size());
+    DISPLAY_DEBUGLOG("find encoder count %{public}zd", mEncoders.size());
 }
 
 void DrmDevice::FindAllConnector(const drmModeResPtr &res)
@@ -203,7 +203,7 @@ void DrmDevice::FindAllConnector(const drmModeResPtr &res)
         int connectorId = drmConnector->GetId();
         mConnectors.emplace(connectorId, std::move(drmConnector));
     }
-    DISPLAY_LOGD("find connector count %{public}zd", mConnectors.size());
+    DISPLAY_DEBUGLOG("find connector count %{public}zd", mConnectors.size());
 }
 
 void DrmDevice::FindAllPlane()
@@ -212,7 +212,7 @@ void DrmDevice::FindAllPlane()
     int ret;
     drmModePlaneResPtr planeRes = drmModeGetPlaneResources(GetDrmFd());
     DISPLAY_CHK_RETURN_NOT_VALUE((planeRes == nullptr), DISPLAY_LOGE("can not get plane resource"));
-    DISPLAY_LOGD("count_planes %{public}d", planeRes->count_planes);
+    DISPLAY_DEBUGLOG("count_planes %{public}d", planeRes->count_planes);
     for (uint32_t i = 0; i < planeRes->count_planes; i++) {
         drmModePlanePtr p = drmModeGetPlane(GetDrmFd(), planeRes->planes[i]);
         if (!p) {
@@ -220,9 +220,9 @@ void DrmDevice::FindAllPlane()
             continue;
         }
         std::shared_ptr<DrmPlane> drmPlane = std::make_shared<DrmPlane>(*p);
-        DISPLAY_LOGD();
+        DISPLAY_DEBUGLOG();
         ret = drmPlane->Init(*this);
-        DISPLAY_LOGD();
+        DISPLAY_DEBUGLOG();
         drmModeFreePlane(p);
         if (ret != DISPLAY_SUCCESS) {
             DISPLAY_LOGE("drm plane %{public}d init failed", i);
@@ -230,7 +230,7 @@ void DrmDevice::FindAllPlane()
         }
         mPlanes.emplace_back(std::move(drmPlane));
     }
-    DISPLAY_LOGD("find plane count %{public}zd", mPlanes.size());
+    DISPLAY_DEBUGLOG("find plane count %{public}zd", mPlanes.size());
 }
 
 std::shared_ptr<DrmEncoder> DrmDevice::GetDrmEncoderFromId(uint32_t id)
@@ -271,7 +271,7 @@ std::vector<std::shared_ptr<DrmPlane>> DrmDevice::GetDrmPlane(uint32_t pipe, uin
             planes.push_back(plane);
         }
     }
-    DISPLAY_LOGD("the planes count %{public}zd", planes.size());
+    DISPLAY_DEBUGLOG("the planes count %{public}zd", planes.size());
     return planes;
 }
 
@@ -286,7 +286,7 @@ std::unordered_map<uint32_t, std::shared_ptr<HdiDisplay>> DrmDevice::DiscoveryDi
     FindAllEncoder(res);
     FindAllConnector(res);
     FindAllPlane();
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     // travel all connector
     for (auto &connectorPair : mConnectors) {
         auto connector = connectorPair.second;
@@ -295,23 +295,23 @@ std::unordered_map<uint32_t, std::shared_ptr<HdiDisplay>> DrmDevice::DiscoveryDi
         if (ret != DISPLAY_SUCCESS) {
             continue;
         }
-        DISPLAY_LOGD();
+        DISPLAY_DEBUGLOG();
 
         auto crtcIter = mCrtcs.find(crtcId);
         if (crtcIter == mCrtcs.end()) {
             DISPLAY_LOGE("can not find crtc for the id %{public}d", connector->GetId());
             continue;
         }
-        DISPLAY_LOGD();
+        DISPLAY_DEBUGLOG();
         auto crtc = crtcIter->second;
-        DISPLAY_LOGD("crtc %{public}p", crtc.get());
+        DISPLAY_DEBUGLOG("crtc %{public}p", crtc.get());
         // create the display
         std::shared_ptr<HdiDisplay> display = std::make_shared<DrmDisplay>(connector, crtc, mInstance);
-        DISPLAY_LOGD();
+        DISPLAY_DEBUGLOG();
         display->Init();
         mDisplays.emplace(display->GetId(), std::move(display));
     }
-    DISPLAY_LOGD("find display size %{public}zd", mDisplays.size());
+    DISPLAY_DEBUGLOG("find display size %{public}zd", mDisplays.size());
     return mDisplays;
 }
 } // namespace OHOS

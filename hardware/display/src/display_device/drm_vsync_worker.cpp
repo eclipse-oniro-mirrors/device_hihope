@@ -27,7 +27,7 @@ int32_t DrmVsyncWorker::Init(int fd)
 {
     DISPLAY_CHK_RETURN((fd < 0), DISPLAY_FAILURE, DISPLAY_LOGE("the fd is invalid"));
     mDrmFd = fd;
-    DISPLAY_LOGD("the drm fd is %{public}d", fd);
+    DISPLAY_DEBUGLOG("the drm fd is %{public}d", fd);
     mThread = std::make_unique<std::thread>([this]() { WorkThread(); });
     DISPLAY_CHK_RETURN((mThread == nullptr), DISPLAY_FAILURE, DISPLAY_LOGE("can not create thread"));
     mRunning = true;
@@ -49,17 +49,17 @@ DrmVsyncWorker &DrmVsyncWorker::GetInstance()
 
 DrmVsyncWorker::~DrmVsyncWorker()
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     {
         std::lock_guard<std::mutex> lg(mMutex);
         mRunning = false;
     }
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     mCondition.notify_one();
     if (mThread != nullptr) {
         mThread->join();
     }
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
 }
 
 bool DrmVsyncWorker::WaitSignalAndCheckRuning()
@@ -95,7 +95,7 @@ uint64_t DrmVsyncWorker::WaitNextVBlank(unsigned int &sq)
 
 void DrmVsyncWorker::EnableVsync(bool enable)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     {
         std::lock_guard<std::mutex> lg(mMutex);
         mEnable = enable;
@@ -105,7 +105,7 @@ void DrmVsyncWorker::EnableVsync(bool enable)
 
 void DrmVsyncWorker::WorkThread()
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     unsigned int seq = 0;
     while (WaitSignalAndCheckRuning()) {
         // wait the vblank
@@ -120,7 +120,7 @@ void DrmVsyncWorker::WorkThread()
 
 void DrmVsyncWorker::ReqesterVBlankCb(std::shared_ptr<VsyncCallBack> &cb)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     DISPLAY_CHK_RETURN_NOT_VALUE((cb == nullptr), DISPLAY_LOGE("the VBlankCallback is nullptr "));
     mCallBack = cb;
 }

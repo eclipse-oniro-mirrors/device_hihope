@@ -24,7 +24,7 @@ DrmCrtc::DrmCrtc(drmModeCrtcPtr c, uint32_t pipe) : mId(c->crtc_id), mPipe(pipe)
 
 int32_t DrmCrtc::Init(DrmDevice &drmDevice)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     int32_t ret;
     DrmProperty prop;
     ret = drmDevice.GetCrtcProperty(*this, PROP_MODEID, prop);
@@ -52,7 +52,7 @@ int32_t DrmCrtc::BindToDisplay(uint32_t id)
 
 void DrmCrtc::UnBindDisplay(uint32_t id)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     if (mDisplayId == id) {
         mDisplayId = INVALIDE_DISPLAY_ID;
     } else {
@@ -67,7 +67,7 @@ bool DrmCrtc::CanBind()
 
 int32_t DrmCrtc::SetActivieMode(int32_t id)
 {
-    DISPLAY_LOGD("set activie modeid to %{public}d", id);
+    DISPLAY_DEBUGLOG("set activie modeid to %{public}d", id);
     DISPLAY_CHK_RETURN((id > 0), DISPLAY_PARAM_ERR, DISPLAY_LOGE("id %{public}d is invalid ", id));
     if (mActiveModeId != id) {
         mNeedModeSet = true;

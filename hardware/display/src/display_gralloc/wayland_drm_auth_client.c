@@ -33,7 +33,7 @@ const char *AUTH_INTERFACE_NAME = "wl_drm_auth";
 static void AuthenticationStatus(void *data, struct wl_drm_auth *wlDrmAuth, uint32_t status)
 {
     (void)wlDrmAuth;
-    DISPLAY_LOGD("AuthenticationStatus the status %{public}d", status);
+    DISPLAY_DEBUGLOG("AuthenticationStatus the status %{public}d", status);
     WaylandDisplay *display = data;
     display->authStatus = status;
 }
@@ -44,7 +44,7 @@ static void RegistryHandleGlobal(void *data, struct wl_registry *registry, uint3
     uint32_t version)
 {
     WaylandDisplay *display = data;
-    DISPLAY_LOGD("interface global : %{public}s", interface);
+    DISPLAY_DEBUGLOG("interface global : %{public}s", interface);
     if (strcmp(interface, wl_drm_auth_interface.name) == 0) {
         display->drmAuth = wl_registry_bind(registry, id, &wl_drm_auth_interface, 1);
         wl_drm_auth_add_listener(display->drmAuth, &g_drmAuthListener, display);
@@ -53,15 +53,15 @@ static void RegistryHandleGlobal(void *data, struct wl_registry *registry, uint3
 
 static void RegistryHandleGlobalRemove(void *data, struct wl_registry *registry, uint32_t name)
 {
-    DISPLAY_LOGD("RegistryHandleGlobalRemove  %{publuc}d name ", name);
+    DISPLAY_DEBUGLOG("RegistryHandleGlobalRemove  %{publuc}d name ", name);
 }
 
 static const struct wl_registry_listener g_registrListener = { RegistryHandleGlobal, RegistryHandleGlobalRemove };
 
 void DeInitWaylandClient(WaylandDisplay *display)
 {
-    DISPLAY_LOGD("DeInitWaylandClient");
-    DISPLAY_CHK_RETURN_NOT_VALUE((display == NULL), DISPLAY_LOGD("display is NULL"));
+    DISPLAY_DEBUGLOG("DeInitWaylandClient");
+    DISPLAY_CHK_RETURN_NOT_VALUE((display == NULL), DISPLAY_DEBUGLOG("display is NULL"));
     if (display->registry != NULL) {
         wl_registry_destroy(display->registry);
     }
@@ -104,7 +104,7 @@ int32_t WaylandDrmAuth(int drmFd)
     DISPLAY_CHK_RETURN((dsp->drmAuth == NULL), AUTH_FAILED, DISPLAY_LOGE("drm auth service no find"));
     wl_drm_auth_authenticate(dsp->drmAuth, magic);
     wl_display_roundtrip(dsp->display); // wait for authenticate status return
-    DISPLAY_LOGD("the status of authenticate is %{public}d", dsp->authStatus);
+    DISPLAY_DEBUGLOG("the status of authenticate is %{public}d", dsp->authStatus);
     if (dsp->authStatus == WL_DRM_AUTH_STATUS_SUCCESS) {
         ret = AUTH_SCUCCESS;
     }

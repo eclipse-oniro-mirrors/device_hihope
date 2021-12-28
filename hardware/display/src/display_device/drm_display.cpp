@@ -102,7 +102,7 @@ int32_t DrmDisplay::GetDisplayPowerStatus(DispPowerStatus *status)
 
 int32_t DrmDisplay::SetDisplayPowerStatus(DispPowerStatus status)
 {
-    DISPLAY_LOGD("the status %{public}d ", status);
+    DISPLAY_DEBUGLOG("the status %{public}d ", status);
     uint32_t drmPowerState = 0;
     int ret = ConvertToDrmPowerState(status, drmPowerState);
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_PARAM_ERR,
@@ -132,7 +132,7 @@ int32_t DrmDisplay::ConvertToHdiPowerState(uint32_t drmPowerState, DispPowerStat
             ret = DISPLAY_FAILURE;
             break;
     }
-    DISPLAY_LOGD("hdi power state %{public}u", hdiPowerState);
+    DISPLAY_DEBUGLOG("hdi power state %{public}u", hdiPowerState);
     return ret;
 }
 
@@ -161,7 +161,7 @@ int32_t DrmDisplay::ConvertToDrmPowerState(DispPowerStatus hdiPowerState, uint32
 
 std::unique_ptr<HdiLayer> DrmDisplay::CreateHdiLayer(LayerType type)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     return std::make_unique<HdiDrmLayer>(type);
 }
 
@@ -184,7 +184,7 @@ int32_t DrmDisplay::WaitForVBlank(uint64_t *ns)
 
 bool DrmDisplay::IsConnected()
 {
-    DISPLAY_LOGD("conneted %{public}d", mConnector->IsConnected());
+    DISPLAY_DEBUGLOG("conneted %{public}d", mConnector->IsConnected());
     return mConnector->IsConnected();
 }
 
@@ -234,7 +234,7 @@ int32_t DrmDisplay::ChosePreferenceMode()
 
 int32_t DrmDisplay::RegDisplayVBlankCallback(VBlankCallback cb, void *data)
 {
-    DISPLAY_LOGD("the VBlankCallback %{public}p ", cb);
+    DISPLAY_DEBUGLOG("the VBlankCallback %{public}p ", cb);
     (void)data;
     std::shared_ptr<VsyncCallBack> vsyncCb = std::make_shared<VsyncCallBack>(cb, nullptr, mCrtc->GetPipe());
     DrmVsyncWorker::GetInstance().ReqesterVBlankCb(vsyncCb);
@@ -243,7 +243,7 @@ int32_t DrmDisplay::RegDisplayVBlankCallback(VBlankCallback cb, void *data)
 
 int32_t DrmDisplay::SetDisplayVsyncEnabled(bool enabled)
 {
-    DISPLAY_LOGD("enable %{public}d", enabled);
+    DISPLAY_DEBUGLOG("enable %{public}d", enabled);
     DrmVsyncWorker::GetInstance().EnableVsync(enabled);
     return DISPLAY_SUCCESS;
 }

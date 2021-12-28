@@ -1,11 +1,10 @@
 /*
- * Copyright 2015 Rockchip Electronics Co. LTD
- *
+ * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -150,7 +149,7 @@ RgaSURF_FORMAT colorSpaceModeChange(PixelFormat color, uint8_t *isYuv)
     return rkFormat;
 }
 
-int32_t rkFillRect(ISurface *surface, IRect *rect, uint32_t color, GfxOpt *opt)
+int32_t rkFillRect(ISurface *iSurface, IRect *rect, uint32_t color, GfxOpt *opt)
 {
     rga_buffer_t dst;
     im_rect imRect;
@@ -172,19 +171,19 @@ int32_t rkFillRect(ISurface *surface, IRect *rect, uint32_t color, GfxOpt *opt)
         DISPLAY_LOGE("memset_s failed");
         return false;
     }
-    dst.phy_addr = 0;//(void*)surface->phyAddr;
-    dst.vir_addr = 0;//surface->virAddr;
-    dst.fd = (int32_t)surface->phyAddr;
+    dst.phy_addr = 0; // (void*)iSurface->phyAddr;
+    dst.vir_addr = 0; // iSurface->virAddr;
+    dst.fd = (int32_t)iSurface->phyAddr;
     if ((int)dst.phy_addr == 0 && dst.fd == 0 && dst.vir_addr == NULL) {
-        DISPLAY_LOGE("source surface address error");
+        DISPLAY_LOGE("source iSurface address error");
         return DISPLAY_PARAM_ERR;
     }
     DISPLAY_LOGE("gfx vir %{public}p phy 0x%{public}x fd %{public}d",dst.vir_addr, (int32_t)dst.phy_addr, dst.fd);
-    dst.width = surface->width;
-    dst.height = surface->height;
-    dst.wstride = ALIGN_UP(surface->width, 16);
-    dst.hstride = ALIGN_UP(surface->height, 16);
-    dst.format = colorSpaceModeChange(surface->enColorFmt, &isYuv);
+    dst.width = iSurface->width;
+    dst.height = iSurface->height;
+    dst.wstride = ALIGN_UP(iSurface->width, 16);
+    dst.hstride = ALIGN_UP(iSurface->height, 16);
+    dst.format = colorSpaceModeChange(iSurface->enColorFmt, &isYuv);
     dst.color_space_mode = IM_COLOR_SPACE_DEFAULT;
     dst.color = color;
     if (opt->enGlobalAlpha)
@@ -204,9 +203,9 @@ int32_t blendTypeChange(BlendType blendType)
         case BLEND_SRC:              /**< SRC blending */
             rkBlendType = IM_ALPHA_BLEND_SRC;
             break;
-            case BLEND_DST:              /**< SRC blending */
-                rkBlendType = IM_ALPHA_BLEND_DST;
-                break;
+        case BLEND_DST:              /**< SRC blending */
+            rkBlendType = IM_ALPHA_BLEND_DST;
+            break;
         case BLEND_SRCOVER:          /**< SRC_OVER blending */
             rkBlendType = IM_ALPHA_BLEND_SRC_OVER;
             break;
@@ -230,7 +229,7 @@ int32_t blendTypeChange(BlendType blendType)
 //        BLEND_AKD:              /**< AKD blending */
 //        BLEND_BUTT:              /**< Null operation */
           rkBlendType = IM_STATUS_NOT_SUPPORTED;
-          break;
+            break;
     }
     return rkBlendType;
 }
@@ -324,8 +323,8 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
     dstRgaBuffer.wstride = ALIGN_UP(dstSurface->width, 16);
     dstRgaBuffer.hstride = ALIGN_UP(dstSurface->height, 16);
     dstRgaBuffer.format = colorSpaceModeChange(dstSurface->enColorFmt, &isYuv);
-    dstRgaBuffer.phy_addr = 0;//(void *)dstSurface->phyAddr;
-    dstRgaBuffer.vir_addr = 0;//dstSurface->virAddr;
+    dstRgaBuffer.phy_addr = 0; // (void *)dstSurface->phyAddr;
+    dstRgaBuffer.vir_addr = 0; // dstSurface->virAddr;
     dstRgaBuffer.color_space_mode = IM_COLOR_SPACE_DEFAULT;
     dstRgaBuffer.fd = (int32_t)dstSurface->phyAddr;
     if (isYuv == 1) {
@@ -337,14 +336,14 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
     srcRgaBuffer.height = srcSurface->height;
     srcRgaBuffer.wstride = ALIGN_UP(srcSurface->width, 16);
     srcRgaBuffer.hstride = ALIGN_UP(srcSurface->height, 16);
-    srcRgaBuffer.phy_addr = 0;//(void *)srcSurface->phyAddr;
-    srcRgaBuffer.vir_addr = 0;//srcSurface->virAddr;
+    srcRgaBuffer.phy_addr = 0; // (void *)srcSurface->phyAddr;
+    srcRgaBuffer.vir_addr = 0; // srcSurface->virAddr;
     srcRgaBuffer.format = colorSpaceModeChange(srcSurface->enColorFmt, &isYuv);
     srcRgaBuffer.color_space_mode = IM_COLOR_SPACE_DEFAULT;
     srcRgaBuffer.fd = (int32_t)srcSurface->phyAddr;
 
     if ((int)srcRgaBuffer.phy_addr == 0 && srcRgaBuffer.fd == 0 && srcRgaBuffer.vir_addr == NULL) {
-        DISPLAY_LOGE("source surface address error");
+        DISPLAY_LOGE("source iSurface address error");
         return DISPLAY_PARAM_ERR;
     }
 
@@ -422,10 +421,10 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
                 DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("Gralloc init failed"));
             }
             AllocInfo info = {
-                    .width = dstRgaBuffer.width,
-                    .height = dstRgaBuffer.height,
-                    .usage = HBM_USE_MEM_DMA | HBM_USE_CPU_READ | HBM_USE_CPU_WRITE,
-                    .format = PIXEL_FMT_RGBA_8888,//srcSurface->enColorFmt,
+                .width = dstRgaBuffer.width,
+                .height = dstRgaBuffer.height,
+                .usage = HBM_USE_MEM_DMA | HBM_USE_CPU_READ | HBM_USE_CPU_WRITE,
+                .format = PIXEL_FMT_RGBA_8888, // srcSurface->enColorFmt,
             };
             BufferHandle *buffer = NULL;
 
@@ -436,9 +435,9 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
             bRgbBuffer.height = dstRgaBuffer.height;
             bRgbBuffer.wstride = dstRgaBuffer.wstride;
             bRgbBuffer.hstride = dstRgaBuffer.hstride;
-            bRgbBuffer.format = RK_FORMAT_RGBA_8888;//srcRgaBuffer.format;
-            bRgbBuffer.phy_addr = 0;//(void *) buffer->phyAddr;
-            bRgbBuffer.vir_addr = 0;//buffer->virAddr;
+            bRgbBuffer.format = RK_FORMAT_RGBA_8888; // srcRgaBuffer.format;
+            bRgbBuffer.phy_addr = 0; // (void *) buffer->phyAddr;
+            bRgbBuffer.vir_addr = 0; // buffer->virAddr;
             bRgbBuffer.color_space_mode = dstRgaBuffer.color_space_mode;
             bRgbBuffer.fd = (int32_t)buffer->phyAddr;
             int ret = memcpy_s(&prect, sizeof(drect), &drect, sizeof(drect));

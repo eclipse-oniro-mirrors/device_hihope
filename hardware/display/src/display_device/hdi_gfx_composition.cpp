@@ -28,7 +28,7 @@ namespace HDI {
 namespace DISPLAY {
 int32_t HdiGfxComposition::Init(void)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     int32_t ret = GfxModuleInit();
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS) || (mGfxFuncs == nullptr), DISPLAY_FAILURE,
         DISPLAY_LOGE("GfxModuleInit failed"));
@@ -39,7 +39,7 @@ int32_t HdiGfxComposition::Init(void)
 
 int32_t HdiGfxComposition::GfxModuleInit(void)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     mGfxModule = dlopen(LIB_HDI_GFX_NAME, RTLD_NOW | RTLD_NOLOAD);
     if (mGfxModule != nullptr) {
         DISPLAY_LOGI("Module '%{public}s' already loaded", LIB_HDI_GFX_NAME);
@@ -64,7 +64,7 @@ int32_t HdiGfxComposition::GfxModuleInit(void)
 
 int32_t HdiGfxComposition::GfxModuleDeinit(void)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     int32_t ret = DISPLAY_SUCCESS;
     if (mGfxModule == nullptr) {
         using DeinitFunc = int32_t (*)(GfxFuncs *funcs);
@@ -81,14 +81,14 @@ int32_t HdiGfxComposition::GfxModuleDeinit(void)
 
 bool HdiGfxComposition::CanHandle(HdiLayer &hdiLayer)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     (void)hdiLayer;
     return true;
 }
 
 int32_t HdiGfxComposition::SetLayers(std::vector<HdiLayer *> &layers, HdiLayer &clientLayer)
 {
-    DISPLAY_LOGD("layers size %{public}zd", layers.size());
+    DISPLAY_DEBUGLOG("layers size %{public}zd", layers.size());
     mClientLayer = &clientLayer;
     mCompLayers.clear();
     for (auto &layer : layers) {
@@ -102,25 +102,25 @@ int32_t HdiGfxComposition::SetLayers(std::vector<HdiLayer *> &layers, HdiLayer &
             mCompLayers.push_back(layer);
         }
     }
-    DISPLAY_LOGD("composer layers size %{public}zd", mCompLayers.size());
+    DISPLAY_DEBUGLOG("composer layers size %{public}zd", mCompLayers.size());
     return DISPLAY_SUCCESS;
 }
 
-void HdiGfxComposition::InitGfxSurface(ISurface &surface, HdiLayerBuffer &buffer)
+void HdiGfxComposition::InitGfxSurface(ISurface &iSurface, HdiLayerBuffer &buffer)
 {
-    surface.width = buffer.GetWight();
-    surface.height = buffer.GetHeight();
-    surface.phyAddr = buffer.GetFb(); // buffer.GetPhysicalAddr();
-    surface.enColorFmt = (PixelFormat)buffer.GetFormat();
-    surface.stride = buffer.GetStride();
-    surface.bAlphaExt1555 = true;
-    surface.bAlphaMax255 = true;
-    surface.alpha0 = 0XFF;
-    surface.alpha1 = 0XFF;
-    DISPLAY_LOGD("surface fd %{public}d w:%{public}d h:%{public}d addr:0x%{public}" \
+    iSurface.width = buffer.GetWight();
+    iSurface.height = buffer.GetHeight();
+    iSurface.phyAddr = buffer.GetFb(); // buffer.GetPhysicalAddr();
+    iSurface.enColorFmt = (PixelFormat)buffer.GetFormat();
+    iSurface.stride = buffer.GetStride();
+    iSurface.bAlphaExt1555 = true;
+    iSurface.bAlphaMax255 = true;
+    iSurface.alpha0 = 0XFF;
+    iSurface.alpha1 = 0XFF;
+    DISPLAY_DEBUGLOG("iSurface fd %{public}d w:%{public}d h:%{public}d addr:0x%{public}" \
         PRIx64 " fmt:%{public}d stride:%{public}d",
-        buffer.GetFb(), surface.width, surface.height,
-        buffer.GetPhysicalAddr(), surface.enColorFmt, surface.stride);
+        buffer.GetFb(), iSurface.width, iSurface.height,
+        buffer.GetPhysicalAddr(), iSurface.enColorFmt, iSurface.stride);
 }
 
 // now not handle the alpha of layer
@@ -129,34 +129,34 @@ int32_t HdiGfxComposition::BlitLayer(HdiLayer &src, HdiLayer &dst)
     ISurface srcSurface = { 0 };
     ISurface dstSurface = { 0 };
     GfxOpt opt = { 0 };
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     HdiLayerBuffer *srcBuffer = src.GetCurrentBuffer();
     DISPLAY_CHK_RETURN((srcBuffer == nullptr), DISPLAY_NULL_PTR, DISPLAY_LOGE("the srcbuffer is null"));
-    DISPLAY_LOGD("init the src surface");
+    DISPLAY_DEBUGLOG("init the src iSurface");
     InitGfxSurface(srcSurface, *srcBuffer);
 
     HdiLayerBuffer *dstBuffer = dst.GetCurrentBuffer();
     DISPLAY_CHK_RETURN((dstBuffer == nullptr), DISPLAY_FAILURE, DISPLAY_LOGE("can not get client layer buffer"));
-    DISPLAY_LOGD("init the dst surface");
+    DISPLAY_DEBUGLOG("init the dst iSurface");
     InitGfxSurface(dstSurface, *dstBuffer);
 
     opt.blendType = src.GetLayerBlenType();
-    DISPLAY_LOGD("blendType %{public}d", opt.blendType);
+    DISPLAY_DEBUGLOG("blendType %{public}d", opt.blendType);
     opt.enPixelAlpha = true;
     opt.enableScale = true;
 
     if (src.GetAlpha().enGlobalAlpha) { // is alpha is 0xff we not set it
         opt.enGlobalAlpha = true;
         srcSurface.alpha0 = src.GetAlpha().gAlpha;
-        DISPLAY_LOGD("src alpha %{public}x", src.GetAlpha().gAlpha);
+        DISPLAY_DEBUGLOG("src alpha %{public}x", src.GetAlpha().gAlpha);
     }
     opt.rotateType = src.GetTransFormType();
-    DISPLAY_LOGD(" the roate type is %{public}d", opt.rotateType);
+    DISPLAY_DEBUGLOG(" the roate type is %{public}d", opt.rotateType);
     IRect crop = src.GetLayerCrop();
     IRect displayRect = src.GetLayerDisplayRect();
-    DISPLAY_LOGD("crop x: %{public}d y : %{public}d w : %{public}d h: %{public}d", crop.x, crop.y, crop.w, crop.h);
-    DISPLAY_LOGD("displayRect x: %{public}d y : %{public}d w : %{public}d h : %{public}d", displayRect.x, displayRect.y,
-        displayRect.w, displayRect.h);
+    DISPLAY_DEBUGLOG("crop x: %{public}d y : %{public}d w : %{public}d h: %{public}d", crop.x, crop.y, crop.w, crop.h);
+    DISPLAY_DEBUGLOG("displayRect x: %{public}d y : %{public}d w : %{public}d h : %{public}d",
+        displayRect.x, displayRect.y, displayRect.w, displayRect.h);
     DISPLAY_CHK_RETURN(mGfxFuncs == nullptr, DISPLAY_FAILURE, DISPLAY_LOGE("Blit: mGfxFuncs is null"));
     return mGfxFuncs->Blit(&srcSurface, &crop, &dstSurface, &displayRect, &opt);
 }
@@ -165,7 +165,7 @@ int32_t HdiGfxComposition::ClearRect(HdiLayer &src, HdiLayer &dst)
 {
     ISurface dstSurface = { 0 };
     GfxOpt opt = { 0 };
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     HdiLayerBuffer *dstBuffer = dst.GetCurrentBuffer();
     DISPLAY_CHK_RETURN((dstBuffer == nullptr), DISPLAY_FAILURE, DISPLAY_LOGE("can not get client layer buffer"));
     InitGfxSurface(dstSurface, *dstBuffer);
@@ -177,7 +177,7 @@ int32_t HdiGfxComposition::ClearRect(HdiLayer &src, HdiLayer &dst)
 int32_t HdiGfxComposition::Apply(bool modeSet)
 {
     int32_t ret;
-    DISPLAY_LOGD("composer layers size %{public}zd", mCompLayers.size());
+    DISPLAY_DEBUGLOG("composer layers size %{public}zd", mCompLayers.size());
     for (uint32_t i = 0; i < mCompLayers.size(); i++) {
         HdiLayer *layer = mCompLayers[i];
         CompositionType compType = layer->GetCompositionType();
