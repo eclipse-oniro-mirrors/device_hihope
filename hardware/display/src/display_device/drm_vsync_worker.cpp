@@ -82,6 +82,9 @@ uint64_t DrmVsyncWorker::WaitNextVBlank(unsigned int &sq)
                 .signal = 0,
             }
     };
+    /* The drmWaitVBlank need set the crtc pipe when there are multi crtcs in the system. */
+    if (mCallBack->GetPipe() == 1)
+        vblank.request.type = drmVBlankSeqType((int)(vblank.request.type) | (int)DRM_VBLANK_SECONDARY);
     int ret = drmWaitVBlank(mDrmFd, &vblank);
     DISPLAY_CHK_RETURN((ret < 0), 0,
         DISPLAY_LOGE("wait vblank failed ret :　%{public}d　errno %{public}d", ret, errno));
