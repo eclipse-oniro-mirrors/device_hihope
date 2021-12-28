@@ -90,7 +90,7 @@ int32_t InvalidateCache(BufferHandle *handle)
 int32_t GrallocUninitialize(GrallocFuncs *funcs)
 {
     DISPLAY_CHK_RETURN(funcs == NULL, DISPLAY_PARAM_ERR, DISPLAY_LOGE("funcs is null"));
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
 #ifdef GRALLOC_GBM_SUPPORT
     if (GbmGrallocUninitialize() != DISPLAY_SUCCESS) {
         DISPLAY_LOGE("gbm uninit failed");
@@ -102,7 +102,7 @@ int32_t GrallocUninitialize(GrallocFuncs *funcs)
 
 int32_t GrallocInitialize(GrallocFuncs **funcs)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     DISPLAY_CHK_RETURN((funcs == NULL), DISPLAY_PARAM_ERR, DISPLAY_LOGE("funcs is null"));
     GrallocFuncs *grallocFuncs = (GrallocFuncs *)malloc(sizeof(GrallocFuncs));
     DISPLAY_CHK_RETURN((grallocFuncs == NULL), DISPLAY_NULL_PTR, DISPLAY_LOGE("memset_s failed"));

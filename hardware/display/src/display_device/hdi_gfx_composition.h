@@ -32,7 +32,7 @@ public:
 
 private:
     bool CanHandle(HdiLayer &hdiLayer);
-    void InitGfxSurface(ISurface &surface, HdiLayerBuffer &buffer);
+    void InitGfxSurface(ISurface &iSurface, HdiLayerBuffer &buffer);
     int32_t BlitLayer(HdiLayer &src, HdiLayer &dst);
     int32_t ClearRect(HdiLayer &src, HdiLayer &dst);
     int32_t GfxModuleInit(void);

@@ -22,12 +22,12 @@ namespace HDI {
 namespace DISPLAY {
 HdiNetLinkMonitor::HdiNetLinkMonitor()
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
 }
 
 int HdiNetLinkMonitor::Init()
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     int fd;
     struct sockaddr_nl snl = { 0 };
     int ret;
@@ -49,7 +49,7 @@ int HdiNetLinkMonitor::Init()
 
 HdiNetLinkMonitor::~HdiNetLinkMonitor()
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     if (mScoketFd >= 0) {
         close(mScoketFd);
     }
@@ -57,7 +57,7 @@ HdiNetLinkMonitor::~HdiNetLinkMonitor()
 
 Void HdiNetLinkMonitor::MonitorThread()
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     constexpr int BUFFER_SIZE = UEVENT_BUFFER_SIZE * 2;
     while (mRunning) {
         char buf[BUFFER_SIZE] = { 0 };

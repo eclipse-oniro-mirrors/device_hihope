@@ -26,11 +26,11 @@ class HdiFd {
 public:
     HdiFd()
     {
-        DISPLAY_LOGD();
+        DISPLAY_DEBUGLOG();
     }
     explicit HdiFd(int fd) : mFd(fd)
     {
-        DISPLAY_LOGD("mFd %{public}d", mFd);
+        DISPLAY_DEBUGLOG("mFd %{public}d", mFd);
     }
     int GetFd() const
     {

@@ -23,7 +23,7 @@ namespace HDI {
 namespace DISPLAY {
 DrmGemBuffer::DrmGemBuffer(int drmFd, HdiLayerBuffer &hdl) : mDrmFd(drmFd)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     Init(mDrmFd, hdl);
 }
 
@@ -34,7 +34,7 @@ void DrmGemBuffer::Init(int drmFd, HdiLayerBuffer &hdl)
     uint32_t pitches[MAX_COUNT] = {0};
     uint32_t gemHandles[MAX_COUNT] = {0};
     uint32_t offsets[MAX_COUNT] = {0};
-    DISPLAY_LOGD("hdl %{public}" PRIx64 "", hdl.GetPhysicalAddr());
+    DISPLAY_DEBUGLOG("hdl %{public}" PRIx64 "", hdl.GetPhysicalAddr());
     DISPLAY_CHK_RETURN_NOT_VALUE((drmFd < 0), DISPLAY_LOGE("can not init drmfd %{public}d", drmFd));
     mDrmFormat = DrmDevice::ConvertToDrmFormat(static_cast<PixelFormat>(hdl.GetFormat()));
     ret = drmPrimeFDToHandle(drmFd, hdl.GetFb(), &mGemHandle);
@@ -44,8 +44,8 @@ void DrmGemBuffer::Init(int drmFd, HdiLayerBuffer &hdl)
     gemHandles[0] = mGemHandle;
     offsets[0] = 0;
     ret = drmModeAddFB2(drmFd, hdl.GetWight(), hdl.GetHeight(), mDrmFormat, gemHandles, pitches, offsets, &mFdId, 0);
-    DISPLAY_LOGD("mGemHandle %{public}d  mFdId %{public}d", mGemHandle, mFdId);
-    DISPLAY_LOGD("w: %{public}d  h: %{public}d mDrmFormat : %{public}d gemHandles: %{public}d pitches: %{public}d "
+    DISPLAY_DEBUGLOG("mGemHandle %{public}d  mFdId %{public}d", mGemHandle, mFdId);
+    DISPLAY_DEBUGLOG("w: %{public}d  h: %{public}d mDrmFormat : %{public}d gemHandles: %{public}d pitches: %{public}d "
         "offsets: %{public}d",
         hdl.GetWight(), hdl.GetHeight(), mDrmFormat, gemHandles[0], pitches[0], offsets[0]);
     DISPLAY_CHK_RETURN_NOT_VALUE((ret != 0), DISPLAY_LOGE("can not add fb errno %{public}d", errno));
@@ -53,7 +53,7 @@ void DrmGemBuffer::Init(int drmFd, HdiLayerBuffer &hdl)
 
 DrmGemBuffer::~DrmGemBuffer()
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     if (mFdId) {
         if (drmModeRmFB(mDrmFd, mFdId)) {
             DISPLAY_LOGE("can not free fdid %{public}d errno %{public}d", mFdId, errno);
@@ -71,13 +71,13 @@ DrmGemBuffer::~DrmGemBuffer()
 
 bool DrmGemBuffer::IsValid()
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     return (mGemHandle != INVALID_DRM_ID) && (mFdId != INVALID_DRM_ID);
 }
 
 DrmGemBuffer *HdiDrmLayer::GetGemBuffer()
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     std::unique_ptr<DrmGemBuffer> ptr = std::make_unique<DrmGemBuffer>(DrmDevice::GetDrmFd(), *GetCurrentBuffer());
     mLastBuffer = std::move(mCurrentBuffer);
     mCurrentBuffer = std::move(ptr);

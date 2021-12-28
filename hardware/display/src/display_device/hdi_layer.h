@@ -112,7 +112,7 @@ public:
     }
     void SetDeviceSelect(CompositionType type)
     {
-        DISPLAY_LOGD("%{public}d", type);
+        DISPLAY_DEBUGLOG("%{public}d", type);
         mDeviceSelect = type;
     }
     CompositionType GetDeviceSelect() const

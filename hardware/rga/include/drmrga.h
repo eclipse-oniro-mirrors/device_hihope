@@ -21,16 +21,6 @@
 
 #include <stdint.h>
 
-#ifdef ANDROID
-#define DRMRGA_HARDWARE_MODULE_ID "librga"
-
-#include <hardware/gralloc.h>
-#include <hardware/hardware.h>
-#include <system/graphics.h>
-#include <cutils/native_handle.h>
-#endif
-
-#ifndef ANDROID /* LINUX */
 /* flip source image horizontally (around the vertical axis) */
 #define HAL_TRANSFORM_FLIP_H     0x01
 /* flip source image vertically (around the horizontal axis)*/
@@ -41,16 +31,12 @@
 #define HAL_TRANSFORM_ROT_180    0x03
 /* rotate source image 270 degrees clockwise */
 #define HAL_TRANSFORM_ROT_270    0x07
-#endif
 
 #define HAL_TRANSFORM_FLIP_H_V   0x08
 
 /*****************************************************************************/
 
 /* for compatibility */
-#define DRM_RGA_MODULE_API_VERSION      HWC_MODULE_API_VERSION_0_1
-#define DRM_RGA_DEVICE_API_VERSION      HWC_DEVICE_API_VERSION_0_1
-#define DRM_RGA_API_VERSION             HWC_DEVICE_API_VERSION
 
 #define DRM_RGA_TRANSFORM_ROT_MASK      0x0000000F
 #define DRM_RGA_TRANSFORM_ROT_0         0x00000000
@@ -72,7 +58,6 @@ enum {
 };
 /*****************************************************************************/
 
-#ifndef ANDROID
 /* memory type definitions. */
 enum drm_rockchip_gem_mem_type {
     /* Physically Continuous memory and used as default. */
@@ -94,7 +79,6 @@ typedef struct bo {
     size_t pitch;
     unsigned handle;
 } bo_t;
-#endif
 
 /*
    @value size:     user not need care about.For avoid read/write out of memory
@@ -139,11 +123,7 @@ typedef struct rga_info {
     int fd;
     void *virAddr;
     void *phyAddr;
-#ifndef ANDROID /* LINUX */
     unsigned hnd;
-#else /* Android */
-    buffer_handle_t hnd;
-#endif
     int format;
     rga_rect_t rect;
     unsigned int blend;
@@ -194,7 +174,6 @@ static inline int rga_set_rect(rga_rect_t *rect, int x, int y, int w, int h, int
     return 0;
 }
 
-#ifndef ANDROID /* LINUX */
 static inline void rga_set_rotation(rga_info_t *info, int angle)
 {
     if (angle == 90) { // 90:HAL_TRANSFORM_ROT
@@ -205,7 +184,6 @@ static inline void rga_set_rotation(rga_info_t *info, int angle)
         info->rotation = HAL_TRANSFORM_ROT_270;
     }
 }
-#endif
 /*****************************************************************************/
 
 #endif

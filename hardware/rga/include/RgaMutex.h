@@ -20,7 +20,6 @@
 #ifndef _LIBS_RGA_MUTEX_H
 #define _LIBS_RGA_MUTEX_H
 
-#ifndef ANDROID
 #include <stdint.h>
 #include <sys/types.h>
 #include <time.h>
@@ -174,8 +173,8 @@ inline int32_t Mutex::timedLock(int64_t timeoutNs) {
     clock_gettime(CLOCK_REALTIME, &now);
     timeoutNs += now.tv_sec*1000000000 + now.tv_nsec;
     const struct timespec ts = {
-        /* .tv_sec = */ static_cast<time_t>(timeoutNs / 1000000000),
-        /* .tv_nsec = */ static_cast<long>(timeoutNs % 1000000000),
+        static_cast<time_t>(timeoutNs / 1000000000), /* .tv_sec = */
+        static_cast<long>(timeoutNs % 1000000000), /* .tv_nsec = */
     };
     return -pthread_mutex_timedlock(&mMutex, &ts);
 }
@@ -189,5 +188,4 @@ inline int32_t Mutex::timedLock(int64_t timeoutNs) {
  */
 
 typedef Mutex::Autolock AutoMutex;
-#endif // __ANDROID_VNDK__
 #endif // _LIBS_RGA_MUTEX_H

@@ -104,7 +104,7 @@ static uint32_t AdjustStrideFromFormat(uint32_t format, uint32_t height)
         if (sum > 0) {
             tmpHeight = DIV_ROUND_UP((height * sum), fmtInfo->planes->radio[0]);
         }
-        DISPLAY_LOGD("height adjust to : %{public}d", tmpHeight);
+        DISPLAY_DEBUGLOG("height adjust to : %{public}d", tmpHeight);
     }
     return tmpHeight;
 }

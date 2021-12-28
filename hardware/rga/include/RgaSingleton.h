@@ -19,7 +19,6 @@
 #ifndef _LIBS_RGA_SINGLETON_H
 #define _LIBS_RGA_SINGLETON_H
 
-#ifndef ANDROID
 #include "RgaMutex.h"
 
 #if defined(__clang__)
@@ -66,5 +65,4 @@ class Singleton {
     template<> TYPE* ::Singleton< TYPE >::sInstance(nullptr);  /* NOLINT */ \
     template class ::Singleton< TYPE >;
 
-#endif //ANDROID
 #endif //_LIBS_RGA_SINGLETON_H
