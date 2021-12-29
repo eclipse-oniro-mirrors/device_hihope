@@ -237,7 +237,7 @@ out/ohos-arm-release/packages/phone/images/ 目录下。
 
 烧写工具下载及使用。
 
-[参考](rk3568/tools)
+[参考](https://gitee.com/hihope_iot/docs/tree/master/HiHope_DAYU200/%E7%83%A7%E5%86%99%E5%B7%A5%E5%85%B7%E5%8F%8A%E6%8C%87%E5%8D%97)
 
 **八、联系**
 

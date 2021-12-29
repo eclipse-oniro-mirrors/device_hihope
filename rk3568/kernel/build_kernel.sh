@@ -19,5 +19,4 @@ pushd ${1}
 export PRODUCT_PATH=$4
 mkdir -p ${2}
 cp ${3}/loader/* ${2}
-cp ${3}/tools/parameter.txt ${2}
 popd
