@@ -112,13 +112,32 @@ int32_t DrmConnector::GetBrightness(uint32_t& level)
 
 int32_t DrmConnector::SetBrightness(uint32_t level)
 {
+    int buffer_size = 10;
     DISPLAY_LOGD("set %{public}d", level);
     if (mPropBrightnessId == DRM_INVALID_ID) {
         DISPLAY_LOGE("the prop id of brightness is invalid");
         return DISPLAY_NOT_SUPPORT;
     }
-    int ret = drmModeConnectorSetProperty(mDrmFdPtr->GetFd(), mId, mPropBrightnessId, level);
-    DISPLAY_CHK_RETURN((ret != 0), DISPLAY_FAILURE, DISPLAY_LOGE("can not set dpms"));
+    static int brFd = 0;
+    if (!brFd) {
+        brFd = open("/sys/class/backlight/backlight/brightness", O_RDWR);
+        if (brFd < 0) {
+            DISPLAY_LOGE("oepn Brightness file failed\n");
+            return DISPLAY_NOT_SUPPORT;
+        }
+    }
+    char buffer[buffer_size];
+    errno_t ret = memset_s(buffer, sizeof(buffer), 0, sizeof(buffer));
+    if (ret != EOK) {
+        DISPLAY_LOGE("memset_s failed\n");
+        return DISPLAY_FAILURE;
+    }
+    int bytes = sprintf_s(buffer, sizeof(buffer), "%d\n", level);
+    if (bytes < 0) {
+        DISPLAY_LOGE("change failed\n");
+        return DISPLAY_FAILURE;
+    }
+    write(brFd, buffer, bytes);
     mBrightnessLevel = level;
     return DISPLAY_SUCCESS;
 }
@@ -184,7 +203,7 @@ int32_t DrmConnector::TryPickEncoder(IdMapPtr<DrmEncoder> &encoders, uint32_t en
     }
 
     auto &encoder = encoderIter->second;
-    DISPLAY_LOGD("connector : %{public}d encoder : %{public}d", mId, encoder->GetId());
+    DISPLAY_LOGI("connector : %{public}d encoder : %{public}d", mId, encoder->GetId());
     ret = encoder->PickIdleCrtcId(crtcs, crtcId);
     DISPLAY_CHK_RETURN((ret == DISPLAY_SUCCESS), DISPLAY_SUCCESS,
         DISPLAY_LOGD("connector : %{public}d pick encoder : %{public}d", mId, encoder->GetId()));
@@ -273,7 +292,7 @@ std::unique_ptr<DrmModeBlock> DrmConnector::GetModeBlockFromId(int32_t id)
 
 DrmModeBlock::DrmModeBlock(DrmMode &mode)
 {
-    DISPLAY_LOGD();
+    DISPLAY_LOGI();
     Init(mode);
 }
 
