@@ -20,7 +20,19 @@
 namespace OHOS {
 namespace HDI {
 namespace DISPLAY {
-DrmCrtc::DrmCrtc(drmModeCrtcPtr c, uint32_t pipe) : mId(c->crtc_id), mPipe(pipe) {}
+struct PlaneMaskName planeMaskNames[] = {
+    { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER0_MASK, "Cluster0" },
+    { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER1_MASK, "Cluster1" },
+    { DrmPlaneType::DRM_PLANE_TYPE_ESMART0_MASK, "Esmart0" },
+    { DrmPlaneType::DRM_PLANE_TYPE_ESMART1_MASK, "Esmart1" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART0_MASK, "Smart0" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART1_MASK, "Smart1" },
+    { DrmPlaneType::DRM_PLANE_TYPE_Unknown, "unknown" },
+};
+
+DrmCrtc::DrmCrtc(drmModeCrtcPtr c, uint32_t pipe) : mId(c->crtc_id), mPipe(pipe), mPlaneMask(0)
+{
+}
 
 int32_t DrmCrtc::Init(DrmDevice &drmDevice)
 {
@@ -39,6 +51,24 @@ int32_t DrmCrtc::Init(DrmDevice &drmDevice)
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("cat not get out fence prop id"));
     mActivePropId = prop.propId;
 
+    // Plane mask
+    mPlaneMask = 0;
+    ret = drmDevice.GetCrtcProperty(*this, "PLANE_MASK", prop);
+    if (ret != DISPLAY_SUCCESS) {
+        DISPLAY_LOGE("Failed to get plane_mask property");
+    } else {
+        for (int i = 0; i < static_cast<int>(ARRAY_SIZE(planeMaskNames)); i++) {
+            for (auto &drmEnum : prop.enums) {
+                if (!strncmp(drmEnum.name.c_str(), (const char*)planeMaskNames[i].name,
+                             strlen(drmEnum.name.c_str())) && (prop.value & (1LL << drmEnum.value)) > 0) {
+                    mPlaneMask |=  static_cast<int>(planeMaskNames[i].mask);
+                    DISPLAY_LOGI("crtc id %{public}d, plane name %{public}s value %{public}llx",
+                                 GetId(), (const char*)planeMaskNames[i].name,
+                                 (long long)planeMaskNames[i].mask);
+                }
+            }
+        }
+    }
     return DISPLAY_SUCCESS;
 }
 
