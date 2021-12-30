@@ -20,3 +20,10 @@ ohos_prebuilt_shared_library("camera_v4l2_adapter") {
   part_name = "hdf"
   install_enable = true
 }
+
+ohos_prebuilt_shared_library("camera_pipeline_core") {
+  source = "lib/libcamera_pipeline_core.z.so"
+  subsystem_name = "hdf"
+  part_name = "hdf"
+  install_enable = true
+}
