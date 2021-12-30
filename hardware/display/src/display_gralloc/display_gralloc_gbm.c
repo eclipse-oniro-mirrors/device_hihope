@@ -161,7 +161,7 @@ static uint32_t ConvertFormatToDrm(PixelFormat fmtIn)
             fmtOut = convertTable[i].drmFormat;
         }
     }
-    DISPLAY_LOGD("fmtIn %{public}d : %{public}s, outFmt %{public}d : %{public}s", fmtIn, GetPixelFmtStr(fmtIn), fmtOut,
+    DISPLAY_DEBUGLOG("fmtIn %{public}d : %{public}s, outFmt %{public}d : %{public}s", fmtIn, GetPixelFmtStr(fmtIn), fmtOut,
         GetDrmFmtStr(fmtOut));
     return fmtOut;
 }
@@ -175,13 +175,13 @@ static uint64_t ConvertUsageToGbm(uint64_t inUsage)
     if (inUsage & HBM_USE_CPU_WRITE) {
         outUsage |= GBM_BO_USE_SW_WRITE_OFTEN;
     }
-    DISPLAY_LOGD("outUsage 0x%{public}" PRIx64 "", outUsage);
+    DISPLAY_DEBUGLOG("outUsage 0x%{public}" PRIx64 "", outUsage);
     return outUsage;
 }
 
 static int32_t InitGbmDevice(const char *drmFile, GrallocManager *grallocManager)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     if (grallocManager->gbmDevice == NULL) {
 	    char path[PATH_MAX] = {0};
         if (realpath(drmFile, path) == NULL) {
@@ -215,7 +215,7 @@ static int32_t InitGbmDevice(const char *drmFile, GrallocManager *grallocManager
 
 static void DeInitGbmDevice(GrallocManager *grallocManager)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     hdi_gbm_device_destroy(grallocManager->gbmDevice);
     if (grallocManager->drmFd > 0) {
         close(grallocManager->drmFd);
@@ -226,7 +226,7 @@ static void DeInitGbmDevice(GrallocManager *grallocManager)
 
 static int32_t DmaBufferSync(const BufferHandle *handle, bool start)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     struct dma_buf_sync syncPrm;
     errno_t eok = memset_s(&syncPrm, sizeof(syncPrm), 0, sizeof(syncPrm));
     DISPLAY_CHK_RETURN((eok != EOK), DISPLAY_PARAM_ERR, DISPLAY_LOGE("dma buffer sync memset_s failed"));
@@ -272,23 +272,6 @@ static void InitBufferHandle(struct gbm_bo *bo, int fd, const AllocInfo *info, P
     bufferHandle->size = hdi_gbm_bo_get_stride(bo) * hdi_gbm_bo_get_height(bo);
 }
 
-//static uint64_t GetPhysicalAddr(int fd, int primeFd)
-//{
-//    struct DrmHisiliconPhyaddr args;
-//    int ret;
-//    DISPLAY_LOGD();
-//    errno_t eok = memset_s(&args, sizeof(args), 0, sizeof(args));
-//    DISPLAY_CHK_RETURN((eok != EOK), 0, DISPLAY_LOGE("memset_s failed"));
-//    args.fd = primeFd;
-//    ret = ioctl(fd, DRM_IOCTL_HISILICON_GEM_FD_TO_PHYADDR, &args);
-//    if (ret) {
-//        DISPLAY_LOGE("DRM_IOCTL_HISILICON_GEM_FD_TO_PHYADDR return failed");
-//    }
-//    DISPLAY_LOGD("DRM_IOCTL_HISILICON_GEM_FD_TO_PHYADDR return %{public}d args.phyaddr %{public}llx", ret,
-//        args.phyaddr);
-//    return args.phyaddr;
-//}
-
 int32_t GbmAllocMem(const AllocInfo *info, BufferHandle **buffer)
 {
     DISPLAY_CHK_RETURN((info == NULL), DISPLAY_NULL_PTR, DISPLAY_LOGE("info is null"));
@@ -297,7 +280,8 @@ int32_t GbmAllocMem(const AllocInfo *info, BufferHandle **buffer)
     uint32_t drmFmt = ConvertFormatToDrm(info->format);
     DISPLAY_CHK_RETURN((drmFmt == INVALID_PIXEL_FMT), DISPLAY_NOT_SUPPORT,
     DISPLAY_LOGE("format %{public}d can not support", info->format));
-    DISPLAY_LOGD("requeset width %{public}d, heigt %{public}d, format %{public}d", info->width, info->height, drmFmt);
+    DISPLAY_DEBUGLOG("requeset width %{public}d, heigt %{public}d, format %{public}d",
+        info->width, info->height, drmFmt);
 
     GRALLOC_LOCK();
     GrallocManager *grallocManager = GetGrallocManager();
@@ -353,7 +337,7 @@ static void CloseBufferHandle(BufferHandle *handle)
 
 void GbmFreeMem(BufferHandle *buffer)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     DISPLAY_CHK_RETURN_NOT_VALUE((buffer == NULL), DISPLAY_LOGE("buffer is null"));
     if ((buffer->virAddr != NULL) && (GbmUnmap(buffer) != DISPLAY_SUCCESS)) {
         DISPLAY_LOGE("freeMem unmap buffer failed");
@@ -365,13 +349,13 @@ void GbmFreeMem(BufferHandle *buffer)
 void *GbmMmap(BufferHandle *buffer)
 {
     void *virAddr = NULL;
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     if (buffer == NULL) {
         DISPLAY_LOGE("gbmmap the buffer handle is NULL");
         return NULL;
     }
     if (buffer->virAddr != NULL) {
-        DISPLAY_LOGD("the buffer has virtual addr");
+        DISPLAY_DEBUGLOG("the buffer has virtual addr");
         return buffer->virAddr;
     }
     virAddr = mmap(NULL, buffer->size, PROT_READ | PROT_WRITE, MAP_SHARED, buffer->fd, 0);
@@ -384,7 +368,7 @@ void *GbmMmap(BufferHandle *buffer)
 
 int32_t GbmUnmap(BufferHandle *buffer)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     if (buffer == NULL) {
         DISPLAY_LOGE("gbmumap the buffer handle is null");
         return DISPLAY_NULL_PTR;
@@ -405,19 +389,19 @@ int32_t GbmUnmap(BufferHandle *buffer)
 
 int32_t GbmInvalidateCache(BufferHandle *buffer)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     return DmaBufferSync(buffer, true);
 }
 
 int32_t GbmFlushCache(BufferHandle *buffer)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     return DmaBufferSync(buffer, false);
 }
 
 int32_t GbmGrallocUninitialize(void)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     GRALLOC_LOCK();
     GrallocManager *grallocManager = GetGrallocManager();
     DISPLAY_CHK_RETURN((grallocManager == NULL), DISPLAY_PARAM_ERR, DISPLAY_LOGE("gralloc manager failed");
@@ -434,7 +418,7 @@ int32_t GbmGrallocUninitialize(void)
 
 int32_t GbmGrallocInitialize(void)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     GRALLOC_LOCK();
     GrallocManager *grallocManager = GetGrallocManager();
     DISPLAY_CHK_RETURN((grallocManager == NULL), DISPLAY_PARAM_ERR, DISPLAY_LOGE("gralloc manager failed");

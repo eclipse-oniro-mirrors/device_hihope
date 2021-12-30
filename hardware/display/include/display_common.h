@@ -38,78 +38,78 @@ extern "C" {
 
 #define __FILENAME__ (strrchr(__FILE__, '/') ? (strrchr(__FILE__, '/') + 1) : __FILE__)
 
-#ifndef DISPLAY_LOGD
-#define DISPLAY_LOGD(format, ...)                                                                                      \
-    do {                                                                                                               \
+#ifndef DISPLAY_DEBUGLOG
+#define DISPLAY_DEBUGLOG(format, ...) \
+    do { \
         HILOG_DEBUG(LOG_CORE, "[%{public}s@%{public}s:%{public}d] " format "\n", __FUNCTION__, __FILENAME__, __LINE__, \
-            ##__VA_ARGS__);                                                                                            \
+            ##__VA_ARGS__); \
     } while (0)
 #endif
 
 #ifndef DISPLAY_LOGI
-#define DISPLAY_LOGI(format, ...)                                                                                     \
-    do {                                                                                                              \
+#define DISPLAY_LOGI(format, ...) \
+    do { \
         HILOG_INFO(LOG_CORE, "[%{public}s@%{public}s:%{public}d] " format "\n", __FUNCTION__, __FILENAME__, __LINE__, \
-            ##__VA_ARGS__);                                                                                           \
+            ##__VA_ARGS__); \
     } while (0)
 #endif
 
 #ifndef DISPLAY_LOGW
-#define DISPLAY_LOGW(format, ...)                                                                                     \
-    do {                                                                                                              \
+#define DISPLAY_LOGW(format, ...) \
+    do { \
         HILOG_WARN(LOG_CORE, "[%{public}s@%{public}s:%{public}d] " format "\n", __FUNCTION__, __FILENAME__, __LINE__, \
-            ##__VA_ARGS__);                                                                                           \
+            ##__VA_ARGS__); \
     } while (0)
 #endif
 
 #ifndef DISPLAY_LOGE
-#define DISPLAY_LOGE(format, ...)                                 \
-    do {                                                          \
-        HILOG_ERROR(LOG_CORE,                                     \
-            "\033[0;32;31m"                                       \
+#define DISPLAY_LOGE(format, ...) \
+    do { \
+        HILOG_ERROR(LOG_CORE, \
+            "\033[0;32;31m" \
             "[%{public}s@%{public}s:%{public}d] " format "\033[m" \
-            "\n",                                                 \
+            "\n", \
             __FUNCTION__, __FILENAME__, __LINE__, ##__VA_ARGS__); \
     } while (0)
 #endif
 
 #ifndef CHECK_NULLPOINTER_RETURN_VALUE
-#define CHECK_NULLPOINTER_RETURN_VALUE(pointer, ret)          \
-    do {                                                      \
-        if ((pointer) == NULL) {                              \
+#define CHECK_NULLPOINTER_RETURN_VALUE(pointer, ret) \
+    do { \
+        if ((pointer) == NULL) { \
             DISPLAY_LOGE("pointer is null and return ret\n"); \
-            return (ret);                                     \
-        }                                                     \
+            return (ret); \
+        } \
     } while (0)
 #endif
 
 #ifndef CHECK_NULLPOINTER_RETURN
-#define CHECK_NULLPOINTER_RETURN(pointer)                 \
-    do {                                                  \
-        if ((pointer) == NULL) {                          \
+#define CHECK_NULLPOINTER_RETURN(pointer) \
+    do { \
+        if ((pointer) == NULL) { \
             DISPLAY_LOGE("pointer is null and return\n"); \
-            return;                                       \
-        }                                                 \
+            return; \
+        } \
     } while (0)
 #endif
 
 #ifndef DISPLAY_CHK_RETURN
 #define DISPLAY_CHK_RETURN(val, ret, ...) \
-    do {                                  \
-        if (val) {                        \
-            __VA_ARGS__;                  \
-            return (ret);                 \
-        }                                 \
+    do { \
+        if (val) { \
+            __VA_ARGS__; \
+            return (ret); \
+        } \
     } while (0)
 #endif
 
 #ifndef DISPLAY_CHK_RETURN_NOT_VALUE
 #define DISPLAY_CHK_RETURN_NOT_VALUE(val, ret, ...) \
-    do {                                            \
-        if (val) {                                  \
-            __VA_ARGS__;                            \
-            return;                                 \
-        }                                           \
+    do { \
+        if (val) { \
+            __VA_ARGS__; \
+            return; \
+        } \
     } while (0)
 #endif
 

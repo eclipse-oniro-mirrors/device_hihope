@@ -1,11 +1,10 @@
 /*
- * Copyright 2015 Rockchip Electronics Co. LTD
- *
+ * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,7 +47,7 @@
  *
  * 3. buffer allocator management
  *    this part is for allocator on different os, it does not have user interface
- *    it will support normal buffer, Android ion buffer, Linux v4l2 vb2 buffer
+ *    it will support normal buffer, ion buffer, Linux v4l2 vb2 buffer
  *    user can only use MppBufferType to choose.
  *
  */
@@ -117,7 +116,7 @@ typedef enum {
  * the mpp buffer has serval types:
  *
  * normal   : normal malloc buffer for unit test or hardware simulation
- * ion      : use ion device under Android/Linux, MppBuffer will encapsulte ion file handle
+ * ion      : use ion device under Linux, MppBuffer will encapsulte ion file handle
  * ext_dma  : the DMABUF(DMA buffers) come from the application
  * drm      : use the drm device interface for memory management
  */
@@ -199,7 +198,7 @@ typedef struct MppBufferInfo_t {
  * mpp_buffer_commit usage:
  *
  * Add a external buffer info to group. This buffer will be on unused status.
- * Typical usage is on Android. MediaPlayer gralloc Graphic buffer then commit these buffer
+ * Typical usage is on MediaPlayer gralloc Graphic buffer then commit these buffer
  * to decoder's buffer group. Then decoder will recycle these buffer and return buffer reference
  * to MediaPlayer for display.
  *

@@ -28,7 +28,7 @@ DrmEncoder::DrmEncoder(drmModeEncoder e)
 int32_t DrmEncoder::PickIdleCrtcId(IdMapPtr<DrmCrtc> &crtcs, uint32_t &crtcId)
 {
     // find the crtc id;
-    DISPLAY_LOGD("crtcs szie %{public}zu", crtcs.size());
+    DISPLAY_DEBUGLOG("crtcs szie %{public}zu", crtcs.size());
     std::shared_ptr<DrmCrtc> crtc;
     auto crtcIter = crtcs.find(mCrtcId);
     if (crtcIter == crtcs.end()) {
@@ -45,7 +45,7 @@ int32_t DrmEncoder::PickIdleCrtcId(IdMapPtr<DrmCrtc> &crtcs, uint32_t &crtcId)
         crtc = nullptr;
         for (const auto &posCrtcPair : crtcs) {
             auto &posCrts = posCrtcPair.second;
-            DISPLAY_LOGD("try crtc id : %{public}d", posCrts->GetId());
+            DISPLAY_DEBUGLOG("try crtc id : %{public}d", posCrts->GetId());
             if (posCrts->CanBind() && ((1 << posCrts->GetPipe()) & mPossibleCrtcs)) {
                 crtc = posCrts;
             }

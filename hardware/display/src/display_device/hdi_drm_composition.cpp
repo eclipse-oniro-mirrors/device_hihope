@@ -24,12 +24,12 @@ HdiDrmComposition::HdiDrmComposition(std::shared_ptr<DrmConnector> connector, st
     std::shared_ptr<DrmDevice> drmDevice)
     : mDrmDevice(drmDevice), mConnector(connector), mCrtc(crtc)
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
 }
 
 int32_t HdiDrmComposition::Init()
 {
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     mPrimPlanes.clear();
     mOverlayPlanes.clear();
     mPlanes.clear();
@@ -46,7 +46,7 @@ int32_t HdiDrmComposition::Init()
 int32_t HdiDrmComposition::SetLayers(std::vector<HdiLayer *> &layers, HdiLayer &clientLayer)
 {
     // now we do not surpport present direct
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     mCompLayers.clear();
     mCompLayers.push_back(&clientLayer);
     return DISPLAY_SUCCESS;
@@ -126,12 +126,12 @@ int32_t HdiDrmComposition::ApplyPlane(HdiDrmLayer &layer,
     int32_t bufferW = layerBuffer->GetWight();
     int32_t bufferH = layerBuffer->GetHeight();
 
-    DISPLAY_LOGD();
+    DISPLAY_DEBUGLOG();
     if (propId != 0) {
         DISPLAY_LOGI("set the fence in prop");
         if (fenceFd >= 0) {
             ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), propId, fenceFd);
-            DISPLAY_LOGD("set the IfenceProp plane id %{public}d, propId %{public}d, fenceFd %{public}d",
+            DISPLAY_DEBUGLOG("set the IfenceProp plane id %{public}d, propId %{public}d, fenceFd %{public}d",
                 drmPlane.GetId(), propId, fenceFd);
             DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set IN_FENCE_FD failed"));
         }
@@ -153,13 +153,13 @@ int32_t HdiDrmComposition::ApplyPlane(HdiDrmLayer &layer,
     DISPLAY_CHK_RETURN((gemBuffer == nullptr), DISPLAY_FAILURE, DISPLAY_LOGE("current gemBuffer is nullptr"));
     DISPLAY_CHK_RETURN((!gemBuffer->IsValid()), DISPLAY_FAILURE, DISPLAY_LOGE("the DrmGemBuffer is invalid"));
     ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropFbId(), gemBuffer->GetFbId());
-    DISPLAY_LOGD("set the fb planeid %{public}d, propId %{public}d, fbId %{public}d", drmPlane.GetId(),
+    DISPLAY_DEBUGLOG("set the fb planeid %{public}d, propId %{public}d, fbId %{public}d", drmPlane.GetId(),
         drmPlane.GetPropFbId(), gemBuffer->GetFbId());
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set fb id fialed errno : %{public}d", errno));
 
     // set crtc id
     ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropCrtcId(), mCrtc->GetId());
-    DISPLAY_LOGD("set the crtc planeId %{public}d, propId %{public}d, crtcId %{public}d", drmPlane.GetId(),
+    DISPLAY_DEBUGLOG("set the crtc planeId %{public}d, propId %{public}d, crtcId %{public}d", drmPlane.GetId(),
         drmPlane.GetPropCrtcId(), mCrtc->GetId());
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set crtc id fialed errno : %{public}d", errno));
     return DISPLAY_SUCCESS;
@@ -173,13 +173,13 @@ int32_t HdiDrmComposition::UpdateMode(std::unique_ptr<DrmModeBlock> &modeBlock, 
         modeBlock = mConnector->GetModeBlockFromId(mCrtc->GetActiveModeId());
         if ((modeBlock != nullptr) && (modeBlock->GetBlockId() != DRM_INVALID_ID)) {
             // set to active
-            DISPLAY_LOGD("set crtc to active");
+            DISPLAY_DEBUGLOG("set crtc to active");
             int ret = drmModeAtomicAddProperty(&pset, mCrtc->GetId(), mCrtc->GetActivePropId(), 1);
             DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE,
                 DISPLAY_LOGE("can not add the active prop errno %{public}d", errno));
 
             // set the mode id
-            DISPLAY_LOGD("set the mode");
+            DISPLAY_DEBUGLOG("set the mode");
             ret = drmModeAtomicAddProperty(&pset, mCrtc->GetId(), mCrtc->GetModePropId(), modeBlock->GetBlockId());
             DISPLAY_LOGI("set the mode planeId %{public}d, propId %{public}d, GetBlockId: %{public}d", mCrtc->GetId(),
                 mCrtc->GetModePropId(), modeBlock->GetBlockId());
@@ -213,7 +213,7 @@ int32_t HdiDrmComposition::Apply(bool modeSet)
     ret = drmModeAtomicAddProperty(atomicReqPtr.Get(), mCrtc->GetId(), mCrtc->GetOutFencePropId(),
         (uint64_t)&crtcOutFence);
 
-    DISPLAY_LOGD("Apply Set OutFence crtc id: %{public}d, fencePropId %{public}d", mCrtc->GetId(),
+    DISPLAY_DEBUGLOG("Apply Set OutFence crtc id: %{public}d, fencePropId %{public}d", mCrtc->GetId(),
         mCrtc->GetOutFencePropId());
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set the outfence property of crtc failed "));
 

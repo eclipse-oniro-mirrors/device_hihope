@@ -1,11 +1,10 @@
 /*
- * Copyright (C) 2017-2018 RockChip Limited. All rights reserved.
- *
+ * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -94,21 +93,9 @@ int get_allocation_size(buffer_handle_t handle, uint64_t* usage);
 
 int get_share_fd(buffer_handle_t handle, int* share_fd);
 
-using android::status_t;
-
-status_t importBuffer(buffer_handle_t rawHandle, buffer_handle_t* outHandle);
+void unlock(buffer_handle_t bufferHandle);
 
 void freeBuffer(buffer_handle_t handle);
-
-status_t lock(buffer_handle_t bufferHandle,
-              uint64_t usage,
-              int x,
-              int y,
-              int w,
-              int h,
-              void** outData);
-
-void unlock(buffer_handle_t bufferHandle);
 
 /* ---------------------------------------------------------------------------------------------------------
  *  Inline Functions Implementation
@@ -118,4 +105,3 @@ void unlock(buffer_handle_t bufferHandle);
 }
 
 #endif /* __PLATFORM_GRALLOC4_H__ */
-
