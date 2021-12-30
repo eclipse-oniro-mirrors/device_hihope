@@ -47,6 +47,7 @@
                 <filteritem type="filepath" name="hardware/wifi/*" desc="wifi lib and bin files"/>
                 <filteritem type="filepath" name="hardware/mpp/lib/*" desc="mpp 32bit libs file"/>
                 <filteritem type="filepath" name="hardware/mpp/lib64/*" desc="mpp 64bit libs file"/>
+                <filteritem type="filepath" name="hardware/camera_adapter/lib/*" desc="libcamera 32bit libs file"/>
                 <filteritem type="filepath" name="hardware/gra/lib/*" desc="gra 32bit libs file"/>
                 <filteritem type="filepath" name="hardware/gra/lib64/*" desc="gra 64bit libs file"/>
                 <filteritem type="filepath" name="hardware/gpu/lib/*" desc="gpb 32bit libs file"/>
