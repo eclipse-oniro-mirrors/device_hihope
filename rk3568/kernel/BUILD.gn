@@ -11,23 +11,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/ohos.gni")
 import("//build/config/clang/clang.gni")
-kernel_build_script_dir = "//kernel/linux/linux-4.19"
-kernel_source_dir = "//kernel/linux/linux-4.19"
+import("//build/ohos.gni")
+kernel_build_script_dir = "//kernel/linux/linux-5.10"
+kernel_source_dir = "//kernel/linux/linux-5.10"
 
 action("kernel") {
-   script = "build_kernel.sh"
-   sources = [ kernel_source_dir ]
+  script = "build_kernel.sh"
+  sources = [ kernel_source_dir ]
 
-   product_path = "vendor/$product_company/$product_name"
-   outputs = [ "$root_build_dir/packages/phone/images" ]
-   args = [
+  product_path = "vendor/$product_company/$product_name"
+  outputs = [ "$root_build_dir/packages/phone/images" ]
+  args = [
     rebase_path(kernel_build_script_dir, root_build_dir),
     rebase_path("$root_build_dir/packages/phone/images"),
     rebase_path("//device/hihope/$device_name"),
     product_path,
+    rebase_path("$root_build_dir/../.."),
   ]
 }
-
-
