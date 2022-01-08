@@ -17,6 +17,7 @@
 namespace OHOS::Camera {
 uint32_t RKCodecNode::previewWidth_ = 0;
 uint32_t RKCodecNode::previewHeight_ = 0;
+const unsigned long long TIME_CONVERSION_NS_S = 1000000000ULL; /* ns to s */
 
 RKCodecNode::RKCodecNode(const std::string& name, const std::string& type) : NodeBase(name, type)
 {
@@ -284,7 +285,7 @@ void RKCodecNode::Yuv420ToH264(std::shared_ptr<IBuffer>& buffer)
 
         buffer->SetEsFrameSize(buf_size);
         clock_gettime(CLOCK_MONOTONIC, &ts);
-        timestamp = ts.tv_nsec + ts.tv_sec * 1000000000;
+        timestamp = ts.tv_nsec + ts.tv_sec * TIME_CONVERSION_NS_S;
         buffer->SetEsTimestamp(timestamp);
         CAMERA_LOGI("RKCodecNode::Yuv420ToH264 video capture on\n");
     } else {
@@ -297,7 +298,7 @@ void RKCodecNode::Yuv420ToH264(std::shared_ptr<IBuffer>& buffer)
         SerchIFps((unsigned char *)buffer->GetVirAddress(), buf_size, buffer);
         buffer->SetEsFrameSize(buf_size);
         clock_gettime(CLOCK_MONOTONIC, &ts);
-        timestamp = ts.tv_nsec + ts.tv_sec * 1000000000;
+        timestamp = ts.tv_nsec + ts.tv_sec * TIME_CONVERSION_NS_S;
         buffer->SetEsTimestamp(timestamp);
     }
 
