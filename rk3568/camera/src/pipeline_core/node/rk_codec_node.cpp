@@ -17,6 +17,7 @@
 namespace OHOS::Camera {
 uint32_t RKCodecNode::previewWidth_ = 0;
 uint32_t RKCodecNode::previewHeight_ = 0;
+const unsigned long long TIME_CONVERSION_NS_S = 1000000000ULL; /* ns to s */
 
 RKCodecNode::RKCodecNode(const std::string& name, const std::string& type) : NodeBase(name, type)
 {
@@ -39,6 +40,7 @@ RetCode RKCodecNode::Stop(const int32_t streamId)
     CAMERA_LOGI("RKCodecNode::Stop streamId = %{public}d\n", streamId);
 
     if (halCtx_ != nullptr) {
+        CAMERA_LOGI("RKCodecNode::Stop hal_mpp_ctx_delete\n");
         hal_mpp_ctx_delete(halCtx_);
         halCtx_ = nullptr;
         mppStatus_ = 0;
@@ -271,6 +273,10 @@ void RKCodecNode::Yuv420ToH264(std::shared_ptr<IBuffer>& buffer)
         args.format      = MPP_FMT_YUV420P;
         args.type        = MPP_VIDEO_CodingAVC;
         halCtx_ = hal_mpp_ctx_create(&args);
+        if (halCtx_ == nullptr) {
+            CAMERA_LOGI("RKCodecNode::Yuv420ToH264 halCtx_ = %{public}p\n", halCtx_);
+            return;
+        }
         mppStatus_ = 1;
         buf_size = ((MpiEncTestData *)halCtx_)->frame_size;
 
@@ -278,21 +284,21 @@ void RKCodecNode::Yuv420ToH264(std::shared_ptr<IBuffer>& buffer)
         SerchIFps((unsigned char *)buffer->GetVirAddress(), buf_size, buffer);
 
         buffer->SetEsFrameSize(buf_size);
-        clock_gettime(CLOCK_REALTIME, &ts);
-        timestamp = ts.tv_sec & 0xFFFFFF;
-        timestamp *= 1000000000;
-        timestamp += ts.tv_nsec;
+        clock_gettime(CLOCK_MONOTONIC, &ts);
+        timestamp = ts.tv_nsec + ts.tv_sec * TIME_CONVERSION_NS_S;
         buffer->SetEsTimestamp(timestamp);
         CAMERA_LOGI("RKCodecNode::Yuv420ToH264 video capture on\n");
     } else {
+        if (halCtx_ == nullptr) {
+            CAMERA_LOGI("RKCodecNode::Yuv420ToH264 halCtx_ = %{public}p\n", halCtx_);
+            return;
+        }
         buf_size = ((MpiEncTestData *)halCtx_)->frame_size;
         ret = hal_mpp_encode(halCtx_, dma_fd, (unsigned char *)buffer->GetVirAddress(), &buf_size);
         SerchIFps((unsigned char *)buffer->GetVirAddress(), buf_size, buffer);
         buffer->SetEsFrameSize(buf_size);
-        clock_gettime(CLOCK_REALTIME, &ts);
-        timestamp = ts.tv_sec & 0xFFFFFF;
-        timestamp *= 1000000000;
-        timestamp += ts.tv_nsec;
+        clock_gettime(CLOCK_MONOTONIC, &ts);
+        timestamp = ts.tv_nsec + ts.tv_sec * TIME_CONVERSION_NS_S;
         buffer->SetEsTimestamp(timestamp);
     }
 
@@ -336,11 +342,6 @@ RetCode RKCodecNode::Capture(const int32_t streamId, const int32_t captureId)
 RetCode RKCodecNode::CancelCapture(const int32_t streamId)
 {
     CAMERA_LOGI("RKCodecNode::CancelCapture streamid = %{public}d", streamId);
-    if (halCtx_ != nullptr) {
-        hal_mpp_ctx_delete(halCtx_);
-        halCtx_ = nullptr;
-        mppStatus_ = 0;
-    }
 
     return RC_OK;
 }
