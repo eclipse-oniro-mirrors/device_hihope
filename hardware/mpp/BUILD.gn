@@ -25,7 +25,5 @@ ohos_prebuilt_shared_library("libmpp") {
 }
 
 group("mpp") {
-  deps = [
-    ":libmpp",
-  ]
+  deps = [ ":libmpp" ]
 }
