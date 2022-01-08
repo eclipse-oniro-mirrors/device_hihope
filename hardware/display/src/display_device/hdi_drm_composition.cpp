@@ -202,7 +202,7 @@ int32_t HdiDrmComposition::Apply(bool modeSet)
     std::unique_ptr<DrmModeBlock> modeBlock;
     int drmFd = mDrmDevice->GetDrmFd();
     
-    DISPLAY_LOGI("mPlane size: %{public}d mCompLayers size: %{public}d", mPlanes.size(), mCompLayers.size());
+    DISPLAY_LOGI("mPlane size: %{public}zd mCompLayers size: %{public}zd", mPlanes.size(), mCompLayers.size());
     DISPLAY_CHK_RETURN((mPlanes.size() < mCompLayers.size()), DISPLAY_FAILURE, DISPLAY_LOGE("plane not enough"));
     drmModeAtomicReqPtr pset = drmModeAtomicAlloc();
     DISPLAY_CHK_RETURN((pset == nullptr), DISPLAY_NULL_PTR,
