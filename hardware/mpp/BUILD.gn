@@ -16,15 +16,12 @@ import("//build/ohos/ndk/ndk.gni")
 
 ohos_prebuilt_shared_library("libmpp") {
   if (target_cpu == "arm") {
-    source = "lib/librockchip_mpp.so"
+    source = "lib/librockchip_mpp.z.so"
   } else {
     source = "lib64/librockchip_mpp.so"
   }
   part_name = "rockchip_products"
   install_enable = true
-  symlink_target_name = [
-    "librockchip_mpp.so.1",
-  ]
 }
 
 group("mpp") {

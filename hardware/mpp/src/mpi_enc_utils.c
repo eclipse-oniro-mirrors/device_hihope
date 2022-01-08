@@ -37,7 +37,7 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
         mpp_err("memset_s failed\n");
         return MPP_NOK;
     }
-    eok = memset_s(&st_ref, sizeof(lt_ref), 0, sizeof(st_ref));
+    eok = memset_s(&st_ref, sizeof(st_ref), 0, sizeof(st_ref));
     if (eok != EOK) {
         mpp_err("memset_s failed\n");
         return MPP_NOK;
@@ -221,7 +221,7 @@ static MPP_RET mpi_enc_gen_smart_gop_ref_cfg(MppEncRefCfg ref, RK_S32 gop_len, R
     RK_S32 lt_cnt = 1;
     RK_S32 st_cnt = 8;
     RK_S32 pos = 0;
-    MPP_RET ret;
+    MPP_RET ret = 0;
 
     errno_t eok = memset_s(&lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref));
     if (eok != EOK) {
@@ -296,6 +296,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         mpp_err_f("create MpiEncTestData failed\n");
         ret = MPP_ERR_MALLOC;
         *data = p;
+        return ret;
     }
 
     // get paramter from cmd
@@ -334,6 +335,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         }
             break;
     }
+    *data = p;
     return ret;
 }
 
@@ -592,10 +594,13 @@ static void test_mpp_frame_set_param(MppFrame frame, MpiEncTestData *p)
 static void test_mpp_ctx_cleanup(MpiEncTestData *p)
 {
     if (!p) {
+        mpp_err("test_mpp_ctx_cleanup p == NULL\n");
         return;
     }
 
-    p->mpi->reset(p->ctx);
+    if (p->mpi->reset) {
+        p->mpi->reset(p->ctx);
+    }
 
     if (p->ctx) {
         mpp_destroy(p->ctx);
@@ -628,6 +633,10 @@ int hal_mpp_get_sps(void *ctx, unsigned char *buf, size_t *buf_size)
     MppPacket packet = NULL;
     MpiEncTestData *p = (MpiEncTestData *)ctx;
 
+    if (!p) {
+        mpp_err("mpi control enc get extra info failed\n");
+        return MPP_NOK;
+    }
     mpi = p->mpi;
     mpp_ctx = p->ctx;
 
@@ -648,7 +657,7 @@ int hal_mpp_get_sps(void *ctx, unsigned char *buf, size_t *buf_size)
             mpp_err("mpi control enc get extra info failed\n");
             ret = MPP_NOK;
             mpp_packet_deinit(&packet);
-            return MPP_OK;
+            return ret;
         }
     }
 
@@ -659,22 +668,29 @@ int hal_mpp_get_sps(void *ctx, unsigned char *buf, size_t *buf_size)
         mpp_err("mpi buffer size too small\n");
         ret = MPP_NOK;
         mpp_packet_deinit(&packet);
-        return MPP_OK;
+        return ret;
     }
 
-    ret = memcpy_s(buf, len, ptr, len);
-    if (!ret) {
-        printf("memcpy_s failed!\n");
+    errno_t eok = memcpy_s(buf, len, ptr, len);
+    if (eok != EOK) {
+        mpp_err("memcpy_s failed\n");
+        return MPP_NOK;
     }
 
     *buf_size = len;
 
     ret = MPP_OK;
+    mpp_packet_deinit(&packet);
     return ret;
 }
 
 int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
 {
+    if (!ctx) {
+        mpp_err("memset_s failed\n");
+        return MPP_NOK;
+    }
+
     MPP_RET ret = 0;
     MppFrame frame = NULL;
     MppMeta meta = NULL;
@@ -791,14 +807,19 @@ int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
         return ret;
     }
 
-    ret = memcpy_s(buf, len, ptr, len);
-    if (!ret) {
-        printf("memcpy_s failed!\n");
+    eok = memcpy_s(buf, len, ptr, len);
+    if (eok != EOK) {
+        mpp_err("memcpy_s failed\n");
+        return MPP_NOK;
     }
 
     *buf_size = len;
 
     ret = MPP_OK;
+    if (cam_buf)
+        mpp_buffer_put(cam_buf);
+
+    mpp_packet_deinit(&packet);
     return ret;
 }
 
