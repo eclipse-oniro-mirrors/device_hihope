@@ -106,7 +106,7 @@ group("chipset_build") {
     ":ipp_algo_config.hcb",
     ":params.c",
     "$camera_device_name_path/camera/src/pipeline_core:camera_ipp_algo_example",
-    "//drivers/peripheral/camera/hal/adapter/platform/v4l2/src/driver_adapter:camera_v4l2_adapter",
+    "//device/hihope/hardware/camera_adapter:camera_v4l2_adapter",
     "//drivers/peripheral/camera/hal/adapter/platform/v4l2/src/driver_adapter/main_test:v4l2_main",
   ]
 }

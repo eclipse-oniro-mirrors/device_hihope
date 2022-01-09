@@ -37,7 +37,7 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
         mpp_err("memset_s failed\n");
         return MPP_NOK;
     }
-    eok = memset_s(&st_ref, sizeof(lt_ref), 0, sizeof(st_ref));
+    eok = memset_s(&st_ref, sizeof(st_ref), 0, sizeof(st_ref));
     if (eok != EOK) {
         mpp_err("memset_s failed\n");
         return MPP_NOK;
@@ -221,7 +221,7 @@ static MPP_RET mpi_enc_gen_smart_gop_ref_cfg(MppEncRefCfg ref, RK_S32 gop_len, R
     RK_S32 lt_cnt = 1;
     RK_S32 st_cnt = 8;
     RK_S32 pos = 0;
-    MPP_RET ret;
+    MPP_RET ret = 0;
 
     errno_t eok = memset_s(&lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref));
     if (eok != EOK) {
@@ -296,13 +296,14 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         mpp_err_f("create MpiEncTestData failed\n");
         ret = MPP_ERR_MALLOC;
         *data = p;
+        return ret;
     }
 
     // get paramter from cmd
     p->width        = cmd->width;
     p->height       = cmd->height;
-    p->hor_stride   = MPP_ALIGN(cmd->width, 16);
-    p->ver_stride   = MPP_ALIGN(cmd->height, 16);
+    p->hor_stride   = MPP_ALIGN(cmd->width, 16); // 16:hor_stride
+    p->ver_stride   = MPP_ALIGN(cmd->height, 16); // 16:ver_stride
     p->fmt          = cmd->format;
     p->type         = cmd->type;
 
@@ -334,6 +335,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         }
             break;
     }
+    *data = p;
     return ret;
 }
 
@@ -437,22 +439,22 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
         case MPP_VIDEO_CodingHEVC : {
             switch (p->rc_mode) {
                 case MPP_ENC_RC_MODE_FIXQP : {
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_init", 20);
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max", 20);
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min", 20);
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", 20);
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", 20);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_init", 20); // 20:mpp cfg value
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max", 20); // 20:mpp cfg value
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min", 20); // 20:mpp cfg value
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", 20); // 20:mpp cfg value
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", 20); // 20:mpp cfg value
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", 2);
                 }
                     break;
                 case MPP_ENC_RC_MODE_CBR :
                 case MPP_ENC_RC_MODE_VBR :
                 case MPP_ENC_RC_MODE_AVBR : {
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_init", 26);
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max", 51);
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min", 10);
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", 51);
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", 10);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_init", 26); // 26:mpp cfg value
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max", 51); // 51:mpp cfg value
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min", 10); // 10:mpp cfg value
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", 51); // 51:mpp cfg value
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", 10); // 10:mpp cfg value
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", 2);
                 }
                     break;
@@ -465,18 +467,18 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
             break;
         case MPP_VIDEO_CodingVP8 : {
             /* vp8 only setup base qp range */
-            mpp_enc_cfg_set_s32(cfg, "rc:qp_init", 40);
-            mpp_enc_cfg_set_s32(cfg, "rc:qp_max",  127);
+            mpp_enc_cfg_set_s32(cfg, "rc:qp_init", 40); // 40:mpp cfg value
+            mpp_enc_cfg_set_s32(cfg, "rc:qp_max",  127); // 127:mpp cfg value
             mpp_enc_cfg_set_s32(cfg, "rc:qp_min",  0);
-            mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", 127);
+            mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", 127); // 127:mpp cfg value
             mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", 0);
-            mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", 6);
+            mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", 6); // 6:mpp cfg value
         }
             break;
         case MPP_VIDEO_CodingMJPEG : {
             /* jpeg use special codec config to control qtable */
-            mpp_enc_cfg_set_s32(cfg, "jpeg:q_factor", 80);
-            mpp_enc_cfg_set_s32(cfg, "jpeg:qf_max", 99);
+            mpp_enc_cfg_set_s32(cfg, "jpeg:q_factor", 80); // 80:mpp cfg value
+            mpp_enc_cfg_set_s32(cfg, "jpeg:qf_max", 99); // 99:mpp cfg value
             mpp_enc_cfg_set_s32(cfg, "jpeg:qf_min", 1);
         }
             break;
@@ -592,10 +594,13 @@ static void test_mpp_frame_set_param(MppFrame frame, MpiEncTestData *p)
 static void test_mpp_ctx_cleanup(MpiEncTestData *p)
 {
     if (!p) {
+        mpp_err("test_mpp_ctx_cleanup p == NULL\n");
         return;
     }
 
-    p->mpi->reset(p->ctx);
+    if (p->mpi->reset) {
+        p->mpi->reset(p->ctx);
+    }
 
     if (p->ctx) {
         mpp_destroy(p->ctx);
@@ -627,7 +632,12 @@ int hal_mpp_get_sps(void *ctx, unsigned char *buf, size_t *buf_size)
     MppCtx mpp_ctx;
     MppPacket packet = NULL;
     MpiEncTestData *p = (MpiEncTestData *)ctx;
+    errno_t eok;
 
+    if (!p) {
+        mpp_err("mpi control enc get extra info failed\n");
+        return MPP_NOK;
+    }
     mpi = p->mpi;
     mpp_ctx = p->ctx;
 
@@ -648,7 +658,7 @@ int hal_mpp_get_sps(void *ctx, unsigned char *buf, size_t *buf_size)
             mpp_err("mpi control enc get extra info failed\n");
             ret = MPP_NOK;
             mpp_packet_deinit(&packet);
-            return MPP_OK;
+            return ret;
         }
     }
 
@@ -659,22 +669,29 @@ int hal_mpp_get_sps(void *ctx, unsigned char *buf, size_t *buf_size)
         mpp_err("mpi buffer size too small\n");
         ret = MPP_NOK;
         mpp_packet_deinit(&packet);
-        return MPP_OK;
+        return ret;
     }
 
-    ret = memcpy_s(buf, len, ptr, len);
-    if (!ret) {
-        printf("memcpy_s failed!\n");
+    eok = memcpy_s(buf, len, ptr, len);
+    if (eok != EOK) {
+        mpp_err("memcpy_s failed\n");
+        return MPP_NOK;
     }
 
     *buf_size = len;
 
     ret = MPP_OK;
+    mpp_packet_deinit(&packet);
     return ret;
 }
 
 int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
 {
+    if (!ctx) {
+        mpp_err("memset_s failed\n");
+        return MPP_NOK;
+    }
+
     MPP_RET ret = 0;
     MppFrame frame = NULL;
     MppMeta meta = NULL;
@@ -791,14 +808,19 @@ int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
         return ret;
     }
 
-    ret = memcpy_s(buf, len, ptr, len);
-    if (!ret) {
-        printf("memcpy_s failed!\n");
+    eok = memcpy_s(buf, len, ptr, len);
+    if (eok != EOK) {
+        mpp_err("memcpy_s failed\n");
+        return MPP_NOK;
     }
 
     *buf_size = len;
 
     ret = MPP_OK;
+    if (cam_buf)
+        mpp_buffer_put(cam_buf);
+
+    mpp_packet_deinit(&packet);
     return ret;
 }
 
