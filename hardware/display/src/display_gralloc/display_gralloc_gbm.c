@@ -198,6 +198,7 @@ static int32_t InitGbmDevice(const char *drmFile, GrallocManager *grallocManager
             DISPLAY_LOGE("drm authentication failed, may have no permission to allocate memory");
         }
 	*/
+        drmDropMaster(drmFd);
         struct gbm_device *gbmDevice = hdi_gbm_create_device(drmFd);
         grallocManager->drmFd = drmFd;
         if (gbmDevice == NULL) {
