@@ -48,7 +48,7 @@ HdiLayerBuffer &HdiLayerBuffer::operator = (const BufferHandle &right)
     if (mFd >= 0) {
         close(mFd);
     }
-    mFd = right.fd;
+    mFd = dup(right.fd);
     mPhyAddr = right.phyAddr;
     mWidth = right.width;
     mHeight = right.height;
