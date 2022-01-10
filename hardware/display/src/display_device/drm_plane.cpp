@@ -19,6 +19,35 @@
 namespace OHOS {
 namespace HDI {
 namespace DISPLAY {
+struct PlaneTypeName planeTypeNames[] = {
+    { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER0_WIN0, "Cluster0-win0" },
+    { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER0_WIN1, "Cluster0-win1" },
+    { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER1_WIN0, "Cluster1-win0" },
+    { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER1_WIN1, "Cluster1-win1" },
+
+    { DrmPlaneType::DRM_PLANE_TYPE_ESMART0_WIN0, "Esmart0-win0" },
+    { DrmPlaneType::DRM_PLANE_TYPE_ESMART0_WIN1, "Esmart0-win1" },
+    { DrmPlaneType::DRM_PLANE_TYPE_ESMART0_WIN2, "Esmart0-win2" },
+    { DrmPlaneType::DRM_PLANE_TYPE_ESMART0_WIN3, "Esmart0-win3" },
+
+    { DrmPlaneType::DRM_PLANE_TYPE_ESMART1_WIN0, "Esmart1-win0" },
+    { DrmPlaneType::DRM_PLANE_TYPE_ESMART1_WIN1, "Esmart1-win1" },
+    { DrmPlaneType::DRM_PLANE_TYPE_ESMART1_WIN2, "Esmart1-win2" },
+    { DrmPlaneType::DRM_PLANE_TYPE_ESMART1_WIN3, "Esmart1-win3" },
+
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART0_WIN0, "Smart0-win0" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART0_WIN1, "Smart0-win1" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART0_WIN2, "Smart0-win2" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART0_WIN3, "Smart0-win3" },
+
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART1_WIN0, "Smart1-win0" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART1_WIN1, "Smart1-win1" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART1_WIN2, "Smart1-win2" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART1_WIN3, "Smart1-win3" },
+
+    { DrmPlaneType::DRM_PLANE_TYPE_Unknown, "unknown" },
+};
+
 DrmPlane::DrmPlane(drmModePlane &p)
     : mId(p.plane_id), mPossibleCrtcs(p.possible_crtcs), mCrtcId(p.crtc_id),
     mFormats(p.formats, p.formats + p.count_formats)
@@ -97,6 +126,7 @@ int32_t DrmPlane::Init(DrmDevice &drmDevice)
 {
     DISPLAY_DEBUGLOG();
     int32_t ret;
+    uint32_t find_name = 0;
     DrmProperty prop;
     GetCrtcProp(drmDevice);
     GetSrcProp(drmDevice);
@@ -113,6 +143,28 @@ int32_t DrmPlane::Init(DrmDevice &drmDevice)
     ret = drmDevice.GetPlaneProperty(*this, PROP_ZPOS_ID, prop);
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("cat not get pane crtc prop id"));
     mPropZposId = prop.propId;
+
+    ret = drmDevice.GetPlaneProperty(*this, "NAME", prop);
+    DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("cat not get pane crtc prop id"));
+
+    for (int i = 0; i < static_cast<int>ARRAY_SIZE(planeTypeNames); i++) {
+        find_name = 0;
+
+        for (auto &drmEnum : prop.enums) {
+            if (!strncmp(drmEnum.name.c_str(), (const char*)planeTypeNames[i].name,
+                                strlen(planeTypeNames[i].name))) {
+                find_name = (1LL << drmEnum.value);
+            }
+        }
+
+        if (find_name) {
+            DISPLAY_LOGI("find plane id %{public}d, type %{public}x %{public}s",
+                                    GetId(), planeTypeNames[i].type, planeTypeNames[i].name);
+            mWinType = planeTypeNames[i].type;
+            mName = planeTypeNames[i].name;
+            break;
+        }
+    }
 
     ret = drmDevice.GetPlaneProperty(*this, PROP_TYPE, prop);
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("cat not get pane crtc prop id"));

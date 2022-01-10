@@ -20,8 +20,9 @@
 namespace OHOS {
 namespace HDI {
 namespace DISPLAY {
-HdiDrmComposition::HdiDrmComposition(std::shared_ptr<DrmConnector> connector, std::shared_ptr<DrmCrtc> crtc,
-    std::shared_ptr<DrmDevice> drmDevice)
+HdiDrmComposition::HdiDrmComposition(const std::shared_ptr<DrmConnector> &connector,
+                                     const std::shared_ptr<DrmCrtc> &crtc,
+                                     const std::shared_ptr<DrmDevice> &drmDevice)
     : mDrmDevice(drmDevice), mConnector(connector), mCrtc(crtc)
 {
     DISPLAY_DEBUGLOG();
@@ -195,10 +196,61 @@ int32_t HdiDrmComposition::UpdateMode(std::unique_ptr<DrmModeBlock> &modeBlock, 
     return DISPLAY_SUCCESS;
 }
 
+int32_t HdiDrmComposition::RemoveUnusePlane(drmModeAtomicReqPtr pset)
+{
+    int ret = 0;
+    /* Remove useless planes from the drm */
+    for (uint32_t j = 0; j < mPlanes.size(); j++) {
+        auto &drmPlane = mPlanes[j];
+        if ((static_cast<int>(drmPlane->GetWinType()) & mCrtc->GetPlaneMask()) &&  drmPlane->GetPipe() == 0) {
+            DISPLAY_LOGI("no used plane %{public}s id %{public}d", drmPlane->GetName().c_str(), drmPlane->GetId());
+            ret = drmModeAtomicAddProperty(pset, drmPlane->GetId(), drmPlane->GetPropFbId(), 0);
+            ret = drmModeAtomicAddProperty(pset, drmPlane->GetId(), drmPlane->GetPropFbId(), 0);
+            drmPlane->UnBindPipe();
+        }
+    }
+    return DISPLAY_SUCCESS;
+}
+
+int32_t HdiDrmComposition::FindPlaneAndApply(drmModeAtomicReqPtr pset)
+{
+    int32_t ret = 0;
+    for (uint32_t i = 0; i < mCompLayers.size(); i++) {
+        HdiDrmLayer *layer = static_cast<HdiDrmLayer *>(mCompLayers[i]);
+        HdiLayer *hlayer = mCompLayers[i];
+        for (uint32_t j = 0; j < mPlanes.size(); j++) {
+            auto &drmPlane = mPlanes[j];
+            if (drmPlane->GetPipe() != 0 && drmPlane->GetPipe() != (1 << mCrtc->GetPipe())) {
+                DISPLAY_LOGI("plane %{public}d used pipe %{public}d crtc pipe %{public}d", drmPlane->GetId(),
+                    drmPlane->GetPipe(), mCrtc->GetPipe());
+                continue;
+            }
+            /* Check whether the plane belond to the crtc */
+            if (!(static_cast<int>(drmPlane->GetWinType()) & mCrtc->GetPlaneMask())) {
+                continue;
+            }
+            DISPLAY_LOGI("use plane %{public}d WinType %{public}x crtc %{public}d PlaneMask %{public}x",
+                         drmPlane->GetId(), drmPlane->GetWinType(), mCrtc->GetId(), mCrtc->GetPlaneMask());
+
+            if (drmPlane->GetCrtcId() == mCrtc->GetId() || drmPlane->GetCrtcId() == 0) {
+                ret = ApplyPlane(*layer, *hlayer, *drmPlane, pset);
+                if (ret != DISPLAY_SUCCESS) {
+                    DISPLAY_LOGE("apply plane failed");
+                    break;
+                }
+                /* mark the plane is used by crtc */
+                drmPlane->BindToPipe(1 << mCrtc->GetPipe());
+                break;
+            }
+        }
+    }
+    return DISPLAY_SUCCESS;
+}
+
 int32_t HdiDrmComposition::Apply(bool modeSet)
 {
     uint64_t crtcOutFence = -1;
-    int ret;
+    int ret = 0;
     std::unique_ptr<DrmModeBlock> modeBlock;
     int drmFd = mDrmDevice->GetDrmFd();
     
@@ -223,28 +275,10 @@ int32_t HdiDrmComposition::Apply(bool modeSet)
         mConnector->GetId(), mConnector->GetEncoderId());
 
     /*  Bind the plane not used by other crtcs to the crtc. */
-    for (uint32_t i = 0; i < mCompLayers.size(); i++) {
-        HdiDrmLayer *layer = static_cast<HdiDrmLayer *>(mCompLayers[i]);
-        HdiLayer *hlayer = mCompLayers[i];
-        for (uint32_t j = 0; j < mPlanes.size(); j++) {
-            auto &drmPlane = mPlanes[j];
-            if (drmPlane->GetPipe() != 0 && drmPlane->GetPipe() != (1 << mCrtc->GetPipe())) {
-                DISPLAY_LOGI("plane %{public}d used pipe %{public}d crtc pipe %{public}d", drmPlane->GetId(),
-                    drmPlane->GetPipe(), mCrtc->GetPipe());
-                continue;
-            }
-            if (drmPlane->GetCrtcId() == mCrtc->GetId() || drmPlane->GetCrtcId() == 0) {
-                ret = ApplyPlane(*layer, *hlayer, *drmPlane, atomicReqPtr.Get());
-                if (ret != DISPLAY_SUCCESS) {
-                    DISPLAY_LOGE("apply plane failed");
-                    break;
-                }
-                /* mark the plane is used by crtc */
-                drmPlane->BindToPipe(1 << mCrtc->GetPipe());
-                break;
-            }
-        }
-    }
+    FindPlaneAndApply(atomicReqPtr.Get());
+    /* Remove useless planes from the drm */
+    RemoveUnusePlane(atomicReqPtr.Get());
+
     ret = UpdateMode(modeBlock, *(atomicReqPtr.Get()));
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("update mode failed"));
     uint32_t flags = DRM_MODE_ATOMIC_ALLOW_MODESET;

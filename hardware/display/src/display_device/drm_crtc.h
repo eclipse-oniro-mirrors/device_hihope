@@ -68,7 +68,10 @@ public:
     {
         return mNeedModeSet;
     }
-
+    uint32_t GetPlaneMask()
+    {
+        return mPlaneMask;
+    }
 private:
     uint32_t mId = 0;
     uint32_t mModePropId = 0;
@@ -78,6 +81,7 @@ private:
     uint32_t mPipe = 0;
     int32_t mActiveModeId = INVALID_MODE_ID;
     bool mNeedModeSet = false;
+    uint32_t mPlaneMask = 0;
 };
 } // namespace OHOS
 } // namespace HDI

@@ -31,9 +31,27 @@
 namespace OHOS {
 namespace HDI {
 namespace DISPLAY {
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
+
+class DrmPropertyEnum {
+public:
+    explicit DrmPropertyEnum(drm_mode_property_enum *e) : value(e->value), name(e->name) {
+    }
+    ~DrmPropertyEnum() {};
+
+    uint64_t value;
+    std::string name;
+};
+    
 struct DrmProperty {
     uint32_t propId;
     uint64_t value;
+    uint32_t type;
+    uint32_t flags;
+    std::string name;
+    std::vector<uint64_t> values;
+    std::vector<DrmPropertyEnum> enums;
+    std::vector<uint32_t> blob_ids;
 };
 
 class DrmDevice : public HdiDeviceInterface, std::enable_shared_from_this<DrmDevice> {

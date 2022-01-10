@@ -46,8 +46,9 @@ private:
 
 class HdiDrmComposition : public HdiComposition {
 public:
-    HdiDrmComposition(std::shared_ptr<DrmConnector> connector, std::shared_ptr<DrmCrtc> crtc,
-        std::shared_ptr<DrmDevice> drmDevice);
+    HdiDrmComposition(const std::shared_ptr<DrmConnector> &connector,
+                                      const std::shared_ptr<DrmCrtc> &crtc,
+                                      const std::shared_ptr<DrmDevice> &drmDevice);
     ~HdiDrmComposition() override {}
     int32_t Init() override;
     int32_t SetLayers(std::vector<HdiLayer *> &layers, HdiLayer &clientLayer) override;
@@ -58,6 +59,8 @@ private:
     int32_t ApplyPlane(HdiDrmLayer &layer, HdiLayer &hlayer, DrmPlane &drmPlane, drmModeAtomicReqPtr pset);
     int32_t SetSrcProperty(DrmPlane &drmPlane, drmModeAtomicReqPtr pset, int32_t bufferW, int32_t bufferH);
     int32_t SetCrtcProperty(DrmPlane &drmPlane, drmModeAtomicReqPtr pset, int32_t bufferW, int32_t bufferH);
+    int32_t RemoveUnusePlane(drmModeAtomicReqPtr pset);
+    int32_t FindPlaneAndApply(drmModeAtomicReqPtr pset);
     std::shared_ptr<DrmDevice> mDrmDevice;
     std::shared_ptr<DrmConnector> mConnector;
     std::shared_ptr<DrmCrtc> mCrtc;

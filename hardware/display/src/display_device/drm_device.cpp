@@ -113,6 +113,30 @@ int32_t DrmDevice::GetProperty(uint32_t objId, uint32_t objType, const std::stri
             found = true;
             prop.propId = p->prop_id;
             prop.value = props->prop_values[i];
+            prop.name = p->name;
+            prop.flags = p->flags;
+
+            for (int i = 0; i < p->count_values; ++i) {
+                prop.values.push_back(p->values[i]);
+            }
+            for (int i = 0; i < p->count_enums; ++i) {
+                prop.enums.push_back(DrmPropertyEnum(&p->enums[i]));
+            }
+
+            for (int i = 0; i < p->count_blobs; ++i) {
+                prop.blob_ids.push_back(p->blob_ids[i]);
+            }
+            if (prop.flags & DRM_MODE_PROP_RANGE) {
+                prop.type = static_cast<uint32_t>(DrmPropertyType::DRM_PROPERTY_TYPE_INT);
+            } else if (prop.flags & DRM_MODE_PROP_ENUM) {
+                prop.type = static_cast<uint32_t>(DrmPropertyType::DRM_PROPERTY_TYPE_ENUM);
+            } else if (prop.flags & DRM_MODE_PROP_OBJECT) {
+                prop.type = static_cast<uint32_t>(DrmPropertyType::DRM_PROPERTY_TYPE_OBJECT);
+            } else if (prop.flags & DRM_MODE_PROP_BLOB) {
+                prop.type = static_cast<uint32_t>(DrmPropertyType::DRM_PROPERTY_TYPE_BLOB);
+            } else if (prop.flags & DRM_MODE_PROP_BITMASK) {
+                prop.type = static_cast<uint32_t>(DrmPropertyType::DRM_PROPERTY_TYPE_BITMASK);
+            }
         }
         drmModeFreeProperty(p);
     }
@@ -235,31 +259,16 @@ void DrmDevice::FindAllPlane()
 
 std::shared_ptr<DrmEncoder> DrmDevice::GetDrmEncoderFromId(uint32_t id)
 {
-    /* int32_t ret = DISPLAY_FAILURE;
-    auto iter = mEncoders.find(id);
-    if (iter == mEncoders.end()) {
-        ret = DISPLAY_SUCCESS;
-    } */
     return nullptr;
 }
 
 std::shared_ptr<DrmConnector> DrmDevice::GetDrmConnectorFromId(uint32_t id)
 {
-    /* int32_t ret = DISPLAY_FAILURE;
-    auto iter = mConnectors.find(id);
-    if (iter == mConnectors.end()) {
-        ret = DISPLAY_SUCCESS;
-    } */
     return nullptr;
 }
 
 std::shared_ptr<DrmCrtc> DrmDevice::GetDrmCrtcFromId(uint32_t id)
 {
-    /* int32_t ret = DISPLAY_FAILURE;
-    auto iter = mCrtcs.find(id);
-    if (iter == mCrtcs.end()) {
-        ret = DISPLAY_SUCCESS;
-    } */
     return nullptr;
 }
 
