@@ -17,6 +17,6 @@ import("//build/ohos/ndk/ndk.gni")
 ohos_prebuilt_shared_library("camera_v4l2_adapter") {
   source = "lib/libcamera_v4l2_adapter.z.so"
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "camera_device_driver"
   install_enable = true
 }

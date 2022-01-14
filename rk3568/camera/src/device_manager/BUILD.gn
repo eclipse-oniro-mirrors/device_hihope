@@ -87,5 +87,5 @@ ohos_shared_library("camera_device_manager") {
 
   public_configs = [ ":device_manager_config" ]
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "camera_device_driver"
 }

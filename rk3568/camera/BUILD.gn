@@ -26,7 +26,7 @@ ohos_prebuilt_etc("camera_host_config.hcb") {
   source = hcs_outputs[0]
   relative_install_dir = "hdfconfig"
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "camera_device_driver"
 }
 
 hc_gen_c("generate_source") {
@@ -86,7 +86,7 @@ ohos_prebuilt_etc("ipp_algo_config.hcb") {
   source = hcs_outputs[0]
   relative_install_dir = "hdfconfig"
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "camera_device_driver"
 }
 
 config("example_config") {
