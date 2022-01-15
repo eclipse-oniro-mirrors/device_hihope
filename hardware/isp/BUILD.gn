@@ -12,13 +12,13 @@
 # limitations under the License.
 import("//build/ohos.gni")
 
-ISP_DIR="//device/hihope/hardware/isp"
+ISP_DIR = "//device/hihope/hardware/isp"
 
 ohos_prebuilt_shared_library("librkaiq") {
   if (target_cpu == "arm") {
-      source = "$ISP_DIR/lib/librkaiq.z.so"
+    source = "$ISP_DIR/lib/librkaiq.z.so"
   } else {
-      source = "$ISP_DIR/lib64/librkaiq.z.so"
+    source = "$ISP_DIR/lib64/librkaiq.z.so"
   }
   subsystem_name = "rockchip_products"
   install_enable = true
@@ -32,11 +32,19 @@ ohos_prebuilt_etc("gc8034_RK-CMK-8M-2-v1_CK8401") {
   install_enable = true
 }
 
+ohos_prebuilt_etc("iqfil") {
+  source = "$ISP_DIR/etc/iqfil.json"
+  install_images = [ "system" ]
+  relative_install_dir = ""
+  part_name = "rockchip_products"
+  install_enable = true
+}
+
 ohos_prebuilt_executable("ispserver") {
   if (target_cpu == "arm") {
-      source = "$ISP_DIR/bin/ispserver"
+    source = "$ISP_DIR/bin/ispserver"
   } else {
-      source = "$ISP_DIR/bin64/ispserver"
+    source = "$ISP_DIR/bin64/ispserver"
   }
   part_name = "rockchip_products"
   install_enable = true
@@ -44,8 +52,9 @@ ohos_prebuilt_executable("ispserver") {
 
 group("isp") {
   deps = [
-    ":librkaiq",
     ":gc8034_RK-CMK-8M-2-v1_CK8401",
+    ":iqfil",
     ":ispserver",
+    ":librkaiq",
   ]
 }
