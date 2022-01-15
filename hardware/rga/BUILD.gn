@@ -21,6 +21,6 @@ ohos_prebuilt_shared_library("librga") {
     source = "lib64/librga.z.so"
   }
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "camera_device_driver"
   install_enable = true
 }

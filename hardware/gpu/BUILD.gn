@@ -30,9 +30,9 @@ ohos_prebuilt_shared_library("mali-bifrost-g52-g2p0-wayland") {
     source = "lib/libmali-bifrost-g52-g2p0-wayland.so"
   } else if (target_cpu == "arm64") {
     source = "lib64/libmali-bifrost-g52-g2p0-wayland.so"
-  }     
+  }
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "display_device_driver"
   install_enable = true
   symlink_target_name = [
     "libEGL.so",
@@ -43,4 +43,3 @@ ohos_prebuilt_shared_library("mali-bifrost-g52-g2p0-wayland") {
     "libmali.so.1",
   ]
 }
-

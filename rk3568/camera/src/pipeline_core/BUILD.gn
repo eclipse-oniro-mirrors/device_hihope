@@ -45,9 +45,9 @@ config("pipe_config") {
 
 ohos_shared_library("camera_pipeline_core") {
   sources = [
+    "$camera_device_name_path/camera/src/pipeline_core/node/rk_codec_node.cpp",
     "$camera_path/adapter/platform/v4l2/src/pipeline_core/nodes/uvc_node/uvc_node.cpp",
     "$camera_path/adapter/platform/v4l2/src/pipeline_core/nodes/v4l2_source_node/v4l2_source_node.cpp",
-    "$camera_device_name_path/camera/src/pipeline_core/node/rk_codec_node.cpp",
     "$camera_path/pipeline_core/host_stream/src/host_stream_impl.cpp",
     "$camera_path/pipeline_core/host_stream/src/host_stream_mgr_impl.cpp",
     "$camera_path/pipeline_core/ipp/src/algo_plugin.cpp",
@@ -133,9 +133,9 @@ ohos_shared_library("camera_pipeline_core") {
   deps = [
     "$camera_path/buffer_manager:camera_buffer_manager",
     "$camera_path/device_manager:camera_device_manager",
-    "//foundation/multimedia/camera_standard/frameworks/innerkitsimpl/metadata:metadata",
-    "//device/hihope/hardware/rga:librga",
     "//device/hihope/hardware/mpp:libmpp",
+    "//device/hihope/hardware/rga:librga",
+    "//foundation/multimedia/camera_standard/frameworks/innerkitsimpl/metadata:metadata",
     "//third_party/libjpeg:libjpeg_static",
 
     # hcs parser
@@ -152,7 +152,7 @@ ohos_shared_library("camera_pipeline_core") {
 
   public_configs = [ ":pipe_config" ]
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "camera_device_driver"
 }
 
 config("example_config") {
@@ -175,5 +175,5 @@ ohos_shared_library("camera_ipp_algo_example") {
   deps = [ "//utils/native/base:utils" ]
   public_configs = [ ":example_config" ]
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "camera_device_driver"
 }

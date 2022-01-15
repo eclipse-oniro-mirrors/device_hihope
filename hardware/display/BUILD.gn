@@ -16,8 +16,8 @@ import("//build/ohos.gni")
 group("display_group") {
   deps = [
     ":display_device",
-    ":display_gralloc",
     ":display_gfx",
+    ":display_gralloc",
     ":higbm",
   ]
 }
@@ -75,7 +75,7 @@ ohos_shared_library("display_gralloc") {
 
   install_enable = true
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "display_device_driver"
 }
 
 ohos_shared_library("display_gfx") {
@@ -95,15 +95,15 @@ ohos_shared_library("display_gfx") {
   cflags = [ "-Wno-macro-redefined" ]
   deps = [
     ":display_gralloc",
-    "//utils/native/base:utils",
     "//device/hihope/hardware/rga:librga",
+    "//utils/native/base:utils",
   ]
 
   external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
 
   install_enable = true
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "display_device_driver"
 }
 
 ohos_shared_library("display_device") {
@@ -148,14 +148,14 @@ ohos_shared_library("display_device") {
 
   install_enable = true
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "display_device_driver"
 }
 
 group("display_layer") {
   deps = [
     ":display_device",
-    ":display_gralloc",
     ":display_gfx",
+    ":display_gralloc",
     ":higbm",
   ]
 }
