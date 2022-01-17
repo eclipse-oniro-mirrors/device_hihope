@@ -15,8 +15,8 @@ import("//build/ohos.gni")
 
 ohos_prebuilt_etc("init.rk3568.cfg") {
   source = "init.rk3568.cfg"
-  install_images = [ "system" ]
   part_name = "rockchip_products"
+  install_images = [ chipset_base_dir ]
   install_enable = true
 }
 
@@ -24,35 +24,35 @@ ohos_prebuilt_executable("weston.cfg") {
   install_enable = true
   source = "weston.cfg"
   module_install_dir = "etc/init"
-  install_images = [ "system" ]
+  install_images = [ chipset_base_dir ]
   part_name = "rockchip_products"
 }
 
 ohos_prebuilt_etc("init.rk3568.usb.cfg") {
   source = "init.rk3568.usb.cfg"
-  install_images = [ "system" ]
   part_name = "rockchip_products"
+  install_images = [ chipset_base_dir ]
   install_enable = true
 }
 
 ohos_prebuilt_etc("init.without_two_stages.cfg") {
   source = "init.without_two_stages.cfg"
-  install_images = [ "system" ]
   part_name = "rockchip_products"
+  install_images = [ "system" ]
   install_enable = true
 }
 
 ohos_prebuilt_etc("init.cfg") {
   source = "init.cfg"
-  install_images = [ "system" ]
   part_name = "rockchip_products"
+  install_images = [ "system" ]
   install_enable = true
 }
 
 ohos_prebuilt_etc("fstab.rk3568") {
   source = "fstab.rk3568"
-  install_images = [ "vendor" ]
   part_name = "rockchip_products"
+  install_images = [ vendor_base_dir ]
   install_enable = true
 }
 
