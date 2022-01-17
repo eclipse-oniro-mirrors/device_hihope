@@ -47,6 +47,9 @@ cp -rf ${KERNEL_CONFIG_FILE} ${KERNEL_SRC_TMP_PATH}/arch/arm64/configs/rockchip_
 ./make-ohos.sh TB-RK3568X0 > kernel_build.log 2>&1
 
 mkdir -p ${2}
-cp boot_linux.img ${2}/boot_linux_5_10.img
-cp ${3}/loader/* ${2}
+cp boot_linux.img ${2}/boot_linux.img
+cp resource.img ${2}/resource.img
+cp ${3}/loader/parameter_5_10.txt ${2}/parameter.txt
+cp ${3}/loader/MiniLoaderAll.bin ${2}/MiniLoaderAll.bin
+cp ${3}/loader/uboot_5_10.img ${2}/uboot.img
 popd
