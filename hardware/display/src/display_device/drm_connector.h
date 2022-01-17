@@ -113,6 +113,10 @@ private:
     InterfaceType mType;
     uint32_t mPhyWidth;
     uint32_t mPhyHeight;
+    uint32_t mSupportLayers = 0;
+    uint32_t mVirtualDispCount = 0;
+    bool mSupportWriteBack = false;
+    uint32_t mPropertyCount = 0;
     uint32_t mEncoderId;
     std::vector<uint32_t> mPossibleEncoders;
     std::string mName;

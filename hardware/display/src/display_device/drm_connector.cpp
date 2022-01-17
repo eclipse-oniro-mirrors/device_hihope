@@ -134,6 +134,10 @@ void DrmConnector::GetDisplayCap(DisplayCapability &cap)
     } else {
         cap.name[mName.size()] = 0;
     }
+    cap.supportLayers = mSupportLayers;
+    cap.virtualDispCount = mVirtualDispCount;
+    cap.supportWriteBack = mSupportWriteBack;
+    cap.propertyCount = mPropertyCount;
 }
 
 void DrmConnector::ConvertTypeToName(uint32_t type, std::string &name)
