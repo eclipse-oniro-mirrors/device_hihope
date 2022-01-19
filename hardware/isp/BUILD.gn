@@ -20,22 +20,23 @@ ohos_prebuilt_shared_library("librkaiq") {
   } else {
     source = "$ISP_DIR/lib64/librkaiq.z.so"
   }
+  install_images = [ chipset_base_dir ]
   subsystem_name = "rockchip_products"
   install_enable = true
 }
 
 ohos_prebuilt_etc("gc8034_RK-CMK-8M-2-v1_CK8401") {
   source = "$ISP_DIR/etc/iqfiles/gc8034_RK-CMK-8M-2-v1_CK8401.json"
-  install_images = [ "system" ]
   relative_install_dir = "iqfiles"
+  install_images = [ chipset_base_dir ]
   part_name = "rockchip_products"
   install_enable = true
 }
 
 ohos_prebuilt_etc("iqfil") {
   source = "$ISP_DIR/etc/iqfil.json"
-  install_images = [ "system" ]
   relative_install_dir = ""
+  install_images = [ chipset_base_dir ]
   part_name = "rockchip_products"
   install_enable = true
 }
@@ -46,6 +47,7 @@ ohos_prebuilt_executable("ispserver") {
   } else {
     source = "$ISP_DIR/bin64/ispserver"
   }
+  install_images = [ chipset_base_dir ]
   part_name = "rockchip_products"
   install_enable = true
 }

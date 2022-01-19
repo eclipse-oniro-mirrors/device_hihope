@@ -19,7 +19,7 @@ WIFI_BIN_DIR = "//device/hihope/hardware/wifi/bin"
 
 ohos_prebuilt_etc("clm_bcm43752a2_ag.blob") {
   source = "$AP6XXX_ETC_DIR/clm_bcm43752a2_ag.blob"
-  install_images = [ "vendor" ]
+  install_images = [ vendor_base_dir ]
   relative_install_dir = "firmware"
   part_name = "rockchip_products"
   install_enable = true
@@ -27,7 +27,7 @@ ohos_prebuilt_etc("clm_bcm43752a2_ag.blob") {
 
 ohos_prebuilt_etc("fw_bcm43752a2_ag_apsta.bin") {
   source = "$AP6XXX_ETC_DIR/fw_bcm43752a2_ag_apsta.bin"
-  install_images = [ "vendor" ]
+  install_images = [ vendor_base_dir ]
   relative_install_dir = "firmware"
   part_name = "rockchip_products"
   install_enable = true
@@ -35,7 +35,7 @@ ohos_prebuilt_etc("fw_bcm43752a2_ag_apsta.bin") {
 
 ohos_prebuilt_etc("fw_bcm43752a2_ag.bin") {
   source = "$AP6XXX_ETC_DIR/fw_bcm43752a2_ag.bin"
-  install_images = [ "vendor" ]
+  install_images = [ vendor_base_dir ]
   relative_install_dir = "firmware"
   part_name = "rockchip_products"
   install_enable = true
@@ -43,7 +43,7 @@ ohos_prebuilt_etc("fw_bcm43752a2_ag.bin") {
 
 ohos_prebuilt_etc("nvram_ap6275s.txt") {
   source = "$AP6XXX_ETC_DIR/nvram_ap6275s.txt"
-  install_images = [ "vendor" ]
+  install_images = [ vendor_base_dir ]
   relative_install_dir = "firmware"
   part_name = "rockchip_products"
   install_enable = true
@@ -89,13 +89,13 @@ ohos_prebuilt_shared_library("libwpa_client.z.so") {
 group("ap6xxx") {
   deps = [
     ":clm_bcm43752a2_ag.blob",
-    ":fw_bcm43752a2_ag_apsta.bin",
     ":fw_bcm43752a2_ag.bin",
+    ":fw_bcm43752a2_ag_apsta.bin",
+    ":libwpa.z.so",
+    ":libwpa_client.z.so",
     ":nvram_ap6275s.txt",
     ":resolv.conf",
     ":wpa_cli",
     ":wpa_supplicant",
-    ":libwpa_client.z.so",
-    ":libwpa.z.so",
   ]
 }

@@ -20,6 +20,7 @@ ohos_prebuilt_shared_library("libmpp") {
   } else {
     source = "lib64/librockchip_mpp.so"
   }
+  install_images = [ chipset_base_dir ]
   part_name = "rockchip_products"
   install_enable = true
 }
