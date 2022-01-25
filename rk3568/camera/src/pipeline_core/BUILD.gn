@@ -115,7 +115,7 @@ ohos_shared_library("camera_pipeline_core") {
     "//foundation/communication/ipc/ipc/native/src/core/include",
     "//foundation/communication/ipc/interfaces/innerkits/ipc_core/include",
     "//utils/native/base/include",
-    "//foundation/multimedia/camera_standard/frameworks/innerkitsimpl/metadata/include",
+    "//foundation/multimedia/camera_standard/frameworks/native/metadata/include",
     "$camera_device_name_path/camera/src/pipeline_core/node",
     "//device/hihope/hardware/rga/include",
     "//device/hihope/hardware/mpp/include",
@@ -135,7 +135,7 @@ ohos_shared_library("camera_pipeline_core") {
     "$camera_path/device_manager:camera_device_manager",
     "//device/hihope/hardware/mpp:libmpp",
     "//device/hihope/hardware/rga:librga",
-    "//foundation/multimedia/camera_standard/frameworks/innerkitsimpl/metadata:metadata",
+    "//foundation/multimedia/camera_standard/frameworks/native/metadata:metadata",
     "//third_party/libjpeg:libjpeg_static",
 
     # hcs parser
