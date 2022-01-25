@@ -1,12 +1,17 @@
 /*
-   Copyright (c) [2022] [huangji@nj.iscas.ac.cn]
-   [Software Name] is licensed under Mulan PSL v2.
-   You can use this software according to the terms and conditions of the Mulan PSL v2. 
-   You may obtain a copy of Mulan PSL v2 at:
-               http://license.coscl.org.cn/MulanPSL2 
-   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.  
-   See the Mulan PSL v2 for more details.  
-*/
+ * Copyright (c) [2022] [huangji@nj.iscas.ac.cn]
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include <linux/device.h>
 #include <linux/module.h>
@@ -62,8 +67,6 @@ static const struct reg_default rk817_reg_defaults[] = {
 	{ RK817_CODEC_AREF_RTCFG1, 0x06 },
 	{ RK817_CODEC_AADC_CFG0, 0xc8 },
 	{ RK817_CODEC_AADC_CFG1, 0x00 },
-	//{ RK817_CODEC_DADC_VOLL, 0x00 },
-	//{ RK817_CODEC_DADC_VOLR, 0x00 },
 	{ RK817_CODEC_DADC_SR_ACL0, 0x00 },
 	{ RK817_CODEC_DADC_ALC1, 0x00 },
 	{ RK817_CODEC_DADC_ALC2, 0x00 },
@@ -225,7 +228,6 @@ struct Rk809ChipData *g_chip;
 /* HdfDriverEntry */
 static int32_t GetServiceName(const struct HdfDeviceObject *device)
 {
-	// struct Rk809ChipData *chip = device->priv;
     const struct DeviceResourceNode *node = NULL;
     struct DeviceResourceIface *drsOps = NULL;
     int32_t ret;
@@ -291,9 +293,7 @@ static int32_t Rk809DriverInit(struct HdfDeviceObject *device)
     g_chip->codec = g_rk809Data;
     g_chip->dai = g_rk809DaiData;
     platform_set_drvdata(rk817_pdev, g_chip);
-    // device->priv = chip;
     g_chip->pdev = rk817_pdev;
-    //g_chip->hdev = device;
 
     struct rk808 *rk808 = dev_get_drvdata(g_chip->pdev->dev.parent);
     if (!rk808) {
@@ -345,7 +345,6 @@ static int32_t Rk809DriverInit(struct HdfDeviceObject *device)
 static void RK809ChipRelease(void) 
 {
     if (g_chip) {
-        // device->priv = NULL;
         platform_set_drvdata(g_chip->pdev, NULL);
         if (g_chip->regmap) {
             regmap_exit(g_chip->regmap);
