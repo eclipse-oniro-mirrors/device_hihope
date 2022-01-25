@@ -211,7 +211,7 @@ static const RK809_VDW RK809GetI2SDataWidth(const unsigned int bitWidth)
     }
 }
 
-int32_t RK809DaiParamsUpdate(struct AudioRegCfgGroupNode **regCfgGroup,
+int32_t RK809UpdateRenderParams(struct AudioRegCfgGroupNode **regCfgGroup,
     struct RK809DaiParamsVal codecDaiParamsVal)
 {
     int32_t ret;
@@ -229,75 +229,117 @@ int32_t RK809DaiParamsUpdate(struct AudioRegCfgGroupNode **regCfgGroup,
 
     regAttr = regCfgGroup[AUDIO_DAI_PATAM_GROUP]->regCfgItem;
 
-    if(g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_START || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_PAUSE
-        || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_RESUME || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_STOP)
-    {
-        for (i = 0; i < itemNum; i++) {
-            if (regAttr[i].reg == RK817_CODEC_APLL_CFG3) {
-                regAttr[i].value = RK809GetPremode(codecDaiParamsVal.frequencyVal);
-                ret = RK809RegBitsUpdate(regAttr[i]);
-                AUDIO_DEVICE_LOG_ERR(" reg:%02x = [%02x]",regAttr[i].reg,regAttr[i].value);
-                if (ret != HDF_SUCCESS) {
-                    AUDIO_DEVICE_LOG_ERR("RK809RegBitsUpdate failed.");
-                    return HDF_FAILURE;
-                }
+    for (i = 0; i < itemNum; i++) {
+        if (regAttr[i].reg == RK817_CODEC_APLL_CFG3) {
+            regAttr[i].value = RK809GetPremode(codecDaiParamsVal.frequencyVal);
+            ret = RK809RegBitsUpdate(regAttr[i]);
+            if (ret != HDF_SUCCESS) {
+                AUDIO_DEVICE_LOG_ERR("RK809RegBitsUpdate failed.");
+                return HDF_FAILURE;
             }
-            else if (regAttr[i].reg == RK817_CODEC_DDAC_SR_LMT0) {
-                regAttr[i].value = RK809GetSRT(codecDaiParamsVal.frequencyVal);
-                Rk809DeviceRegUpdatebits(RK817_CODEC_DTOP_DIGEN_CLKE,DAC_DIG_CLK_EN,0x00);
-                ret = RK809RegBitsUpdate(regAttr[i]);
-                AUDIO_DEVICE_LOG_ERR(" reg:%02x = [%02x]",regAttr[i].reg,regAttr[i].value);
-                if (ret != HDF_SUCCESS) {
-                    AUDIO_DEVICE_LOG_ERR("RK809RegBitsUpdate failed.");
-                    return HDF_FAILURE;
-                }
-                Rk809DeviceRegUpdatebits(RK817_CODEC_DTOP_DIGEN_CLKE,DAC_DIG_CLK_EN,DAC_DIG_CLK_EN);
+        }
+        else if (regAttr[i].reg == RK817_CODEC_DDAC_SR_LMT0) {
+            regAttr[i].value = RK809GetSRT(codecDaiParamsVal.frequencyVal);
+            Rk809DeviceRegUpdatebits(RK817_CODEC_DTOP_DIGEN_CLKE,DAC_DIG_CLK_EN,0x00);
+            ret = RK809RegBitsUpdate(regAttr[i]);
+            if (ret != HDF_SUCCESS) {
+                AUDIO_DEVICE_LOG_ERR("RK809RegBitsUpdate failed.");
+                return HDF_FAILURE;
             }
-            else if (regAttr[i].reg == RK817_CODEC_DI2S_RXCR2) {
-                regAttr[i].value = RK809GetI2SDataWidth(codecDaiParamsVal.DataWidthVal);
-                ret = RK809RegBitsUpdate(regAttr[i]);
-                AUDIO_DEVICE_LOG_ERR(" reg:%02x = [%02x]",regAttr[i].reg,regAttr[i].value);
-                if (ret != HDF_SUCCESS) {
-                    AUDIO_DEVICE_LOG_ERR("RK809RegBitsUpdate failed.");
-                    return HDF_FAILURE;
-                }
+            Rk809DeviceRegUpdatebits(RK817_CODEC_DTOP_DIGEN_CLKE,DAC_DIG_CLK_EN,DAC_DIG_CLK_EN);
+        }
+        else if (regAttr[i].reg == RK817_CODEC_DI2S_RXCR2) {
+            regAttr[i].value = RK809GetI2SDataWidth(codecDaiParamsVal.DataWidthVal);
+            ret = RK809RegBitsUpdate(regAttr[i]);
+            if (ret != HDF_SUCCESS) {
+                AUDIO_DEVICE_LOG_ERR("RK809RegBitsUpdate failed.");
+                return HDF_FAILURE;
             }
         }
     }
 
+    return HDF_SUCCESS;
+}
+
+int32_t RK809UpdateCaptureParams(struct AudioRegCfgGroupNode **regCfgGroup,
+    struct RK809DaiParamsVal codecDaiParamsVal)
+{
+    int32_t ret;
+    struct AudioMixerControl *regAttr = NULL;
+    int32_t itemNum = regCfgGroup[AUDIO_DAI_PATAM_GROUP]->itemNum;
+    int16_t i = 0;
+
+    ret = (regCfgGroup == NULL
+        || regCfgGroup[AUDIO_DAI_PATAM_GROUP] == NULL
+        || regCfgGroup[AUDIO_DAI_PATAM_GROUP]->regCfgItem == NULL);
+    if (ret) {
+        AUDIO_DEVICE_LOG_ERR("input invalid parameter.");
+        return HDF_FAILURE;
+    }
+
+    regAttr = regCfgGroup[AUDIO_DAI_PATAM_GROUP]->regCfgItem;
+
+    for (i = 0; i < itemNum; i++) {
+        if (regAttr[i].reg == RK817_CODEC_APLL_CFG3) {
+            regAttr[i].value = RK809GetPremode(codecDaiParamsVal.frequencyVal);
+            ret = RK809RegBitsUpdate(regAttr[i]);
+            if (ret != HDF_SUCCESS) {
+                AUDIO_DEVICE_LOG_ERR("RK809RegBitsUpdate failed.");
+                return HDF_FAILURE;
+            }
+        }
+        else if (regAttr[i].reg == RK817_CODEC_DADC_SR_ACL0) {
+            regAttr[i].value = RK809GetSRT(codecDaiParamsVal.frequencyVal);
+            Rk809DeviceRegUpdatebits(RK817_CODEC_DTOP_DIGEN_CLKE,ADC_DIG_CLK_EN,0x00);
+            ret = RK809RegBitsUpdate(regAttr[i]);
+            if (ret != HDF_SUCCESS) {
+                AUDIO_DEVICE_LOG_ERR("RK809RegBitsUpdate failed.");
+                return HDF_FAILURE;
+            }
+            Rk809DeviceRegUpdatebits(RK817_CODEC_DTOP_DIGEN_CLKE,ADC_DIG_CLK_EN,ADC_DIG_CLK_EN);
+        }
+        else if (regAttr[i].reg == RK817_CODEC_DI2S_TXCR2) {
+            regAttr[i].value = RK809GetI2SDataWidth(codecDaiParamsVal.DataWidthVal);
+            ret = RK809RegBitsUpdate(regAttr[i]);
+            if (ret != HDF_SUCCESS) {
+                AUDIO_DEVICE_LOG_ERR("RK809RegBitsUpdate failed.");
+                return HDF_FAILURE;
+            }
+        }
+    }
+
+    return HDF_SUCCESS;
+}
+
+int32_t RK809DaiParamsUpdate(struct AudioRegCfgGroupNode **regCfgGroup,
+    struct RK809DaiParamsVal codecDaiParamsVal)
+{
+    int32_t ret;
+
+    ret = (regCfgGroup == NULL
+        || regCfgGroup[AUDIO_DAI_PATAM_GROUP] == NULL
+        || regCfgGroup[AUDIO_DAI_PATAM_GROUP]->regCfgItem == NULL);
+    if (ret) {
+        AUDIO_DEVICE_LOG_ERR("input invalid parameter.");
+        return HDF_FAILURE;
+    }
+
+    if(g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_START || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_PAUSE
+        || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_RESUME || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_STOP)
+    {
+        ret = RK809UpdateRenderParams(regCfgGroup,codecDaiParamsVal);
+        if (ret != HDF_SUCCESS) {
+            AUDIO_DEVICE_LOG_ERR("RK809UpdateRenderParams failed.");
+            return HDF_FAILURE;            
+        }
+    }
     else if(g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_CAPTURE_START || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_CAPTURE_PAUSE
         || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_CAPTURE_RESUME || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_CAPTURE_STOP)
     {
-        for (i = 0; i < itemNum; i++) {
-            if (regAttr[i].reg == RK817_CODEC_APLL_CFG3) {
-                regAttr[i].value = RK809GetPremode(codecDaiParamsVal.frequencyVal);
-                ret = RK809RegBitsUpdate(regAttr[i]);
-                AUDIO_DEVICE_LOG_ERR(" reg:%02x = [%02x]",regAttr[i].reg,regAttr[i].value);
-                if (ret != HDF_SUCCESS) {
-                    AUDIO_DEVICE_LOG_ERR("RK809RegBitsUpdate failed.");
-                    return HDF_FAILURE;
-                }
-            }
-            else if (regAttr[i].reg == RK817_CODEC_DADC_SR_ACL0) {
-                regAttr[i].value = RK809GetSRT(codecDaiParamsVal.frequencyVal);
-                Rk809DeviceRegUpdatebits(RK817_CODEC_DTOP_DIGEN_CLKE,ADC_DIG_CLK_EN,0x00);
-                ret = RK809RegBitsUpdate(regAttr[i]);
-                AUDIO_DEVICE_LOG_ERR(" reg:%02x = [%02x]",regAttr[i].reg,regAttr[i].value);
-                if (ret != HDF_SUCCESS) {
-                    AUDIO_DEVICE_LOG_ERR("RK809RegBitsUpdate failed.");
-                    return HDF_FAILURE;
-                }
-                Rk809DeviceRegUpdatebits(RK817_CODEC_DTOP_DIGEN_CLKE,ADC_DIG_CLK_EN,ADC_DIG_CLK_EN);
-            }
-            else if (regAttr[i].reg == RK817_CODEC_DI2S_TXCR2) {
-                regAttr[i].value = RK809GetI2SDataWidth(codecDaiParamsVal.DataWidthVal);
-                ret = RK809RegBitsUpdate(regAttr[i]);
-                AUDIO_DEVICE_LOG_ERR(" reg:%02x = [%02x]",regAttr[i].reg,regAttr[i].value);
-                if (ret != HDF_SUCCESS) {
-                    AUDIO_DEVICE_LOG_ERR("RK809RegBitsUpdate failed.");
-                    return HDF_FAILURE;
-                }
-            }
+        ret = RK809UpdateCaptureParams(regCfgGroup,codecDaiParamsVal);
+        if (ret != HDF_SUCCESS) {
+            AUDIO_DEVICE_LOG_ERR("RK809UpdateCaptureParams failed.");
+            return HDF_FAILURE;            
         }
     }
 
@@ -349,7 +391,7 @@ int32_t RK809CodecReadReg(unsigned long virtualAddress,uint32_t reg, uint32_t *v
         AUDIO_DRIVER_LOG_ERR("read register fail: [%04x]", reg);
         return HDF_FAILURE;
     }
-    ADM_LOG_ERR("read reg 0x[%02x] = 0x[%02x]",reg,*val);
+    ADM_LOG_DEBUG("read reg 0x[%02x] = 0x[%02x]",reg,*val);
     return HDF_SUCCESS;
 }
 
@@ -359,7 +401,7 @@ int32_t RK809CodecWriteReg(unsigned long virtualAddress,uint32_t reg, uint32_t v
         AUDIO_DRIVER_LOG_ERR("write register fail: [%04x] = %04x", reg, value);
         return HDF_FAILURE;
     }    
-    ADM_LOG_ERR("write reg 0x[%02x] = 0x[%02x]",reg,value);
+    ADM_LOG_DEBUG("write reg 0x[%02x] = 0x[%02x]",reg,value);
     return HDF_SUCCESS;
 }
 

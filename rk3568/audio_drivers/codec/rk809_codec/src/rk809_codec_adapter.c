@@ -328,7 +328,7 @@ static int32_t Rk809DriverInit(struct HdfDeviceObject *device)
 		return ret;
     }
 	if (CodecGetDaiName(device,  &(g_chip->dai.drvDaiName)) != HDF_SUCCESS) {
-		AUDIO_DRIVER_LOG_INFO("hhhhh[ %s : %d ],  enter CodecGetDaiName if return error",__func__,__LINE__);
+		AUDIO_DRIVER_LOG_INFO("CodecGetDaiName failed",__func__,__LINE__);
         return HDF_FAILURE;
     }
 
