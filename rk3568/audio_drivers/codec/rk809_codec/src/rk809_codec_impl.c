@@ -328,8 +328,10 @@ int32_t RK809DaiParamsUpdate(struct AudioRegCfgGroupNode **regCfgGroup,
         return HDF_FAILURE;
     }
 
-    if( g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_START || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_PAUSE
-        || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_RESUME || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_STOP)
+    if( g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_START 
+        || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_PAUSE
+        || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_RESUME 
+        || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_RENDER_STOP)
     {
         ret = RK809UpdateRenderParams(regCfgGroup, codecDaiParamsVal);
         if (ret != HDF_SUCCESS) {
@@ -337,8 +339,10 @@ int32_t RK809DaiParamsUpdate(struct AudioRegCfgGroupNode **regCfgGroup,
             return HDF_FAILURE;            
         }
     }
-    else if( g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_CAPTURE_START || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_CAPTURE_PAUSE
-        || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_CAPTURE_RESUME || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_CAPTURE_STOP)
+    else if( g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_CAPTURE_START 
+             || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_CAPTURE_PAUSE
+             || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_CAPTURE_RESUME 
+             || g_cuurentcmd == AUDIO_DRV_PCM_IOCTL_CAPTURE_STOP)
     {
         ret = RK809UpdateCaptureParams(regCfgGroup, codecDaiParamsVal);
         if (ret != HDF_SUCCESS) {
@@ -371,7 +375,7 @@ static int32_t RK809WorkStatusEnable(void)
     for (i = 0; i < daiStartupParamsRegCfgItemCount; i++) {
         ret = RK809RegBitsUpdate(daiStartupParamsRegCfgItem[i]);
         if (ret != HDF_SUCCESS) {
-            AUDIO_DEVICE_LOG_ERR("AccessoryRegBitsUpdate fail.");
+            AUDIO_DEVICE_LOG_ERR("RK809RegBitsUpdate fail.");
             return HDF_FAILURE;
         }
     }
@@ -463,7 +467,7 @@ int32_t Rk809DeviceInit(struct AudioCard *audioCard, const struct CodecDevice *d
     g_TransferData.i2cBusNumber = RK809_I2C_BUS_NUMBER;
     ret = Rk809DeviceCfgGet(device->devData, &g_TransferData);
     if (ret != HDF_SUCCESS) {
-        AUDIO_DEVICE_LOG_ERR("AccessoryDeviceCfgGet failed.");
+        AUDIO_DEVICE_LOG_ERR("Rk809DeviceCfgGet failed.");
         return HDF_FAILURE;
     }
 
@@ -534,7 +538,7 @@ int32_t Rk809DaiHwParams(const struct AudioCard *card, const struct AudioPcmHwPa
 
     ret =  RK809DaiParamsUpdate(card->rtd->codecDai->devData->regCfgGroup,codecDaiParamsVal);
     if (ret != HDF_SUCCESS) {
-        AUDIO_DEVICE_LOG_ERR("CodecDaiParamsUpdate failed.");
+        AUDIO_DEVICE_LOG_ERR("RK809DaiParamsUpdate failed.");
         return HDF_FAILURE;
     }     
 

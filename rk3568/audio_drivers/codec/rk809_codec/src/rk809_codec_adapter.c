@@ -29,7 +29,6 @@ struct platform_device *rk817_pdev;
 
 static const struct of_device_id rk817_codec_dt_ids[] = {
 	{ .compatible = "rockchip,rk817-codec" },
-	{},
 };
 MODULE_DEVICE_TABLE(of, rk817_codec_dt_ids);
 
@@ -327,14 +326,16 @@ static int32_t Rk809DriverInit(struct HdfDeviceObject *device)
         RK809ChipRelease();
 		return ret;
     }
-	if (CodecGetDaiName(device,  &(g_chip->dai.drvDaiName)) != HDF_SUCCESS) {
-		AUDIO_DRIVER_LOG_INFO("CodecGetDaiName failed",__func__,__LINE__);
+	
+	ret = CodecGetDaiName(device,  &(g_chip->dai.drvDaiName));
+	if (ret != HDF_SUCCESS) {
+		AUDIO_DEVICE_LOG_ERR("CodecGetDaiName failed.");
         return HDF_FAILURE;
     }
 
     ret = AudioRegisterCodec(device, &(g_chip->codec), &(g_chip->dai));
     if (ret !=  HDF_SUCCESS) {
-        AUDIO_DEVICE_LOG_ERR("AudioRegisterAccessory failed.");
+        AUDIO_DEVICE_LOG_ERR("AudioRegisterCodec failed.");
         RK809ChipRelease();
 		return ret;
     }
