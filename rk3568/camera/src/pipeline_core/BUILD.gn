@@ -113,7 +113,6 @@ ohos_shared_library("camera_pipeline_core") {
     "$camera_path/adapter/platform/v4l2/src/pipeline_core/nodes/uvc_node",
     "//drivers/peripheral/camera/hal/adapter/platform/v4l2/src/driver_adapter/include/",
     "//foundation/communication/ipc/ipc/native/src/core/include",
-    "//foundation/communication/ipc/interfaces/innerkits/ipc_core/include",
     "//utils/native/base/include",
     "//foundation/multimedia/camera_standard/frameworks/innerkitsimpl/metadata/include",
     "$camera_device_name_path/camera/src/pipeline_core/node",
@@ -140,7 +139,6 @@ ohos_shared_library("camera_pipeline_core") {
 
     # hcs parser
     "$hdf_uhdf_path/utils:libhdf_utils",
-    "//foundation/communication/ipc/interfaces/innerkits/ipc_core:ipc_core",
     "//foundation/graphic/standard:libsurface",
   ]
 
@@ -149,6 +147,7 @@ ohos_shared_library("camera_pipeline_core") {
   } else {
     external_deps = [ "hilog:libhilog" ]
   }
+  external_deps += [ "ipc:ipc_single" ]
 
   public_configs = [ ":pipe_config" ]
   install_images = [ chipset_base_dir ]
