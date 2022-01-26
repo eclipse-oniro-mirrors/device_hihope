@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 HiHope Open Source Organization .
  *
  * HDF is dual licensed: you can use it either under the terms of
  * the GPL, or the BSD license, at your option.
@@ -272,35 +272,33 @@ int32_t RK3568I2sTdmSetMclk(struct rk3568_i2s_tdm_dev *i2s_tdm, struct clk **mcl
 }
 int32_t RK3568I2sTdmSetSysClk(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct AudioPcmHwParams *param)
 {
-	/* Put set mclk rate into rockchip_i2s_tdm_set_mclk() */
+    /* Put set mclk rate into rockchip_i2s_tdm_set_mclk() */
     uint32_t sampleRate = param->rate;
     uint32_t mclk_parent_freq = 0;
     switch (sampleRate) {
-    	case AUDIO_DEVICE_SAMPLE_RATE_8000:
-	    case AUDIO_DEVICE_SAMPLE_RATE_16000:
+        case AUDIO_DEVICE_SAMPLE_RATE_8000:
+        case AUDIO_DEVICE_SAMPLE_RATE_16000:
         case AUDIO_DEVICE_SAMPLE_RATE_24000:
         case AUDIO_DEVICE_SAMPLE_RATE_32000:
         case AUDIO_DEVICE_SAMPLE_RATE_48000:
         case AUDIO_DEVICE_SAMPLE_RATE_64000:
         case AUDIO_DEVICE_SAMPLE_RATE_96000:
-        case AUDIO_DEVICE_SAMPLE_RATE_192000:
-		mclk_parent_freq = i2s_tdm->bclk_fs * AUDIO_DEVICE_SAMPLE_RATE_192000;
-		break;
+        mclk_parent_freq = i2s_tdm->bclk_fs * AUDIO_DEVICE_SAMPLE_RATE_192000;
+        break;
         case AUDIO_DEVICE_SAMPLE_RATE_11025:
         case AUDIO_DEVICE_SAMPLE_RATE_22050:
         case AUDIO_DEVICE_SAMPLE_RATE_44100:
-        case AUDIO_DEVICE_SAMPLE_RATE_88200:
-        case AUDIO_DEVICE_SAMPLE_RATE_176400:
-		mclk_parent_freq = i2s_tdm->bclk_fs * AUDIO_DEVICE_SAMPLE_RATE_176400;
-		break;
-	    default:
-		AUDIO_DEVICE_LOG_ERR("Invalid LRCK freq: %u Hz\n", sampleRate);
-		    return HDF_FAILURE;
+
+        mclk_parent_freq = i2s_tdm->bclk_fs * AUDIO_DEVICE_SAMPLE_RATE_176400;
+        break;
+        default:
+        AUDIO_DEVICE_LOG_ERR("Invalid LRCK freq: %u Hz\n", sampleRate);
+            return HDF_FAILURE;
     }
     i2s_tdm->mclk_tx_freq = mclk_parent_freq;
     i2s_tdm->mclk_rx_freq = mclk_parent_freq;
-
-	return HDF_SUCCESS;
+    
+    return HDF_SUCCESS;
 }
 
 int32_t Rk3568DaiHwParams(const struct AudioCard *card, const struct AudioPcmHwParams *param)

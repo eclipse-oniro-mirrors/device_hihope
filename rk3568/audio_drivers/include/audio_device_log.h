@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 HiHope Open Source Organization .
  *
  * HDF is dual licensed: you can use it either under the terms of
  * the GPL, or the BSD license, at your option.
@@ -17,19 +17,19 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define AUDIO_DEVICE_LOG_ERR(fmt, arg...) do { \
-    HDF_LOGE("zhp321 [%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
+    HDF_LOGE("[%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
     } while (0)
 
 #define AUDIO_DEVICE_LOG_INFO(fmt, arg...) do { \
-    HDF_LOGE("zhp321 [%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
+    HDF_LOGE("[%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
     } while (0)
 
 #define AUDIO_DEVICE_LOG_WARNING(fmt, arg...) do { \
-    HDF_LOGE("zhp321 [%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
+    HDF_LOGE("[%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
     } while (0)
 
 #define AUDIO_DEVICE_LOG_DEBUG(fmt, arg...) do { \
-    HDF_LOGE("zhp321 [%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
+    HDF_LOGE("[%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
     } while (0)
 
 #ifdef __cplusplus

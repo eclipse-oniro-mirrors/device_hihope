@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 HiHope Open Source Organization .
  *
  * HDF is dual licensed: you can use it either under the terms of
  * the GPL, or the BSD license, at your option.
@@ -50,7 +50,7 @@ struct DmaRuntimeData {
 static struct device *g_dmaDev;
 struct device *getDmaDevice(void)
 {
-    struct device_node	*dmaOfNode;
+    struct device_node    *dmaOfNode;
     struct platform_device *platformdev;
     dmaOfNode = of_find_node_by_path("/i2s@fe410000");
     if(dmaOfNode == NULL) {
@@ -215,7 +215,8 @@ int32_t  Rk3568DmaRequestChannel(struct PlatformData *data)
         return HDF_FAILURE;
     }
 
-    enum AudioStreamType streamType = dmaRtd->streamType;
+    enum AudioStreamType streamType = data->pcmInfo.streamType;
+
     AUDIO_DEVICE_LOG_ERR("dmaRtd->streamType = %d", streamType);
     dmaRtd->dmaChn[streamType] = dma_request_slave_channel(dmaDevice, 
         dmaChannelNames[streamType]);
@@ -246,8 +247,8 @@ int32_t Rk3568DmaConfigChannel(struct PlatformData *data)
         AUDIO_DEVICE_LOG_ERR("dmaPrv is null.");
         return HDF_FAILURE;
     }
-
-    if (dmaRtd->streamType == AUDIO_RENDER_STREAM) {
+    enum AudioStreamType streamType = data->pcmInfo.streamType;
+    if (streamType == AUDIO_RENDER_STREAM) {
         AUDIO_DEVICE_LOG_DEBUG("get dmachan enter");
         dmaChan = (struct dma_chan *)dmaRtd->dmaChn[DMA_TX_CHANNEL];   // tx
         AUDIO_DEVICE_LOG_DEBUG("get dmachan exit");
@@ -256,7 +257,7 @@ int32_t Rk3568DmaConfigChannel(struct PlatformData *data)
         slave_config.dst_addr = I2S1_ADDR + I2S_TXDR;
         slave_config.dst_maxburst = 8;
 
-    } else if (dmaRtd->streamType == AUDIO_CAPTURE_STREAM) {
+    } else {
         dmaChan = (struct dma_chan *)dmaRtd->dmaChn[DMA_RX_CHANNEL];   // tx
         slave_config.direction = DMA_DEV_TO_MEM;
         slave_config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
@@ -290,7 +291,7 @@ int32_t Rk3568PcmPointer(struct PlatformData *data, uint32_t *pointer)
     struct dma_chan *dma_chn;
     struct dma_tx_state dma_state;
     struct DmaRuntimeData *dmaRtd = (struct DmaRuntimeData *)data->dmaPrv;
-    enum AudioStreamType streamType = dmaRtd->streamType;
+    enum AudioStreamType streamType = data->pcmInfo.streamType;
 
     AUDIO_DEVICE_LOG_DEBUG("dmaRtd->dmaChn = %p", dmaRtd->dmaChn);
     if (streamType == AUDIO_RENDER_STREAM) {
@@ -336,8 +337,8 @@ int32_t Rk3568DmaSubmit(struct PlatformData *data)
     struct dma_async_tx_descriptor *desc;
     enum dma_transfer_direction direction;
     unsigned long flags = 3;
-    enum AudioStreamType streamType = dmaRtd->streamType;
-    AUDIO_DEVICE_LOG_ERR("dmaRtd->streamType = %d", dmaRtd->streamType);
+    enum AudioStreamType streamType = data->pcmInfo.streamType;
+    AUDIO_DEVICE_LOG_ERR("streamType = %d", streamType);
     if (streamType == AUDIO_RENDER_STREAM) {
         direction = DMA_MEM_TO_DEV;
         desc = dmaengine_prep_dma_cyclic(dmaRtd->dmaChn[DMA_TX_CHANNEL],
@@ -382,7 +383,9 @@ int32_t Rk3568DmaPending(struct PlatformData *data)
         AUDIO_DEVICE_LOG_ERR("dmaPrv is null.");
         return HDF_FAILURE;
     }
-    if (dmaRtd->streamType == AUDIO_RENDER_STREAM) {
+    enum AudioStreamType streamType = data->pcmInfo.streamType;
+    AUDIO_DEVICE_LOG_ERR("streamType = %d", streamType);
+    if (streamType == AUDIO_RENDER_STREAM) {
         dmaChan = dmaRtd->dmaChn[DMA_TX_CHANNEL];
     } else {
         dmaChan = dmaRtd->dmaChn[DMA_RX_CHANNEL];
@@ -409,8 +412,9 @@ int32_t Rk3568DmaPause(struct PlatformData *data)
         AUDIO_DEVICE_LOG_ERR("dmaPrv is null.");
         return HDF_FAILURE;
     }
-
-    if (dmaRtd->streamType == AUDIO_RENDER_STREAM) {
+    enum AudioStreamType streamType = data->pcmInfo.streamType;
+    AUDIO_DEVICE_LOG_ERR("streamType = %d", streamType);
+    if (streamType == AUDIO_RENDER_STREAM) {
         dmaChan = dmaRtd->dmaChn[DMA_TX_CHANNEL];
     } else {
         dmaChan = dmaRtd->dmaChn[DMA_RX_CHANNEL];
@@ -440,7 +444,9 @@ int32_t Rk3568DmaResume(struct PlatformData *data)
         return HDF_FAILURE;
     }
 
-    if (dmaRtd->streamType == AUDIO_RENDER_STREAM) {
+    enum AudioStreamType streamType = data->pcmInfo.streamType;
+    AUDIO_DEVICE_LOG_ERR("streamType = %d", streamType);
+    if (streamType == AUDIO_RENDER_STREAM) {
         dmaChan = dmaRtd->dmaChn[DMA_TX_CHANNEL];
     } else {
         dmaChan = dmaRtd->dmaChn[DMA_RX_CHANNEL];
