@@ -44,7 +44,6 @@
 struct DmaRuntimeData {
     struct dma_chan *dmaChn[DMA_CHANNEL_MAX];
     dma_cookie_t cookie[DMA_CHANNEL_MAX];
-    enum AudioStreamType streamType;
 };
 
 static struct device *g_dmaDev;
@@ -99,8 +98,6 @@ static int32_t DmaRtdMemAlloc(struct PlatformData *data, enum AudioStreamType st
         return HDF_FAILURE;
     }
     data->dmaPrv = dmaRtd;
-    AUDIO_DEVICE_LOG_ERR("dmaRtd->streamType = %d", dmaRtd->streamType);
-    dmaRtd->streamType = streamType;
     AUDIO_DEVICE_LOG_DEBUG("success.");
     return HDF_SUCCESS;
 }
@@ -187,7 +184,7 @@ int32_t Rk3568DmaBufFree(struct PlatformData *data, enum AudioStreamType streamT
     return HDF_SUCCESS;
 }
 
-int32_t  Rk3568DmaRequestChannel(struct PlatformData *data)
+int32_t  Rk3568DmaRequestChannel(struct PlatformData *data, const enum AudioStreamType streamType)
 {
     AUDIO_DEVICE_LOG_DEBUG("entry");
     const int chnlCntMin = 1;
@@ -215,9 +212,7 @@ int32_t  Rk3568DmaRequestChannel(struct PlatformData *data)
         return HDF_FAILURE;
     }
 
-    enum AudioStreamType streamType = data->pcmInfo.streamType;
-
-    AUDIO_DEVICE_LOG_ERR("dmaRtd->streamType = %d", streamType);
+    AUDIO_DEVICE_LOG_ERR("streamType = %d", streamType);
     dmaRtd->dmaChn[streamType] = dma_request_slave_channel(dmaDevice, 
         dmaChannelNames[streamType]);
     if (dmaRtd->dmaChn[streamType] == NULL) {
@@ -229,7 +224,7 @@ int32_t  Rk3568DmaRequestChannel(struct PlatformData *data)
     return HDF_SUCCESS;
 }
 
-int32_t Rk3568DmaConfigChannel(struct PlatformData *data)
+int32_t Rk3568DmaConfigChannel(struct PlatformData *data, const enum AudioStreamType streamType)
 {
     AUDIO_DEVICE_LOG_DEBUG("entry");
     struct DmaRuntimeData *dmaRtd = NULL;
@@ -247,7 +242,6 @@ int32_t Rk3568DmaConfigChannel(struct PlatformData *data)
         AUDIO_DEVICE_LOG_ERR("dmaPrv is null.");
         return HDF_FAILURE;
     }
-    enum AudioStreamType streamType = data->pcmInfo.streamType;
     if (streamType == AUDIO_RENDER_STREAM) {
         AUDIO_DEVICE_LOG_DEBUG("get dmachan enter");
         dmaChan = (struct dma_chan *)dmaRtd->dmaChn[DMA_TX_CHANNEL];   // tx
@@ -284,38 +278,35 @@ static inline signed long BytesToFrames(uint32_t frameBits, uint32_t size)
     return size / frameBits;
 }
 
-int32_t Rk3568PcmPointer(struct PlatformData *data, uint32_t *pointer)
+int32_t Rk3568PcmPointer(struct PlatformData *data, const enum AudioStreamType streamType, uint32_t *pointer)
 {
     AUDIO_DEVICE_LOG_DEBUG("entry");
     uint32_t buf_size;
     struct dma_chan *dma_chn;
     struct dma_tx_state dma_state;
+    uint32_t currentPointer;
     struct DmaRuntimeData *dmaRtd = (struct DmaRuntimeData *)data->dmaPrv;
-    enum AudioStreamType streamType = data->pcmInfo.streamType;
 
     AUDIO_DEVICE_LOG_DEBUG("dmaRtd->dmaChn = %p", dmaRtd->dmaChn);
     if (streamType == AUDIO_RENDER_STREAM) {
         dma_chn = dmaRtd->dmaChn[DMA_TX_CHANNEL];
-        dmaengine_tx_status(dma_chn, dmaRtd->cookie[DMA_TX_CHANNEL], &dma_state);
         buf_size = data->renderBufInfo.cirBufSize;
-        if (dma_state.residue > 0 && dma_state.residue <= buf_size) {
-            AUDIO_DEVICE_LOG_DEBUG("AUDIO_RENDER_STREAM dma_state.residue = %d", dma_state.residue);
-            *pointer = BytesToFrames(data->pcmInfo.frameSize, dma_state.residue); // 32 is frame byte
-            if (*pointer == data->renderBufInfo.cirBufSize) {
-                *pointer = 0;
-            }
+        dmaengine_tx_status(dma_chn, dmaRtd->cookie[DMA_TX_CHANNEL], &dma_state);
+        if (dma_state.residue) {
+            currentPointer = buf_size - dma_state.residue;
+            *pointer = BytesToFrames(data->pcmInfo.frameSize, currentPointer);
+        } else {
+            *pointer = 0;
         }
-        AUDIO_DEVICE_LOG_DEBUG("pointer = %d", *pointer);
     } else {
         dma_chn = dmaRtd->dmaChn[DMA_RX_CHANNEL];
+        buf_size = data->captureBufInfo.cirBufSize;
         dmaengine_tx_status(dma_chn, dmaRtd->cookie[DMA_RX_CHANNEL], &dma_state);
-        buf_size =  data->captureBufInfo.cirBufSize;
-        if (dma_state.residue > 0 && dma_state.residue <= buf_size) {
-            AUDIO_DEVICE_LOG_DEBUG("AUDIO_CAPTURE_STREAM dma_state.residue = %d", dma_state.residue);
-            *pointer = BytesToFrames(data->pcmInfo.frameSize, dma_state.residue); // 32 is frame byte
-            if (*pointer == data->renderBufInfo.cirBufSize) {
-                *pointer = 0;
-            }
+        if (dma_state.residue) {
+            currentPointer = buf_size - dma_state.residue;
+            *pointer = BytesToFrames(data->pcmInfo.frameSize, currentPointer);
+        } else {
+            *pointer = 0;
         }
         AUDIO_DEVICE_LOG_DEBUG("pointer = %d", *pointer);
     }
@@ -324,20 +315,19 @@ int32_t Rk3568PcmPointer(struct PlatformData *data, uint32_t *pointer)
     return HDF_SUCCESS;
 }
 
-int32_t Rk3568DmaPrep(struct PlatformData *data)
+int32_t Rk3568DmaPrep(struct PlatformData *data, const enum AudioStreamType streamType)
 {
     (void)data;
     return HDF_SUCCESS;
 }
 
-int32_t Rk3568DmaSubmit(struct PlatformData *data)
+int32_t Rk3568DmaSubmit(struct PlatformData *data, const enum AudioStreamType streamType)
 {
     AUDIO_DEVICE_LOG_ERR("entry");
     struct DmaRuntimeData *dmaRtd = (struct DmaRuntimeData *)data->dmaPrv;
     struct dma_async_tx_descriptor *desc;
     enum dma_transfer_direction direction;
     unsigned long flags = 3;
-    enum AudioStreamType streamType = data->pcmInfo.streamType;
     AUDIO_DEVICE_LOG_ERR("streamType = %d", streamType);
     if (streamType == AUDIO_RENDER_STREAM) {
         direction = DMA_MEM_TO_DEV;
@@ -367,7 +357,7 @@ int32_t Rk3568DmaSubmit(struct PlatformData *data)
     return 0;
 }
 
-int32_t Rk3568DmaPending(struct PlatformData *data)
+int32_t Rk3568DmaPending(struct PlatformData *data, const enum AudioStreamType streamType)
 {
     AUDIO_DEVICE_LOG_ERR("entry");
     struct DmaRuntimeData *dmaRtd = NULL;
@@ -383,7 +373,6 @@ int32_t Rk3568DmaPending(struct PlatformData *data)
         AUDIO_DEVICE_LOG_ERR("dmaPrv is null.");
         return HDF_FAILURE;
     }
-    enum AudioStreamType streamType = data->pcmInfo.streamType;
     AUDIO_DEVICE_LOG_ERR("streamType = %d", streamType);
     if (streamType == AUDIO_RENDER_STREAM) {
         dmaChan = dmaRtd->dmaChn[DMA_TX_CHANNEL];
@@ -397,7 +386,7 @@ int32_t Rk3568DmaPending(struct PlatformData *data)
     return HDF_SUCCESS;
 }
 
-int32_t Rk3568DmaPause(struct PlatformData *data)
+int32_t Rk3568DmaPause(struct PlatformData *data, const enum AudioStreamType streamType)
 {
     AUDIO_DEVICE_LOG_ERR("entry");
     struct dma_chan *dmaChan;
@@ -412,7 +401,7 @@ int32_t Rk3568DmaPause(struct PlatformData *data)
         AUDIO_DEVICE_LOG_ERR("dmaPrv is null.");
         return HDF_FAILURE;
     }
-    enum AudioStreamType streamType = data->pcmInfo.streamType;
+
     AUDIO_DEVICE_LOG_ERR("streamType = %d", streamType);
     if (streamType == AUDIO_RENDER_STREAM) {
         dmaChan = dmaRtd->dmaChn[DMA_TX_CHANNEL];
@@ -426,7 +415,7 @@ int32_t Rk3568DmaPause(struct PlatformData *data)
     return HDF_SUCCESS;
 }
 
-int32_t Rk3568DmaResume(struct PlatformData *data)
+int32_t Rk3568DmaResume(struct PlatformData *data, const enum AudioStreamType streamType)
 {
     AUDIO_DEVICE_LOG_ERR("entry");
     int ret;
@@ -444,7 +433,6 @@ int32_t Rk3568DmaResume(struct PlatformData *data)
         return HDF_FAILURE;
     }
 
-    enum AudioStreamType streamType = data->pcmInfo.streamType;
     AUDIO_DEVICE_LOG_ERR("streamType = %d", streamType);
     if (streamType == AUDIO_RENDER_STREAM) {
         dmaChan = dmaRtd->dmaChn[DMA_TX_CHANNEL];

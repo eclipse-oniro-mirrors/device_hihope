@@ -17,19 +17,19 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define AUDIO_DEVICE_LOG_ERR(fmt, arg...) do { \
-    HDF_LOGE("[%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
+    HDF_LOGE("zhp321 [%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
     } while (0)
 
 #define AUDIO_DEVICE_LOG_INFO(fmt, arg...) do { \
-    HDF_LOGE("[%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
+    HDF_LOGE("zhp321 [%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
     } while (0)
 
 #define AUDIO_DEVICE_LOG_WARNING(fmt, arg...) do { \
-    HDF_LOGE("[%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
+    HDF_LOGE("zhp321 [%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
     } while (0)
 
 #define AUDIO_DEVICE_LOG_DEBUG(fmt, arg...) do { \
-    HDF_LOGE("[%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
+    HDF_LOGE("zhp321 [%s][line:%d]: " fmt, __func__, __LINE__, ##arg); \
     } while (0)
 
 #ifdef __cplusplus
