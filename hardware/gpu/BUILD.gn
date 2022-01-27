@@ -14,7 +14,7 @@
 import("//build/ohos.gni")
 import("//build/ohos/ndk/ndk.gni")
 
-config("libmali-bifrost-g52-g2p0-wayland") {
+config("libmali-bifrost-g52-g2p0-ohos") {
   include_dirs = [ "include" ]
   cflags = [
     "-Wno-incompatible-pointer-types",
@@ -25,9 +25,9 @@ config("libmali-bifrost-g52-g2p0-wayland") {
   cflags = []
 }
 
-ohos_prebuilt_shared_library("mali-bifrost-g52-g2p0-wayland") {
+ohos_prebuilt_shared_library("mali-bifrost-g52-g2p0-ohos") {
   if (target_cpu == "arm") {
-    source = "lib/libmali-bifrost-g52-g2p0-wayland.so"
+    source = "lib/libmali-bifrost-g52-g2p0-ohos.so"
   } else if (target_cpu == "arm64") {
     source = "lib64/libmali-bifrost-g52-g2p0-wayland.so"
   }
@@ -40,7 +40,7 @@ ohos_prebuilt_shared_library("mali-bifrost-g52-g2p0-wayland") {
     "libGLESv1.so",
     "libGLESv2.so",
     "libGLESv3.so",
-    "libgbm.so",
+    "libmali.so.0",
     "libmali.so.1",
   ]
 }
