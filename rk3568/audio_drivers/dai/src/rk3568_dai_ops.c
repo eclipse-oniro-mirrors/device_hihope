@@ -243,7 +243,7 @@ int32_t RK3568I2sTdmSetMclk(struct rk3568_i2s_tdm_dev *i2s_tdm, struct clk **mcl
  
     /* mclk_rx is also ok. */
     mclk_rate = clk_get_rate(i2s_tdm->mclk_tx);
-    bclk_rate = i2s_tdm->bclk_fs * param->rate ;
+    bclk_rate = i2s_tdm->bclk_fs * param->rate;
     AUDIO_DEVICE_LOG_ERR("mclk_rate %u, bclk_fs %u, param->rate = %u\r\n", clk_get_rate(i2s_tdm->mclk_tx), i2s_tdm->bclk_fs, param->rate);
     div_bclk = DIV_ROUND_CLOSEST(mclk_rate, bclk_rate);
     div_lrck = bclk_rate / param->rate;
