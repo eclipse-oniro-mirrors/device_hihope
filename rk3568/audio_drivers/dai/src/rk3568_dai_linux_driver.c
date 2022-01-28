@@ -5,7 +5,8 @@
  * the GPL, or the BSD license, at your option.
  * See the LICENSE file in the root of this repository for complete details.
  */
-
+#include <sound/pcm_params.h>
+#include <sound/dmaengine_pcm.h>
 #include <linux/module.h>
 #include <linux/mfd/syscon.h>
 #include <linux/delay.h>
@@ -19,8 +20,6 @@
 #include <linux/regmap.h>
 #include <linux/reset.h>
 #include <linux/spinlock.h>
-#include <sound/pcm_params.h>
-#include <sound/dmaengine_pcm.h>
 
 #include "audio_driver_log.h"
 #include "rk3568_dai_linux.h"
@@ -68,59 +67,59 @@ static const struct of_device_id rockchip_i2s_tdm_match[] = {
 static bool rockchip_i2s_tdm_wr_reg(struct device *dev, unsigned int reg)
 {
     switch (reg) {
-    case I2S_TXCR:
-    case I2S_RXCR:
-    case I2S_CKR:
-    case I2S_DMACR:
-    case I2S_INTCR:
-    case I2S_XFER:
-    case I2S_CLR:
-    case I2S_TXDR:
-    case I2S_TDM_TXCR:
-    case I2S_TDM_RXCR:
-    case I2S_CLKDIV:
-        return true;
-    default:
-        return false;
+        case I2S_TXCR:
+        case I2S_RXCR:
+        case I2S_CKR:
+        case I2S_DMACR:
+        case I2S_INTCR:
+        case I2S_XFER:
+        case I2S_CLR:
+        case I2S_TXDR:
+        case I2S_TDM_TXCR:
+        case I2S_TDM_RXCR:
+        case I2S_CLKDIV:
+            return true;
+        default:
+            return false;
     }
 }
 
 static bool rockchip_i2s_tdm_rd_reg(struct device *dev, unsigned int reg)
 {
     switch (reg) {
-    case I2S_TXCR:
-    case I2S_RXCR:
-    case I2S_CKR:
-    case I2S_DMACR:
-    case I2S_INTCR:
-    case I2S_XFER:
-    case I2S_CLR:
-    case I2S_TXDR:
-    case I2S_RXDR:
-    case I2S_TXFIFOLR:
-    case I2S_INTSR:
-    case I2S_RXFIFOLR:
-    case I2S_TDM_TXCR:
-    case I2S_TDM_RXCR:
-    case I2S_CLKDIV:
-        return true;
-    default:
-        return false;
+        case I2S_TXCR:
+        case I2S_RXCR:
+        case I2S_CKR:
+        case I2S_DMACR:
+        case I2S_INTCR:
+        case I2S_XFER:
+        case I2S_CLR:
+        case I2S_TXDR:
+        case I2S_RXDR:
+        case I2S_TXFIFOLR:
+        case I2S_INTSR:
+        case I2S_RXFIFOLR:
+        case I2S_TDM_TXCR:
+        case I2S_TDM_RXCR:
+        case I2S_CLKDIV:
+            return true;
+        default:
+            return false;
     }
 }
 
 static bool rockchip_i2s_tdm_volatile_reg(struct device *dev, unsigned int reg)
 {
     switch (reg) {
-    case I2S_TXFIFOLR:
-    case I2S_INTSR:
-    case I2S_CLR:
-    case I2S_TXDR:
-    case I2S_RXDR:
-    case I2S_RXFIFOLR:
-        return true;
-    default:
-        return false;
+        case I2S_TXFIFOLR:
+        case I2S_INTSR:
+        case I2S_CLR:
+        case I2S_TXDR:
+        case I2S_RXDR:
+        case I2S_RXFIFOLR:
+            return true;
+        default:
+            return false;
     }
 }
 
@@ -198,20 +197,21 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
     struct resource *res;
     void __iomem *regs;
     struct device *temp_i2s_dev;
+
     int ret;
     int val;
-
+    AUDIO_DRIVER_LOG_INFO("enter ");
     temp_i2s_dev = &pdev->dev;
     if (strcmp(dev_name(temp_i2s_dev), "fe410000.i2s") != 0) {
         AUDIO_DRIVER_LOG_INFO("failed dmaDevice->name %s ", dev_name(temp_i2s_dev));
         return 0;
     }
-
+    AUDIO_DRIVER_LOG_INFO("okokok dmaDevice->name %s ", dev_name(temp_i2s_dev));
     i2s_tdm = devm_kzalloc(&pdev->dev, sizeof(*i2s_tdm), GFP_KERNEL);
     if (!i2s_tdm) {
         return -ENOMEM;
     }
-
+    AUDIO_DRIVER_LOG_INFO("i2s_tdm %p ", i2s_tdm);
     i2s_tdm->dev = &pdev->dev;
 
     of_id = of_match_device(rockchip_i2s_tdm_match, &pdev->dev);
@@ -294,19 +294,19 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
     atomic_set(&i2s_tdm->refcount, 0);
     dev_set_drvdata(&pdev->dev, i2s_tdm);
 
-
     ret = i2s_tdm_runtime_resume(i2s_tdm);
     if (ret) {
         return ret;
     }
 
     regmap_update_bits(i2s_tdm->regmap, I2S_DMACR, I2S_DMACR_TDL_MASK,
-               I2S_DMACR_TDL(16));
+        I2S_DMACR_TDL(16));
     regmap_update_bits(i2s_tdm->regmap, I2S_DMACR, I2S_DMACR_RDL_MASK,
-               I2S_DMACR_RDL(16));
+        I2S_DMACR_RDL(16));
     regmap_update_bits(i2s_tdm->regmap, I2S_CKR,
-               I2S_CKR_TRCM_MASK, i2s_tdm->clk_trcm);
+        I2S_CKR_TRCM_MASK, i2s_tdm->clk_trcm);
 
+    AUDIO_DRIVER_LOG_INFO("exit ");
     return 0;
 }
 

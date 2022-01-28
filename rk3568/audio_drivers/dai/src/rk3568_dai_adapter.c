@@ -5,15 +5,14 @@
  * the GPL, or the BSD license, at your option.
  * See the LICENSE file in the root of this repository for complete details.
  */
-
+#include <linux/io.h>
+#include <linux/delay.h>
 #include "audio_core.h"
 #include "audio_host.h"
 #include "audio_platform_base.h"
 #include "osal_io.h"
 #include "audio_driver_log.h"
 #include "rk3568_dai_ops.h"
-#include <linux/io.h>
-#include <linux/delay.h>
 #include "audio_dai_base.h"
 
 struct AudioDaiOps g_daiDeviceOps = {
@@ -34,6 +33,7 @@ struct DaiData g_daiData = {
 static int32_t DaiDriverBind(struct HdfDeviceObject *device)
 {
     struct DaiHost *daiHost = NULL;
+    AUDIO_DRIVER_LOG_DEBUG("entry!");
 
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("input para is NULL.");
@@ -60,6 +60,7 @@ static int32_t DaiGetServiceName(const struct HdfDeviceObject *device)
     const struct DeviceResourceNode *node = NULL;
     struct DeviceResourceIface *drsOps = NULL;
     int32_t ret;
+    AUDIO_DRIVER_LOG_DEBUG("entry!");
 
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("input para is nullptr.");
@@ -89,6 +90,7 @@ static int32_t DaiGetServiceName(const struct HdfDeviceObject *device)
 
 static int32_t DaiDriverInit(struct HdfDeviceObject *device)
 {
+    AUDIO_DRIVER_LOG_DEBUG("entry!");
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("device is nullptr.");
         return HDF_ERR_INVALID_OBJECT;
@@ -116,6 +118,7 @@ static int32_t DaiDriverInit(struct HdfDeviceObject *device)
 
 static void DaiDriverRelease(struct HdfDeviceObject *device)
 {
+    AUDIO_DRIVER_LOG_DEBUG("entry!");
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("device is NULL");
         return;

@@ -10,14 +10,13 @@
 #define RK3568_PLATFORM_OPS_H
 
 #include "audio_core.h"
+#include <linux/dmaengine.h>
 
 #ifdef __cplusplus
 #if __cplusplus
 extern "C" {
 #endif
 #endif /* __cplusplus */
-
-#include <linux/dmaengine.h>
 
 int32_t AudioDmaDeviceInit(const struct AudioCard *card, const struct PlatformDevice *platform);
 int32_t Rk3568DmaBufAlloc(struct PlatformData *data, const enum AudioStreamType streamType);

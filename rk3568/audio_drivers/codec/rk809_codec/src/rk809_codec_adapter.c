@@ -28,7 +28,7 @@
 struct platform_device *rk817_pdev;
 
 static const struct of_device_id rk817_codec_dt_ids[] = {
-	{ .compatible = "rockchip,rk817-codec" },
+    { .compatible = "rockchip,rk817-codec" },
 };
 MODULE_DEVICE_TABLE(of, rk817_codec_dt_ids);
 
@@ -47,160 +47,160 @@ static int rk817_platform_remove(struct platform_device *pdev) {
 }
 
 static struct platform_driver rk817_codec_driver = {
-	.driver = {
-		   .name = "rk817-codec",
-		   .of_match_table = rk817_codec_dt_ids,
-		   },
-	.probe = rk817_platform_probe,
-	.remove = rk817_platform_remove,
+    .driver = {
+        .name = "rk817-codec",
+        .of_match_table = rk817_codec_dt_ids,
+    },
+    .probe = rk817_platform_probe,
+    .remove = rk817_platform_remove,
 };
 
 module_platform_driver(rk817_codec_driver);
 
 static const struct reg_default rk817_reg_defaults[] = {
-	{ RK817_CODEC_DTOP_VUCTL, 0x003 },
-	{ RK817_CODEC_DTOP_VUCTIME, 0x00 },
-	{ RK817_CODEC_DTOP_LPT_SRST, 0x00 },
-	{ RK817_CODEC_DTOP_DIGEN_CLKE, 0x00 },
-	{ RK817_CODEC_AREF_RTCFG0, 0x00 },
-	{ RK817_CODEC_AREF_RTCFG1, 0x06 },
-	{ RK817_CODEC_AADC_CFG0, 0xc8 },
-	{ RK817_CODEC_AADC_CFG1, 0x00 },
-	{ RK817_CODEC_DADC_SR_ACL0, 0x00 },
-	{ RK817_CODEC_DADC_ALC1, 0x00 },
-	{ RK817_CODEC_DADC_ALC2, 0x00 },
-	{ RK817_CODEC_DADC_NG, 0x00 },
-	{ RK817_CODEC_DADC_HPF, 0x00 },
-	{ RK817_CODEC_DADC_RVOLL, 0xff },
-	{ RK817_CODEC_DADC_RVOLR, 0xff },
-	{ RK817_CODEC_AMIC_CFG0, 0x70 },
-	{ RK817_CODEC_AMIC_CFG1, 0x00 },
-	{ RK817_CODEC_DMIC_PGA_GAIN, 0x66 },
-	{ RK817_CODEC_DMIC_LMT1, 0x00 },
-	{ RK817_CODEC_DMIC_LMT2, 0x00 },
-	{ RK817_CODEC_DMIC_NG1, 0x00 },
-	{ RK817_CODEC_DMIC_NG2, 0x00 },
-	{ RK817_CODEC_ADAC_CFG0, 0x00 },
-	{ RK817_CODEC_ADAC_CFG1, 0x07 },
-	{ RK817_CODEC_DDAC_POPD_DACST, 0x82 },
-	{ RK817_CODEC_DDAC_VOLL, 0x00 },
-	{ RK817_CODEC_DDAC_VOLR, 0x00 },
-	{ RK817_CODEC_DDAC_SR_LMT0, 0x00 },
-	{ RK817_CODEC_DDAC_LMT1, 0x00 },
-	{ RK817_CODEC_DDAC_LMT2, 0x00 },
-	{ RK817_CODEC_DDAC_MUTE_MIXCTL, 0xa0 },
-	{ RK817_CODEC_DDAC_RVOLL, 0xff },
-	{ RK817_CODEC_DDAC_RVOLR, 0xff },
-	{ RK817_CODEC_AHP_ANTI0, 0x00 },
-	{ RK817_CODEC_AHP_ANTI1, 0x00 },
-	{ RK817_CODEC_AHP_CFG0, 0xe0 },
-	{ RK817_CODEC_AHP_CFG1, 0x1f },
-	{ RK817_CODEC_AHP_CP, 0x09 },
-	{ RK817_CODEC_ACLASSD_CFG1, 0x69 },
-	{ RK817_CODEC_ACLASSD_CFG2, 0x44 },
-	{ RK817_CODEC_APLL_CFG0, 0x04 },
-	{ RK817_CODEC_APLL_CFG1, 0x00 },
-	{ RK817_CODEC_APLL_CFG2, 0x30 },
-	{ RK817_CODEC_APLL_CFG3, 0x19 },
-	{ RK817_CODEC_APLL_CFG4, 0x65 },
-	{ RK817_CODEC_APLL_CFG5, 0x01 },
-	{ RK817_CODEC_DI2S_CKM, 0x01 },
-	{ RK817_CODEC_DI2S_RSD, 0x00 },
-	{ RK817_CODEC_DI2S_RXCR1, 0x00 },
-	{ RK817_CODEC_DI2S_RXCR2, 0x17 },
-	{ RK817_CODEC_DI2S_RXCMD_TSD, 0x00 },
-	{ RK817_CODEC_DI2S_TXCR1, 0x00 },
-	{ RK817_CODEC_DI2S_TXCR2, 0x17 },
-	{ RK817_CODEC_DI2S_TXCR3_TXCMD, 0x00 },
+    { RK817_CODEC_DTOP_VUCTL, 0x003 },
+    { RK817_CODEC_DTOP_VUCTIME, 0x00 },
+    { RK817_CODEC_DTOP_LPT_SRST, 0x00 },
+    { RK817_CODEC_DTOP_DIGEN_CLKE, 0x00 },
+    { RK817_CODEC_AREF_RTCFG0, 0x00 },
+    { RK817_CODEC_AREF_RTCFG1, 0x06 },
+    { RK817_CODEC_AADC_CFG0, 0xc8 },
+    { RK817_CODEC_AADC_CFG1, 0x00 },
+    { RK817_CODEC_DADC_SR_ACL0, 0x00 },
+    { RK817_CODEC_DADC_ALC1, 0x00 },
+    { RK817_CODEC_DADC_ALC2, 0x00 },
+    { RK817_CODEC_DADC_NG, 0x00 },
+    { RK817_CODEC_DADC_HPF, 0x00 },
+    { RK817_CODEC_DADC_RVOLL, 0xff },
+    { RK817_CODEC_DADC_RVOLR, 0xff },
+    { RK817_CODEC_AMIC_CFG0, 0x70 },
+    { RK817_CODEC_AMIC_CFG1, 0x00 },
+    { RK817_CODEC_DMIC_PGA_GAIN, 0x66 },
+    { RK817_CODEC_DMIC_LMT1, 0x00 },
+    { RK817_CODEC_DMIC_LMT2, 0x00 },
+    { RK817_CODEC_DMIC_NG1, 0x00 },
+    { RK817_CODEC_DMIC_NG2, 0x00 },
+    { RK817_CODEC_ADAC_CFG0, 0x00 },
+    { RK817_CODEC_ADAC_CFG1, 0x07 },
+    { RK817_CODEC_DDAC_POPD_DACST, 0x82 },
+    { RK817_CODEC_DDAC_VOLL, 0x00 },
+    { RK817_CODEC_DDAC_VOLR, 0x00 },
+    { RK817_CODEC_DDAC_SR_LMT0, 0x00 },
+    { RK817_CODEC_DDAC_LMT1, 0x00 },
+    { RK817_CODEC_DDAC_LMT2, 0x00 },
+    { RK817_CODEC_DDAC_MUTE_MIXCTL, 0xa0 },
+    { RK817_CODEC_DDAC_RVOLL, 0xff },
+    { RK817_CODEC_DDAC_RVOLR, 0xff },
+    { RK817_CODEC_AHP_ANTI0, 0x00 },
+    { RK817_CODEC_AHP_ANTI1, 0x00 },
+    { RK817_CODEC_AHP_CFG0, 0xe0 },
+    { RK817_CODEC_AHP_CFG1, 0x1f },
+    { RK817_CODEC_AHP_CP, 0x09 },
+    { RK817_CODEC_ACLASSD_CFG1, 0x69 },
+    { RK817_CODEC_ACLASSD_CFG2, 0x44 },
+    { RK817_CODEC_APLL_CFG0, 0x04 },
+    { RK817_CODEC_APLL_CFG1, 0x00 },
+    { RK817_CODEC_APLL_CFG2, 0x30 },
+    { RK817_CODEC_APLL_CFG3, 0x19 },
+    { RK817_CODEC_APLL_CFG4, 0x65 },
+    { RK817_CODEC_APLL_CFG5, 0x01 },
+    { RK817_CODEC_DI2S_CKM, 0x01 },
+    { RK817_CODEC_DI2S_RSD, 0x00 },
+    { RK817_CODEC_DI2S_RXCR1, 0x00 },
+    { RK817_CODEC_DI2S_RXCR2, 0x17 },
+    { RK817_CODEC_DI2S_RXCMD_TSD, 0x00 },
+    { RK817_CODEC_DI2S_TXCR1, 0x00 },
+    { RK817_CODEC_DI2S_TXCR2, 0x17 },
+    { RK817_CODEC_DI2S_TXCR3_TXCMD, 0x00 },
 };
 
 static bool rk817_volatile_register(struct device *dev, unsigned int reg)
 {
-	switch (reg) {
-	case RK817_CODEC_DTOP_LPT_SRST:
-		return true;
-	default:
-		return false;
-	}
+    switch (reg) {
+        case RK817_CODEC_DTOP_LPT_SRST:
+            return true;
+        default:
+            return false;
+    }
 }
 
 static bool rk817_codec_register(struct device *dev, unsigned int reg)
 {
-	switch (reg) {
-	case RK817_CODEC_DTOP_VUCTL:
-	case RK817_CODEC_DTOP_VUCTIME:
-	case RK817_CODEC_DTOP_LPT_SRST:
-	case RK817_CODEC_DTOP_DIGEN_CLKE:
-	case RK817_CODEC_AREF_RTCFG0:
-	case RK817_CODEC_AREF_RTCFG1:
-	case RK817_CODEC_AADC_CFG0:
-	case RK817_CODEC_AADC_CFG1:
-	case RK817_CODEC_DADC_VOLL:
-	case RK817_CODEC_DADC_VOLR:
-	case RK817_CODEC_DADC_SR_ACL0:
-	case RK817_CODEC_DADC_ALC1:
-	case RK817_CODEC_DADC_ALC2:
-	case RK817_CODEC_DADC_NG:
-	case RK817_CODEC_DADC_HPF:
-	case RK817_CODEC_DADC_RVOLL:
-	case RK817_CODEC_DADC_RVOLR:
-	case RK817_CODEC_AMIC_CFG0:
-	case RK817_CODEC_AMIC_CFG1:
-	case RK817_CODEC_DMIC_PGA_GAIN:
-	case RK817_CODEC_DMIC_LMT1:
-	case RK817_CODEC_DMIC_LMT2:
-	case RK817_CODEC_DMIC_NG1:
-	case RK817_CODEC_DMIC_NG2:
-	case RK817_CODEC_ADAC_CFG0:
-	case RK817_CODEC_ADAC_CFG1:
-	case RK817_CODEC_DDAC_POPD_DACST:
-	case RK817_CODEC_DDAC_VOLL:
-	case RK817_CODEC_DDAC_VOLR:
-	case RK817_CODEC_DDAC_SR_LMT0:
-	case RK817_CODEC_DDAC_LMT1:
-	case RK817_CODEC_DDAC_LMT2:
-	case RK817_CODEC_DDAC_MUTE_MIXCTL:
-	case RK817_CODEC_DDAC_RVOLL:
-	case RK817_CODEC_DDAC_RVOLR:
-	case RK817_CODEC_AHP_ANTI0:
-	case RK817_CODEC_AHP_ANTI1:
-	case RK817_CODEC_AHP_CFG0:
-	case RK817_CODEC_AHP_CFG1:
-	case RK817_CODEC_AHP_CP:
-	case RK817_CODEC_ACLASSD_CFG1:
-	case RK817_CODEC_ACLASSD_CFG2:
-	case RK817_CODEC_APLL_CFG0:
-	case RK817_CODEC_APLL_CFG1:
-	case RK817_CODEC_APLL_CFG2:
-	case RK817_CODEC_APLL_CFG3:
-	case RK817_CODEC_APLL_CFG4:
-	case RK817_CODEC_APLL_CFG5:
-	case RK817_CODEC_DI2S_CKM:
-	case RK817_CODEC_DI2S_RSD:
-	case RK817_CODEC_DI2S_RXCR1:
-	case RK817_CODEC_DI2S_RXCR2:
-	case RK817_CODEC_DI2S_RXCMD_TSD:
-	case RK817_CODEC_DI2S_TXCR1:
-	case RK817_CODEC_DI2S_TXCR2:
-	case RK817_CODEC_DI2S_TXCR3_TXCMD:
-		return true;
-	default:
-		return false;
-	}
+    switch (reg) {
+        case RK817_CODEC_DTOP_VUCTL:
+        case RK817_CODEC_DTOP_VUCTIME:
+        case RK817_CODEC_DTOP_LPT_SRST:
+        case RK817_CODEC_DTOP_DIGEN_CLKE:
+        case RK817_CODEC_AREF_RTCFG0:
+        case RK817_CODEC_AREF_RTCFG1:
+        case RK817_CODEC_AADC_CFG0:
+        case RK817_CODEC_AADC_CFG1:
+        case RK817_CODEC_DADC_VOLL:
+        case RK817_CODEC_DADC_VOLR:
+        case RK817_CODEC_DADC_SR_ACL0:
+        case RK817_CODEC_DADC_ALC1:
+        case RK817_CODEC_DADC_ALC2:
+        case RK817_CODEC_DADC_NG:
+        case RK817_CODEC_DADC_HPF:
+        case RK817_CODEC_DADC_RVOLL:
+        case RK817_CODEC_DADC_RVOLR:
+        case RK817_CODEC_AMIC_CFG0:
+        case RK817_CODEC_AMIC_CFG1:
+        case RK817_CODEC_DMIC_PGA_GAIN:
+        case RK817_CODEC_DMIC_LMT1:
+        case RK817_CODEC_DMIC_LMT2:
+        case RK817_CODEC_DMIC_NG1:
+        case RK817_CODEC_DMIC_NG2:
+        case RK817_CODEC_ADAC_CFG0:
+        case RK817_CODEC_ADAC_CFG1:
+        case RK817_CODEC_DDAC_POPD_DACST:
+        case RK817_CODEC_DDAC_VOLL:
+        case RK817_CODEC_DDAC_VOLR:
+        case RK817_CODEC_DDAC_SR_LMT0:
+        case RK817_CODEC_DDAC_LMT1:
+        case RK817_CODEC_DDAC_LMT2:
+        case RK817_CODEC_DDAC_MUTE_MIXCTL:
+        case RK817_CODEC_DDAC_RVOLL:
+        case RK817_CODEC_DDAC_RVOLR:
+        case RK817_CODEC_AHP_ANTI0:
+        case RK817_CODEC_AHP_ANTI1:
+        case RK817_CODEC_AHP_CFG0:
+        case RK817_CODEC_AHP_CFG1:
+        case RK817_CODEC_AHP_CP:
+        case RK817_CODEC_ACLASSD_CFG1:
+        case RK817_CODEC_ACLASSD_CFG2:
+        case RK817_CODEC_APLL_CFG0:
+        case RK817_CODEC_APLL_CFG1:
+        case RK817_CODEC_APLL_CFG2:
+        case RK817_CODEC_APLL_CFG3:
+        case RK817_CODEC_APLL_CFG4:
+        case RK817_CODEC_APLL_CFG5:
+        case RK817_CODEC_DI2S_CKM:
+        case RK817_CODEC_DI2S_RSD:
+        case RK817_CODEC_DI2S_RXCR1:
+        case RK817_CODEC_DI2S_RXCR2:
+        case RK817_CODEC_DI2S_RXCMD_TSD:
+        case RK817_CODEC_DI2S_TXCR1:
+        case RK817_CODEC_DI2S_TXCR2:
+        case RK817_CODEC_DI2S_TXCR3_TXCMD:
+            return true;
+        default:
+            return false;
+    }
 }
 
 static const struct regmap_config rk817_codec_regmap_config = {
-	.name = "rk817-codec",
-	.reg_bits = 8,
-	.val_bits = 8,
-	.reg_stride = 1,
-	.max_register = 0x4f,
-	.cache_type = REGCACHE_FLAT,
-	.volatile_reg = rk817_volatile_register,
-	.writeable_reg = rk817_codec_register,
-	.readable_reg = rk817_codec_register,
-	.reg_defaults = rk817_reg_defaults,
-	.num_reg_defaults = ARRAY_SIZE(rk817_reg_defaults),
+    .name = "rk817-codec",
+    .reg_bits = 8,
+    .val_bits = 8,
+    .reg_stride = 1,
+    .max_register = 0x4f,
+    .cache_type = REGCACHE_FLAT,
+    .volatile_reg = rk817_volatile_register,
+    .writeable_reg = rk817_codec_register,
+    .readable_reg = rk817_codec_register,
+    .reg_defaults = rk817_reg_defaults,
+    .num_reg_defaults = ARRAY_SIZE(rk817_reg_defaults),
 };
 
 #define HDF_LOG_TAG "rk809_codec_adapter"
@@ -214,7 +214,7 @@ struct CodecData g_rk809Data = {
 struct AudioDaiOps g_rk809DaiDeviceOps = {
     .Startup = Rk809DaiStartup,
     .HwParams = Rk809DaiHwParams,
-	.Trigger = RK809NormalTrigger,
+    .Trigger = RK809NormalTrigger,
 };
 
 struct DaiData g_rk809DaiData = {
@@ -250,7 +250,6 @@ static int32_t GetServiceName(const struct HdfDeviceObject *device)
         AUDIO_DEVICE_LOG_ERR("read serviceName failed.");
         return ret;
     }
-
     return HDF_SUCCESS;
 }
 
@@ -299,24 +298,24 @@ static int32_t Rk809DriverInit(struct HdfDeviceObject *device)
         AUDIO_DEVICE_LOG_ERR("%s: rk808 is NULL\n", __func__);
         ret = HDF_FAILURE;
         RK809ChipRelease();
-		return ret;
+        return ret;
     }
     g_chip->regmap = devm_regmap_init_i2c(rk808->i2c,
-		&rk817_codec_regmap_config);
+        &rk817_codec_regmap_config);
     if (IS_ERR(g_chip->regmap)) {
         AUDIO_DEVICE_LOG_ERR("failed to allocate regmap: %ld\n", PTR_ERR(g_chip->regmap));
         RK809ChipRelease();
-		return ret;
+        return ret;
     }
 
     ret = CodecGetConfigInfo(device, &(g_chip->codec));
     if (ret !=  HDF_SUCCESS) {
         AUDIO_DEVICE_LOG_ERR("get config info failed.");
         RK809ChipRelease();
-		return ret;
+        return ret;
     }
-	if (CodecSetConfigInfo(&(g_chip->codec),  &(g_chip->dai)) != HDF_SUCCESS) {
-		AUDIO_DEVICE_LOG_ERR("set config info failed.");
+    if (CodecSetConfigInfo(&(g_chip->codec),  &(g_chip->dai)) != HDF_SUCCESS) {
+        AUDIO_DEVICE_LOG_ERR("set config info failed.");
         return HDF_FAILURE;
     }
 
@@ -324,12 +323,12 @@ static int32_t Rk809DriverInit(struct HdfDeviceObject *device)
     if (ret !=  HDF_SUCCESS) {
         AUDIO_DEVICE_LOG_ERR("GetServiceName failed.");
         RK809ChipRelease();
-		return ret;
+        return ret;
     }
-	
-	ret = CodecGetDaiName(device,  &(g_chip->dai.drvDaiName));
-	if (ret != HDF_SUCCESS) {
-		AUDIO_DEVICE_LOG_ERR("CodecGetDaiName failed.");
+    
+    ret = CodecGetDaiName(device,  &(g_chip->dai.drvDaiName));
+    if (ret != HDF_SUCCESS) {
+        AUDIO_DEVICE_LOG_ERR("CodecGetDaiName failed.");
         return HDF_FAILURE;
     }
 
@@ -337,7 +336,7 @@ static int32_t Rk809DriverInit(struct HdfDeviceObject *device)
     if (ret !=  HDF_SUCCESS) {
         AUDIO_DEVICE_LOG_ERR("AudioRegisterCodec failed.");
         RK809ChipRelease();
-		return ret;
+        return ret;
     }
 
     return HDF_SUCCESS;
@@ -352,8 +351,8 @@ static void RK809ChipRelease(void)
         }
         devm_kfree(&g_chip->pdev->dev, g_chip);
     }
-	AUDIO_DEVICE_LOG_ERR("success!");
-	return;
+    AUDIO_DEVICE_LOG_ERR("success!");
+    return;
 }
 
 static void RK809DriverRelease(struct HdfDeviceObject *device)

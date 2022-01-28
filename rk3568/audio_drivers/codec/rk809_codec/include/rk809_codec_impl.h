@@ -36,7 +36,7 @@ struct Rk809ChipData {
     struct DaiData dai;
     struct HdfDeviceObject *hdev;
     struct platform_device *pdev;
-	struct regmap *regmap;
+    struct regmap *regmap;
 };
 
 typedef enum {
