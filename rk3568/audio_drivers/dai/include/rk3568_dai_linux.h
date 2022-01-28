@@ -195,7 +195,7 @@ extern "C" {
 #define RK3568_I2S1_CLK_RXONLY \
     RK3568_I2S1_MCLK_OUT_SRC_FROM_RX
 
-#define CH_GRP_MAX              4 
+#define CH_GRP_MAX    4
 struct rk3568_snd_dmaengine_dai_dma_data {
     dma_addr_t addr;
     enum dma_slave_buswidth addr_width;

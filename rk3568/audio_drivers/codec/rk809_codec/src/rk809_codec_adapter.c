@@ -32,14 +32,15 @@ static const struct of_device_id rk817_codec_dt_ids[] = {
 };
 MODULE_DEVICE_TABLE(of, rk817_codec_dt_ids);
 
-static int rk817_platform_probe(struct platform_device *pdev) {
+static int rk817_platform_probe(struct platform_device *pdev)
+{
     rk817_pdev = pdev;
     dev_info(&pdev->dev, "got rk817-codec platform_device");
     return 0;
 }
 
-static int rk817_platform_remove(struct platform_device *pdev) {
-    // TODO:
+static int rk817_platform_remove(struct platform_device *pdev)
+{
     //   unreigster it from ADM
     //   set rk817_pdev = NULL
     //   not implement it now
@@ -342,7 +343,7 @@ static int32_t Rk809DriverInit(struct HdfDeviceObject *device)
     return HDF_SUCCESS;
 }
 
-static void RK809ChipRelease(void) 
+static void RK809ChipRelease(void)
 {
     if (g_chip) {
         platform_set_drvdata(g_chip->pdev, NULL);

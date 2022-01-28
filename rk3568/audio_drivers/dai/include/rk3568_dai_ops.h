@@ -21,13 +21,13 @@ int32_t Rk3568DeviceReadReg(unsigned long regBase, uint32_t reg, uint32_t *val);
 int32_t Rk3568DeviceWriteReg(unsigned long regBase, uint32_t reg, uint32_t value);
 
 int32_t Rk3568NormalTrigger(const struct AudioCard *card,
-        int cmd, const struct DaiDevice *dai);
+    int cmd, const struct DaiDevice *dai);
 int32_t Rk3568DaiHwParams(const struct AudioCard *card,
-        const struct AudioPcmHwParams *param);
+    const struct AudioPcmHwParams *param);
 int32_t Rk3568DaiStartup(const struct AudioCard *card,
-        const struct DaiDevice *dai);
+    const struct DaiDevice *dai);
 int32_t Rk3568DaiDeviceInit(struct AudioCard *card,
-        const struct DaiDevice *dai);
+    const struct DaiDevice *dai);
 
 
 #ifdef __cplusplus

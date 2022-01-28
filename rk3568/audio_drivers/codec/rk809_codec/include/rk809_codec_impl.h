@@ -16,14 +16,14 @@
 #ifndef RK809_ACCESSORY_IMPL_H
 #define RK809_ACCESSORY_IMPL_H
 
-#include "audio_codec_if.h"
+#include <linux/platform_device.h>
+#include <linux/types.h>
 #include "audio_dai_if.h"
+#include "audio_codec_if.h"
 #include "osal_mem.h"
 #include "osal_time.h"
 #include "osal_io.h"
 #include "securec.h"
-#include <linux/platform_device.h>
-#include <linux/types.h>
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -66,8 +66,8 @@ struct RK809DaiParamsVal {
 int32_t Rk809DeviceInit(struct AudioCard *audioCard, const struct CodecDevice *device);
 int32_t Rk809DeviceRegRead(uint32_t reg, uint32_t *val);
 int32_t Rk809DeviceRegWrite(uint32_t reg, uint32_t value);
-int32_t RK809CodecReadReg(unsigned long virtualAddress,uint32_t reg, uint32_t *val);
-int32_t RK809CodecWriteReg(unsigned long virtualAddress,uint32_t reg, uint32_t value);
+int32_t RK809CodecReadReg(unsigned long virtualAddress, uint32_t reg, uint32_t *val);
+int32_t RK809CodecWriteReg(unsigned long virtualAddress, uint32_t reg, uint32_t value);
 int32_t RK809RegBitsUpdate(struct AudioMixerControl regAttr);
 int32_t Rk809DaiDeviceInit(struct AudioCard *card, const struct DaiDevice *device);
 int32_t Rk809DaiStartup(const struct AudioCard *card, const struct DaiDevice *device);

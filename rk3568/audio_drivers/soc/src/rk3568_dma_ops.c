@@ -168,11 +168,11 @@ int32_t Rk3568DmaBufFree(struct PlatformData *data, const enum AudioStreamType s
     if (streamType == AUDIO_CAPTURE_STREAM) {
         AUDIO_DEVICE_LOG_DEBUG("AUDIO_CAPTURE_STREAM");
         dma_free_wc(dmaDevice, data->captureBufInfo.cirBufMax, data->captureBufInfo.virtAddr,
-                        data->captureBufInfo.phyAddr);                       
+                    data->captureBufInfo.phyAddr);
     } else if (streamType == AUDIO_RENDER_STREAM) {
         AUDIO_DEVICE_LOG_DEBUG("AUDIO_RENDER_STREAM");
         dma_free_wc(dmaDevice, data->renderBufInfo.cirBufMax, data->renderBufInfo.virtAddr,
-                        data->renderBufInfo.phyAddr);
+                    data->renderBufInfo.phyAddr);
     } else {
         AUDIO_DEVICE_LOG_ERR("stream Type is invalude.");
         return HDF_FAILURE; 
@@ -204,7 +204,7 @@ int32_t  Rk3568DmaRequestChannel(struct PlatformData *data, const enum AudioStre
     }
 
     AUDIO_DEVICE_LOG_ERR("streamType = %d", streamType);
-    dmaRtd->dmaChn[streamType] = dma_request_slave_channel(dmaDevice, 
+    dmaRtd->dmaChn[streamType] = dma_request_slave_channel(dmaDevice,
         dmaChannelNames[streamType]);
     if (dmaRtd->dmaChn[streamType] == NULL) {
         AUDIO_DEVICE_LOG_ERR("dma_request_slave_channel streamType=%d failed", streamType);
@@ -240,13 +240,13 @@ int32_t Rk3568DmaConfigChannel(struct PlatformData *data, const enum AudioStream
         slave_config.direction = DMA_MEM_TO_DEV;
         slave_config.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
         slave_config.dst_addr = I2S1_ADDR + I2S_TXDR;
-        slave_config.dst_maxburst = 8;      // transfer max bytes is 8         
+        slave_config.dst_maxburst = 8;       
     } else {
         dmaChan = (struct dma_chan *)dmaRtd->dmaChn[DMA_RX_CHANNEL];   // tx
         slave_config.direction = DMA_DEV_TO_MEM;
         slave_config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
         slave_config.src_addr = I2S1_ADDR + I2S_RXDR;
-        slave_config.src_maxburst = 8;     // transfer max bytes is 8 
+        slave_config.src_maxburst = 8;
     }
     slave_config.device_fc = 0;
     slave_config.slave_id = 0;

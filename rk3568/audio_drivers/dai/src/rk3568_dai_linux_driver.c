@@ -126,10 +126,10 @@ static bool rockchip_i2s_tdm_volatile_reg(struct device *dev, unsigned int reg)
 static bool rockchip_i2s_tdm_precious_reg(struct device *dev, unsigned int reg)
 {
     switch (reg) {
-    case I2S_RXDR:
-        return true;
-    default:
-        return false;
+        case I2S_RXDR:
+            return true;
+        default:
+            return false;
     }
 }
 
@@ -286,7 +286,7 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
     }
 
     i2s_tdm->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
-                        &rockchip_i2s_tdm_regmap_config);
+                            &rockchip_i2s_tdm_regmap_config);
     if (IS_ERR(i2s_tdm->regmap)) {
         return PTR_ERR(i2s_tdm->regmap);
     }

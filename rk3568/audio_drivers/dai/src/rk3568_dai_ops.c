@@ -131,23 +131,23 @@ int32_t Rk3568DaiStartup(const struct AudioCard *card, const struct DaiDevice *d
     return HDF_SUCCESS;
 }
 
-int RK3568SetI2sFomartVal(const struct AudioPcmHwParams *param) 
+int RK3568SetI2sFomartVal(const struct AudioPcmHwParams *param)
 {
     AUDIO_DEVICE_LOG_ERR("entry");
     int32_t val;
     AUDIO_DEVICE_LOG_ERR("param->format = %d\r\n", param->format);
     switch (param->format) {
         case AUDIO_FORMAT_PCM_8_BIT:
-            val |= I2S_TXCR_VDW(8);   // 8-bit 
+            val |= I2S_TXCR_VDW(8);
             break;
         case AUDIO_FORMAT_PCM_16_BIT:
-            val |= I2S_TXCR_VDW(16);  // 16-bit
+            val |= I2S_TXCR_VDW(16);
             break;
         case AUDIO_FORMAT_PCM_24_BIT:
-            val |= I2S_TXCR_VDW(24);  // 24-bit
+            val |= I2S_TXCR_VDW(24);
             break;
         case AUDIO_FORMAT_PCM_32_BIT:
-            val |= I2S_TXCR_VDW(32);  // 32-bit
+            val |= I2S_TXCR_VDW(32);
             break;
         default:
             return -1;
@@ -195,7 +195,7 @@ int32_t RK3568SetI2sChannels(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct Au
 }
 
 int32_t ConfigInfoSetToReg(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct AudioPcmHwParams *param,
-    unsigned int div_bclk, unsigned int div_lrck, int32_t fmt) 
+                        unsigned int div_bclk, unsigned int div_lrck, int32_t fmt) 
 {
     AUDIO_DEVICE_LOG_ERR("entry");
     regmap_update_bits(i2s_tdm->regmap, I2S_CLKDIV,
@@ -287,7 +287,7 @@ int32_t RK3568I2sTdmSetSysClk(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct A
             mclk_parent_freq = i2s_tdm->bclk_fs * AUDIO_DEVICE_SAMPLE_RATE_176400;
             break;
         default:
-        AUDIO_DEVICE_LOG_ERR("Invalid LRCK freq: %u Hz\n", sampleRate);
+            AUDIO_DEVICE_LOG_ERR("Invalid LRCK freq: %u Hz\n", sampleRate);
             return HDF_FAILURE;
     }
     i2s_tdm->mclk_tx_freq = mclk_parent_freq;
@@ -379,28 +379,29 @@ static int GetStreamType(int cmd)
     enum AudioStreamType streamType = AUDIO_CAPTURE_STREAM;
     AUDIO_DEVICE_LOG_ERR("entry");
     switch (cmd) {
-    case AUDIO_DRV_PCM_IOCTL_RENDER_START:
-    case AUDIO_DRV_PCM_IOCTL_RENDER_RESUME:
-    case AUDIO_DRV_PCM_IOCTL_RENDER_STOP:
-    case AUDIO_DRV_PCM_IOCTL_RENDER_PAUSE:
-        streamType = AUDIO_RENDER_STREAM;
-        break;
-    case AUDIO_DRV_PCM_IOCTL_CAPTURE_START:
-    case AUDIO_DRV_PCM_IOCTL_CAPTURE_RESUME:
-    case AUDIO_DRV_PCM_IOCTL_CAPTURE_STOP:
-    case AUDIO_DRV_PCM_IOCTL_CAPTURE_PAUSE:
-        streamType = AUDIO_CAPTURE_STREAM;
-        break;
+        case AUDIO_DRV_PCM_IOCTL_RENDER_START:
+        case AUDIO_DRV_PCM_IOCTL_RENDER_RESUME:
+        case AUDIO_DRV_PCM_IOCTL_RENDER_STOP:
+        case AUDIO_DRV_PCM_IOCTL_RENDER_PAUSE:
+            streamType = AUDIO_RENDER_STREAM;
+            break;
+        case AUDIO_DRV_PCM_IOCTL_CAPTURE_START:
+        case AUDIO_DRV_PCM_IOCTL_CAPTURE_RESUME:
+        case AUDIO_DRV_PCM_IOCTL_CAPTURE_STOP:
+        case AUDIO_DRV_PCM_IOCTL_CAPTURE_PAUSE:
+            streamType = AUDIO_CAPTURE_STREAM;
+            break;
 
-    default:
-        break;
+        default:
+            break;
     }
     AUDIO_DEVICE_LOG_ERR("success");
     return streamType;
 }
 
 
-static void Rk3568TxAndRxSetReg(struct rk3568_i2s_tdm_dev *i2s_tdm, enum AudioStreamType streamType, int on)
+static void Rk3568TxAndRxSetReg(struct rk3568_i2s_tdm_dev *i2s_tdm, 
+                        enum AudioStreamType streamType, int on)
 {
     AUDIO_DEVICE_LOG_ERR("entry");
     unsigned int val = 0;
@@ -460,12 +461,9 @@ static void Rk3568TxAndRxSetReg(struct rk3568_i2s_tdm_dev *i2s_tdm, enum AudioSt
             regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
 
             /* Should wait for clear operation to finish */
-            while (val) {
+            while (val && retry > 0) {
                 regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
                 retry--;
-                if (retry <= 0) {
-                    break;
-                }
             }
         }
     }

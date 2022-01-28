@@ -9,8 +9,8 @@
 #ifndef RK3568_PLATFORM_OPS_H
 #define RK3568_PLATFORM_OPS_H
 
-#include "audio_core.h"
 #include <linux/dmaengine.h>
+#include "audio_core.h"
 
 #ifdef __cplusplus
 #if __cplusplus
