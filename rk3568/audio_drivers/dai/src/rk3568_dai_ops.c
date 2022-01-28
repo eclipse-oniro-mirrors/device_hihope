@@ -194,7 +194,7 @@ int32_t RK3568SetI2sChannels(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct Au
 }
 
 int32_t ConfigInfoSetToReg(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct AudioPcmHwParams *param,
-    unsigned int div_bclk, unsigned int div_lrck, int32_t fmt) 
+    unsigned int div_bclk, unsigned int div_lrck, int32_t fmt)
 {
     AUDIO_DEVICE_LOG_ERR("entry");
     regmap_update_bits(i2s_tdm->regmap, I2S_CLKDIV,
@@ -397,7 +397,6 @@ static int GetStreamType(int cmd)
     AUDIO_DEVICE_LOG_ERR("success");
     return streamType;
 }
-
 
 static void Rk3568TxAndRxSetReg(struct rk3568_i2s_tdm_dev *i2s_tdm,
     enum AudioStreamType streamType, int on)
