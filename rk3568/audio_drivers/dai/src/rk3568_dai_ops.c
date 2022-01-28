@@ -40,7 +40,6 @@ void *g_regDaiBase = NULL;
 
 int32_t Rk3568DeviceReadReg(unsigned long regBase, uint32_t reg, uint32_t *val)
 {
-    AUDIO_DEVICE_LOG_ERR("entry");
     struct device_node *dmaOfNode = of_find_node_by_path("/i2s@fe410000");
     if(dmaOfNode == NULL) {
         AUDIO_DEVICE_LOG_ERR("of_node is NULL.");
@@ -53,14 +52,13 @@ int32_t Rk3568DeviceReadReg(unsigned long regBase, uint32_t reg, uint32_t *val)
         AUDIO_DEVICE_LOG_ERR("read register fail: [%04x]", reg);
         return HDF_FAILURE;
     }
-    AUDIO_DEVICE_LOG_ERR("i2s reg: 0x%x = 0x%x ", reg, val);
-    AUDIO_DEVICE_LOG_ERR("success");
+
+    AUDIO_DEVICE_LOG_DEBUG("success");
     return HDF_SUCCESS;
 }
 
 int32_t Rk3568DeviceWriteReg(unsigned long regBase, uint32_t reg, uint32_t value)
 {    
-    AUDIO_DEVICE_LOG_ERR("entry");
     struct device_node *dmaOfNode = of_find_node_by_path("/i2s@fe410000");
     if(dmaOfNode == NULL) {
         AUDIO_DEVICE_LOG_ERR("of_node is NULL.");
@@ -72,15 +70,14 @@ int32_t Rk3568DeviceWriteReg(unsigned long regBase, uint32_t reg, uint32_t value
         return HDF_FAILURE;
     }
     (void)regBase;
-    AUDIO_DEVICE_LOG_DEBUG("i2s regBase+ reg: 0x%x value: 0x%x .", reg, value);
-    AUDIO_DEVICE_LOG_ERR("success");
+
+    AUDIO_DEVICE_LOG_DEBUG("success");
     return HDF_SUCCESS;
 }
 
 
 int32_t Rk3568DaiDeviceInit(struct AudioCard *card, const struct DaiDevice *dai)
 {
-    AUDIO_DEVICE_LOG_ERR("entry");
     int32_t ret;
     if (dai == NULL || dai->device == NULL || dai->devDaiName == NULL) {
         AUDIO_DEVICE_LOG_ERR("input para is NULL.");
@@ -121,7 +118,7 @@ int32_t Rk3568DaiDeviceInit(struct AudioCard *card, const struct DaiDevice *dai)
     }
 
     dai->devData->daiInitFlag = true;
-    AUDIO_DEVICE_LOG_ERR("success");
+    AUDIO_DEVICE_LOG_DEBUG("success");
     return HDF_SUCCESS;
 }
 
@@ -134,9 +131,8 @@ int32_t Rk3568DaiStartup(const struct AudioCard *card, const struct DaiDevice *d
 
 int RK3568SetI2sFomartVal(const struct AudioPcmHwParams *param) 
 {
-    AUDIO_DEVICE_LOG_ERR("entry");
     int32_t val;
-    AUDIO_DEVICE_LOG_ERR("param->format = %d\r\n", param->format);
+
     switch (param->format) {
         case AUDIO_FORMAT_PCM_8_BIT:
             val |= I2S_TXCR_VDW(8);
@@ -153,14 +149,13 @@ int RK3568SetI2sFomartVal(const struct AudioPcmHwParams *param)
         default:
             return -1;
     }
-    AUDIO_DEVICE_LOG_ERR("params_format(params) = %d\r\n", val);
+
     AUDIO_DEVICE_LOG_ERR("sucess");
     return val;
 }
 
 int32_t RK3568SetI2sChannels(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct AudioPcmHwParams *param)
 {
-    AUDIO_DEVICE_LOG_ERR("entry");
     unsigned int reg_fmt, fmt;
     int32_t ret = 0;
     if (param->streamType == AUDIO_RENDER_STREAM) {
@@ -170,7 +165,7 @@ int32_t RK3568SetI2sChannels(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct Au
     }
     
     regmap_read(i2s_tdm->regmap, reg_fmt, &fmt);
-    AUDIO_DEVICE_LOG_ERR("fmt = %u", fmt);
+
     fmt &= I2S_TXCR_TFS_MASK;
     if (fmt == 0) { // I2S mode
         switch (param->channels) {
@@ -191,15 +186,14 @@ int32_t RK3568SetI2sChannels(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct Au
                 break;
         }
     }
-    AUDIO_DEVICE_LOG_ERR("ret = %u", ret);
-    AUDIO_DEVICE_LOG_ERR("success");
+
+    AUDIO_DEVICE_LOG_DEBUG("success");
     return ret;
 }
 
 int32_t ConfigInfoSetToReg(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct AudioPcmHwParams *param,
     unsigned int div_bclk, unsigned int div_lrck, int32_t fmt) 
 {
-    AUDIO_DEVICE_LOG_ERR("entry");
     regmap_update_bits(i2s_tdm->regmap, I2S_CLKDIV,
         I2S_CLKDIV_TXM_MASK | I2S_CLKDIV_RXM_MASK,
         I2S_CLKDIV_TXM(div_bclk) | I2S_CLKDIV_RXM(div_bclk));
@@ -216,19 +210,18 @@ int32_t ConfigInfoSetToReg(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct Audi
             I2S_RXCR_VDW_MASK | I2S_RXCR_CSR_MASK,
             fmt);
     }
-    AUDIO_DEVICE_LOG_ERR("success");
+    AUDIO_DEVICE_LOG_DEBUG("success");
     return HDF_SUCCESS;
 }
 
 // i2s_tdm->mclk_tx_freq ? i2s_tdm->mclk_rx_freq ?
 int32_t RK3568I2sTdmSetMclk(struct rk3568_i2s_tdm_dev *i2s_tdm, struct clk **mclk, const struct AudioPcmHwParams *param)
 {
-    AUDIO_DEVICE_LOG_ERR("entry");
     int32_t ret = 0;
     unsigned int mclk_rate, bclk_rate, div_bclk, div_lrck;
     int32_t fmt = 0;
     int32_t channels = 0;
-    AUDIO_DEVICE_LOG_ERR("i2s_tdm->mclk_tx = %p, i2s_tdm->mclk_tx_freq = %u", i2s_tdm->mclk_tx, i2s_tdm->mclk_tx_freq);
+
     ret = clk_set_rate(i2s_tdm->mclk_tx, i2s_tdm->mclk_tx_freq);
     if (ret) {
         AUDIO_DEVICE_LOG_ERR(" clk_set_rate ret = %d", ret);
@@ -244,30 +237,28 @@ int32_t RK3568I2sTdmSetMclk(struct rk3568_i2s_tdm_dev *i2s_tdm, struct clk **mcl
     /* mclk_rx is also ok. */
     mclk_rate = clk_get_rate(i2s_tdm->mclk_tx);
     bclk_rate = i2s_tdm->bclk_fs * param->rate;
-    AUDIO_DEVICE_LOG_ERR("mclk_rate %u, bclk_fs %u, param->rate = %u\r\n", clk_get_rate(i2s_tdm->mclk_tx), i2s_tdm->bclk_fs, param->rate);
     div_bclk = DIV_ROUND_CLOSEST(mclk_rate, bclk_rate);
     div_lrck = bclk_rate / param->rate;
-    AUDIO_DEVICE_LOG_ERR("div_bclk %u, div_lrck %u\r\n", DIV_ROUND_CLOSEST(mclk_rate, bclk_rate), bclk_rate / param->rate);
     fmt = RK3568SetI2sFomartVal(param);
     if (fmt < 0) {
         AUDIO_DEVICE_LOG_ERR(" RK3568SetI2sFomartVal fmt = %d", fmt);
         return HDF_FAILURE;
     }
-    AUDIO_DEVICE_LOG_ERR(" fmt = %d", fmt);
+
     channels = RK3568SetI2sChannels(i2s_tdm, param);
     if (channels < 0) {
         AUDIO_DEVICE_LOG_ERR(" RK3568SetI2sFomartVal channels = %d", channels);
         return HDF_FAILURE;
     }
     fmt |= channels;
-    AUDIO_DEVICE_LOG_ERR(" fmt = %d", fmt);
+
     ret = ConfigInfoSetToReg(i2s_tdm, param, div_bclk, div_lrck, fmt);
     if (ret != HDF_SUCCESS) {
         AUDIO_DEVICE_LOG_ERR(" ConfigInfoSetToReg ret= %d", ret);
         return HDF_FAILURE;
     }
     
-    AUDIO_DEVICE_LOG_ERR("success");
+    AUDIO_DEVICE_LOG_DEBUG("success");
     return HDF_SUCCESS;
 }
 int32_t RK3568I2sTdmSetSysClk(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct AudioPcmHwParams *param)
@@ -308,22 +299,19 @@ int32_t Rk3568DaiHwParams(const struct AudioCard *card, const struct AudioPcmHwP
     struct clk *mclk;
     struct device_node    *dmaOfNode;
     struct platform_device *platformdev;
-    AUDIO_DEVICE_LOG_ERR("entry");
+
     dmaOfNode = of_find_node_by_path("/i2s@fe410000");
     if(dmaOfNode == NULL) {
         AUDIO_DEVICE_LOG_ERR("of_node is NULL.");
     }
     platformdev = of_find_device_by_node(dmaOfNode);
-    AUDIO_DEVICE_LOG_ERR("dmaOfNode->name %s", dmaOfNode->full_name);
-
     struct rk3568_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(&platformdev->dev);
-    AUDIO_DEVICE_LOG_ERR("i2s_tdm addr = %p", i2s_tdm);
     struct DaiData *data = DaiDataFromCard(card);
+
     if (data == NULL) {
         AUDIO_DEVICE_LOG_ERR("platformHost is nullptr.");
         return HDF_FAILURE;
     }
-
     if (param == NULL || param->cardServiceName == NULL) {
         AUDIO_DEVICE_LOG_ERR("input para is NULL.");
         return HDF_ERR_INVALID_PARAM;
@@ -349,13 +337,13 @@ int32_t Rk3568DaiHwParams(const struct AudioCard *card, const struct AudioPcmHwP
         AUDIO_DEVICE_LOG_ERR("RK3568I2sTdmSetMclk error");
         return HDF_FAILURE;
     }
-    AUDIO_DEVICE_LOG_ERR("success");
+    AUDIO_DEVICE_LOG_DEBUG("success");
     return HDF_SUCCESS;
 }
 static int GetTriggeredFlag(int cmd)
 {
     int32_t triggerFlag = false;
-    AUDIO_DEVICE_LOG_ERR("entry");
+
     switch (cmd) {
     case AUDIO_DRV_PCM_IOCTL_RENDER_START:
     case AUDIO_DRV_PCM_IOCTL_RENDER_RESUME:
@@ -374,7 +362,8 @@ static int GetTriggeredFlag(int cmd)
     default:
         triggerFlag = false;
     }
-    AUDIO_DEVICE_LOG_ERR("success");
+
+    AUDIO_DEVICE_LOG_DEBUG("success");
     return triggerFlag;
 }
 
@@ -382,7 +371,7 @@ static int GetTriggeredFlag(int cmd)
 static int GetStreamType(int cmd)
 {
     enum AudioStreamType streamType = AUDIO_CAPTURE_STREAM;
-    AUDIO_DEVICE_LOG_ERR("entry");
+
     switch (cmd) {
     case AUDIO_DRV_PCM_IOCTL_RENDER_START:
     case AUDIO_DRV_PCM_IOCTL_RENDER_RESUME:
@@ -400,7 +389,8 @@ static int GetStreamType(int cmd)
     default:
         break;
     }
-    AUDIO_DEVICE_LOG_ERR("success");
+    
+    AUDIO_DEVICE_LOG_DEBUG("success");
     return streamType;
 }
 

@@ -34,7 +34,6 @@ struct DaiData g_daiData = {
 static int32_t DaiDriverBind(struct HdfDeviceObject *device)
 {
     struct DaiHost *daiHost = NULL;
-    AUDIO_DRIVER_LOG_DEBUG("entry!");
 
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("input para is NULL.");
@@ -61,7 +60,6 @@ static int32_t DaiGetServiceName(const struct HdfDeviceObject *device)
     const struct DeviceResourceNode *node = NULL;
     struct DeviceResourceIface *drsOps = NULL;
     int32_t ret;
-    AUDIO_DRIVER_LOG_DEBUG("entry!");
 
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("input para is nullptr.");
@@ -91,7 +89,6 @@ static int32_t DaiGetServiceName(const struct HdfDeviceObject *device)
 
 static int32_t DaiDriverInit(struct HdfDeviceObject *device)
 {
-    AUDIO_DRIVER_LOG_DEBUG("entry!");
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("device is nullptr.");
         return HDF_ERR_INVALID_OBJECT;
@@ -119,7 +116,6 @@ static int32_t DaiDriverInit(struct HdfDeviceObject *device)
 
 static void DaiDriverRelease(struct HdfDeviceObject *device)
 {
-    AUDIO_DRIVER_LOG_DEBUG("entry!");
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("device is NULL");
         return;

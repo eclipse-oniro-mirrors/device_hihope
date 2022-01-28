@@ -198,21 +198,20 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
     struct resource *res;
     void __iomem *regs;
     struct device *temp_i2s_dev;
-
     int ret;
     int val;
-    AUDIO_DRIVER_LOG_INFO("enter ");
+
     temp_i2s_dev = &pdev->dev;
     if (strcmp(dev_name(temp_i2s_dev), "fe410000.i2s") != 0) {
         AUDIO_DRIVER_LOG_INFO("failed dmaDevice->name %s ", dev_name(temp_i2s_dev));
         return 0;
     }
-    AUDIO_DRIVER_LOG_INFO("okokok dmaDevice->name %s ", dev_name(temp_i2s_dev));
+
     i2s_tdm = devm_kzalloc(&pdev->dev, sizeof(*i2s_tdm), GFP_KERNEL);
     if (!i2s_tdm) {
         return -ENOMEM;
     }
-    AUDIO_DRIVER_LOG_INFO("i2s_tdm %p ", i2s_tdm);
+
     i2s_tdm->dev = &pdev->dev;
 
     of_id = of_match_device(rockchip_i2s_tdm_match, &pdev->dev);
@@ -308,7 +307,6 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
     regmap_update_bits(i2s_tdm->regmap, I2S_CKR,
                I2S_CKR_TRCM_MASK, i2s_tdm->clk_trcm);
 
-    AUDIO_DRIVER_LOG_INFO("exit ");
     return 0;
 }
 
