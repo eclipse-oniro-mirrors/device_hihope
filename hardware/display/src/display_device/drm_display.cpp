@@ -102,12 +102,38 @@ int32_t DrmDisplay::GetDisplayPowerStatus(DispPowerStatus *status)
 
 int32_t DrmDisplay::SetDisplayPowerStatus(DispPowerStatus status)
 {
-    DISPLAY_DEBUGLOG("the status %{public}d ", status);
-    uint32_t drmPowerState = 0;
-    int ret = ConvertToDrmPowerState(status, drmPowerState);
-    DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_PARAM_ERR,
-        DISPLAY_LOGE("unknown power status %{public}d", status));
-    mConnector->SetDpmsState(drmPowerState);
+    static int32_t fb_fd  = -1;
+    int32_t err = -1;
+    const uint32_t FBIOBLANK = 0x4611; /* arg: 0 or vesa level + 1 */
+    const uint32_t FB_BLANK_UNBLANK = 0;  /* screen: unblanked, hsync: on,  vsync: on */
+    const uint32_t FB_BLANK_POWERDOWN = 4; /* screen: blanked,   hsync: off, vsync: off */
+
+    DISPLAY_DEBUGLOG("SetDisplayPowerStatus power state %{public}u", status);
+    if (fb_fd < 0) {
+        fb_fd = open("/dev/graphics/fb0", O_RDWR);
+        if (fb_fd < 0) {
+            DISPLAY_LOGE("oepn fb0 file failed\n");
+            return DISPLAY_NOT_SUPPORT;
+        }
+    }
+    switch (status) {
+        case POWER_STATUS_OFF:
+        case POWER_STATUS_STANDBY:
+        case POWER_STATUS_SUSPEND:
+            err = ioctl(fb_fd, FBIOBLANK, FB_BLANK_POWERDOWN);
+            break;
+        case POWER_STATUS_ON:
+            err = ioctl(fb_fd, FBIOBLANK, FB_BLANK_UNBLANK);
+            break;
+        default:
+            err = DISPLAY_FAILURE;
+            break;
+    }
+    if (err < 0) {
+        DISPLAY_LOGE("ioctl fb0 failed\n");
+        return DISPLAY_FAILURE;
+    }
+    
     return DISPLAY_SUCCESS;
 }
 
