@@ -56,8 +56,16 @@ ohos_prebuilt_etc("fstab.rk3568") {
   install_enable = true
 }
 
+ohos_prebuilt_etc("fstab.required") {
+  source = "fstab.required"
+  part_name = "rockchip_products"
+  install_images = [ "system" ]
+  install_enable = true
+}
+
 group("init_configs") {
   deps = [
+    ":fstab.required",
     ":fstab.rk3568",
     ":init.cfg",
     ":init.rk3568.cfg",
