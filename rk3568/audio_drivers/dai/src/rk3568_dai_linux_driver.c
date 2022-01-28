@@ -14,7 +14,6 @@
 #include <linux/of_device.h>
 #include <linux/of_address.h>
 #include <linux/clk.h>
-#include <linux/clk-provider.h>
 #include <linux/clk/rockchip.h>
 #include <linux/pm_runtime.h>
 #include <linux/regmap.h>
@@ -222,15 +221,15 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
     spin_lock_init(&i2s_tdm->lock);
     i2s_tdm->soc_data = (const struct rk_i2s_soc_data *)of_id->data;
 
-    i2s_tdm->bclk_fs = 64;
+    i2s_tdm->bclk_fs = 64; // default-freq div factor is 64
     if (!of_property_read_u32(node, "rockchip,bclk-fs", &val)) {
-        if ((val >= 32) && (val % 2 == 0))
+        if ((val >= 32) && (val % 2 == 0)) // min-freq div factor is 32, and it is an integer multiple of 2
             i2s_tdm->bclk_fs = val;
     }
 
     i2s_tdm->clk_trcm = I2S_CKR_TRCM_TXRX;
     if (!of_property_read_u32(node, "rockchip,clk-trcm", &val)) {
-        if (val >= 0 && val <= 2) {
+        if (val >= 0 && val <= 2) { // clk-trcm factor should between 0 and 2
             i2s_tdm->clk_trcm = val << I2S_CKR_TRCM_SHIFT;
         }
     }
@@ -286,7 +285,7 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
     }
 
     i2s_tdm->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
-                            &rockchip_i2s_tdm_regmap_config);
+        &rockchip_i2s_tdm_regmap_config);
     if (IS_ERR(i2s_tdm->regmap)) {
         return PTR_ERR(i2s_tdm->regmap);
     }
@@ -300,9 +299,9 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
     }
 
     regmap_update_bits(i2s_tdm->regmap, I2S_DMACR, I2S_DMACR_TDL_MASK,
-        I2S_DMACR_TDL(16));
+        I2S_DMACR_TDL(16)); // Transmit Data Level MASK with 16bit
     regmap_update_bits(i2s_tdm->regmap, I2S_DMACR, I2S_DMACR_RDL_MASK,
-        I2S_DMACR_RDL(16));
+        I2S_DMACR_RDL(16)); // Receive Data Level MASK with 16bit
     regmap_update_bits(i2s_tdm->regmap, I2S_CKR,
         I2S_CKR_TRCM_MASK, i2s_tdm->clk_trcm);
 

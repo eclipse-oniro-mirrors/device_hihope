@@ -175,7 +175,7 @@ int32_t Rk3568DmaBufFree(struct PlatformData *data, const enum AudioStreamType s
                     data->renderBufInfo.phyAddr);
     } else {
         AUDIO_DEVICE_LOG_ERR("stream Type is invalude.");
-        return HDF_FAILURE; 
+        return HDF_FAILURE;
     }
 
     AUDIO_DEVICE_LOG_DEBUG("success");
@@ -240,13 +240,13 @@ int32_t Rk3568DmaConfigChannel(struct PlatformData *data, const enum AudioStream
         slave_config.direction = DMA_MEM_TO_DEV;
         slave_config.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
         slave_config.dst_addr = I2S1_ADDR + I2S_TXDR;
-        slave_config.dst_maxburst = 8;       
+        slave_config.dst_maxburst = 8; // Max Transimit 8 Byte
     } else {
         dmaChan = (struct dma_chan *)dmaRtd->dmaChn[DMA_RX_CHANNEL];   // tx
         slave_config.direction = DMA_DEV_TO_MEM;
         slave_config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
         slave_config.src_addr = I2S1_ADDR + I2S_RXDR;
-        slave_config.src_maxburst = 8;
+        slave_config.src_maxburst = 8; // Max Transimit 8 Byte
     }
     slave_config.device_fc = 0;
     slave_config.slave_id = 0;

@@ -14,7 +14,6 @@
 #include <linux/of_device.h>
 #include <linux/of_address.h>
 #include <linux/clk.h>
-#include <linux/clk-provider.h>
 #include <linux/clk/rockchip.h>
 #include <linux/pm_runtime.h>
 #include <linux/regmap.h>
@@ -58,7 +57,7 @@ int32_t Rk3568DeviceReadReg(unsigned long regBase, uint32_t reg, uint32_t *val)
 }
 
 int32_t Rk3568DeviceWriteReg(unsigned long regBase, uint32_t reg, uint32_t value)
-{    
+{
     AUDIO_DEVICE_LOG_ERR("entry");
     struct device_node *dmaOfNode = of_find_node_by_path("/i2s@fe410000");
     if (dmaOfNode == NULL) {
@@ -138,16 +137,16 @@ int RK3568SetI2sFomartVal(const struct AudioPcmHwParams *param)
     AUDIO_DEVICE_LOG_ERR("param->format = %d\r\n", param->format);
     switch (param->format) {
         case AUDIO_FORMAT_PCM_8_BIT:
-            val |= I2S_TXCR_VDW(8);
+            val |= I2S_TXCR_VDW(8); // 8-bit
             break;
         case AUDIO_FORMAT_PCM_16_BIT:
-            val |= I2S_TXCR_VDW(16);
+            val |= I2S_TXCR_VDW(16); // 16-bit
             break;
         case AUDIO_FORMAT_PCM_24_BIT:
-            val |= I2S_TXCR_VDW(24);
+            val |= I2S_TXCR_VDW(24); // 24-bit
             break;
         case AUDIO_FORMAT_PCM_32_BIT:
-            val |= I2S_TXCR_VDW(32);
+            val |= I2S_TXCR_VDW(32); // 32-bit
             break;
         default:
             return -1;
@@ -195,7 +194,7 @@ int32_t RK3568SetI2sChannels(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct Au
 }
 
 int32_t ConfigInfoSetToReg(struct rk3568_i2s_tdm_dev *i2s_tdm, const struct AudioPcmHwParams *param,
-                        unsigned int div_bclk, unsigned int div_lrck, int32_t fmt) 
+    unsigned int div_bclk, unsigned int div_lrck, int32_t fmt) 
 {
     AUDIO_DEVICE_LOG_ERR("entry");
     regmap_update_bits(i2s_tdm->regmap, I2S_CLKDIV,
@@ -400,8 +399,8 @@ static int GetStreamType(int cmd)
 }
 
 
-static void Rk3568TxAndRxSetReg(struct rk3568_i2s_tdm_dev *i2s_tdm, 
-                        enum AudioStreamType streamType, int on)
+static void Rk3568TxAndRxSetReg(struct rk3568_i2s_tdm_dev *i2s_tdm,
+    enum AudioStreamType streamType, int on)
 {
     AUDIO_DEVICE_LOG_ERR("entry");
     unsigned int val = 0;
