@@ -112,13 +112,33 @@ int32_t DrmConnector::GetBrightness(uint32_t& level)
 
 int32_t DrmConnector::SetBrightness(uint32_t level)
 {
+    static int32_t brFd = 0;
+    const int32_t buffer_size = 10; /* buffer size */
+    char buffer[buffer_size];
+
     DISPLAY_DEBUGLOG("set %{public}d", level);
     if (mPropBrightnessId == DRM_INVALID_ID) {
         DISPLAY_LOGE("the prop id of brightness is invalid");
         return DISPLAY_NOT_SUPPORT;
     }
-    int ret = drmModeConnectorSetProperty(mDrmFdPtr->GetFd(), mId, mPropBrightnessId, level);
-    DISPLAY_CHK_RETURN((ret != 0), DISPLAY_FAILURE, DISPLAY_LOGE("can not set dpms"));
+    if (brFd <= 0) {
+        brFd = open("/sys/class/backlight/backlight/brightness", O_RDWR);
+        if (brFd < 0) {
+            DISPLAY_LOGE("oepn Brightness file failed\n");
+            return DISPLAY_NOT_SUPPORT;
+        }
+    }
+    errno_t ret = memset_s(buffer, sizeof(buffer), 0, sizeof(buffer));
+    if (ret != EOK) {
+        DISPLAY_LOGE("memset_s failed\n");
+        return DISPLAY_FAILURE;
+    }
+    int bytes = sprintf_s(buffer, sizeof(buffer), "%d\n", level);
+    if (bytes < 0) {
+        DISPLAY_LOGE("change failed\n");
+        return DISPLAY_FAILURE;
+    }
+    write(brFd, buffer, bytes);
     mBrightnessLevel = level;
     return DISPLAY_SUCCESS;
 }
