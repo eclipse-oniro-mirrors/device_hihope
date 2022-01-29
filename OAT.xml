@@ -34,6 +34,7 @@
         <filefilterlist>
             <filefilter name="defaultFilter" desc="Files not to check">
                 <filteritem type="filepath" name="rk3568/build/rootfs/fstab.rk3568" desc="配置文件，不能加其他注释"/>
+                <filteritem type="filepath" name="rk3568/build/rootfs/fstab.required" desc="配置文件，不能加其他注释"/>
                 <filteritem type="filepath" name="rk3568/tools/*" desc="windows platform burning tool"/>
                 <filteritem type="filepath" name="rk3568/loader/*" desc="mirror image file"/>
                 <filteritem type="filepath" name="rk3568/bootanimation/*" desc="raw files"/>

@@ -1,0 +1,3 @@
+# fstab file.
+#<src>                                                  <mnt_point> <type>    <mnt_flags and options>                              <fs_mgr_flags>
+/dev/block/platform/fe310000.sdhci/by-name/vendor              /vendor        ext4     ro,barrier=1  wait,required
