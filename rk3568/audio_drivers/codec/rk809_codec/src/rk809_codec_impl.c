@@ -36,7 +36,7 @@ struct Rk809TransferData {
     struct AudioRegCfgGroupNode **RegCfgGroupNode;
     struct AudioKcontrol *Controls;
 };
-extern struct Rk809ChipData *g_chip;
+
 
 static const struct AudioSapmRoute g_audioRoutes[] = {
     { "SPKL", "Dacl enable", "DACL"},
@@ -104,7 +104,12 @@ unsigned int g_cuurentcmd = AUDIO_DRV_PCM_IOCTL_BUTT;
 
 int32_t Rk809DeviceRegRead(uint32_t reg, uint32_t *val)
 {
-    if (regmap_read(g_chip->regmap, reg, val)) {
+    struct Rk809ChipData *chip = GetCodecDevice();
+    if (chip == NULL) {
+        AUDIO_DRIVER_LOG_ERR("get codec device failed.");
+        return HDF_FAILURE;
+    }
+    if (regmap_read(chip->regmap, reg, val)) {
         AUDIO_DRIVER_LOG_ERR("read register fail: [%04x]", reg);
         return HDF_FAILURE;
     }
@@ -114,7 +119,12 @@ int32_t Rk809DeviceRegRead(uint32_t reg, uint32_t *val)
 
 int32_t Rk809DeviceRegWrite(uint32_t reg, uint32_t value)
 {
-    if (regmap_write(g_chip->regmap, reg, value)) {
+    struct Rk809ChipData *chip = GetCodecDevice();
+    if (chip == NULL) {
+        AUDIO_DRIVER_LOG_ERR("get codec device failed.");
+        return HDF_FAILURE;
+    }
+    if (regmap_write(chip->regmap, reg, value)) {
         AUDIO_DRIVER_LOG_ERR("write register fail: [%04x] = %04x", reg, value);
         return HDF_FAILURE;
     }
@@ -124,7 +134,12 @@ int32_t Rk809DeviceRegWrite(uint32_t reg, uint32_t value)
 
 int32_t Rk809DeviceRegUpdatebits(uint32_t reg, uint32_t mask, uint32_t value)
 {
-    if (regmap_update_bits(g_chip->regmap, reg, mask, value)) {
+    struct Rk809ChipData *chip = GetCodecDevice();
+    if (chip == NULL) {
+        AUDIO_DRIVER_LOG_ERR("get codec device failed.");
+        return HDF_FAILURE;
+    }
+    if (regmap_update_bits(chip->regmap, reg, mask, value)) {
         AUDIO_DRIVER_LOG_ERR("update register bits fail: [%04x] = %04x", reg, value);
         return HDF_FAILURE;
     }
@@ -167,13 +182,13 @@ int32_t RK809RegBitsUpdateValue(struct AudioMixerControl *regAttr, Update_Dest d
     if (regAttr->invert) {
         value = regAttr->max - value;
     }
-    if (dest == UPDATE_LREG){
+    if (dest == UPDATE_LREG) {
         value = value << regAttr->shift;
         ret = Rk809DeviceRegUpdatebits(regAttr->reg, regAttr->mask, value);
-    } else if (dest == UPDATE_RREG){
+    } else if (dest == UPDATE_RREG) {
         value = value << regAttr->rshift;
         ret = Rk809DeviceRegUpdatebits(regAttr->rreg, regAttr->mask, value);
-    } else{
+    } else {
         ret = HDF_FAILURE;
     }
 

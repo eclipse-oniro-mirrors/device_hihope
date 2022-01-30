@@ -67,7 +67,7 @@ struct RK809DaiParamsVal {
     uint32_t frequencyVal;
     uint32_t DataWidthVal;
 };
-
+struct Rk809ChipData* GetCodecDevice(void);
 int32_t Rk809DeviceInit(struct AudioCard *audioCard, const struct CodecDevice *device);
 int32_t Rk809DeviceRegRead(uint32_t reg, uint32_t *val);
 int32_t Rk809DeviceRegWrite(uint32_t reg, uint32_t value);

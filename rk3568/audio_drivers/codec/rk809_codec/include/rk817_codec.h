@@ -211,5 +211,6 @@ struct rk817_init_bit_typ {
     unsigned int power_bit;
     unsigned int init_bit;
 };
-
+struct platform_device *GetCodecPlatformDevice(void);
+struct regmap_config getCodecRegmap(void);
 #endif /* __RK817_CODEC_H__ */
