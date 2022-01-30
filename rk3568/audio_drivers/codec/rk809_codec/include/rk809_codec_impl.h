@@ -58,6 +58,11 @@ typedef enum {
     RK809_VDW_24BITS = 0x17,
 } RK809_VDW;
 
+typedef enum {
+    UPDATE_LREG = 0,
+    UPDATE_RREG = 1,
+} Update_Dest;
+
 struct RK809DaiParamsVal {
     uint32_t frequencyVal;
     uint32_t DataWidthVal;
