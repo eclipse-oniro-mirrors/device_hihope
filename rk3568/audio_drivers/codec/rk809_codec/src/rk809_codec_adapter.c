@@ -31,13 +31,13 @@
 struct CodecData g_rk809Data = {
     .Init = Rk809DeviceInit,
     .Read = RK809CodecReadReg,
-    .Write = RK809CodecWriteReg,
+    .Write = Rk809CodecWriteReg,
 };
 
 struct AudioDaiOps g_rk809DaiDeviceOps = {
     .Startup = Rk809DaiStartup,
     .HwParams = Rk809DaiHwParams,
-    .Trigger = RK809NormalTrigger,
+    .Trigger = Rk809NormalTrigger,
 };
 
 struct DaiData g_rk809DaiData = {

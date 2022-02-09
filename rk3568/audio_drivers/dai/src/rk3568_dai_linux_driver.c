@@ -41,19 +41,20 @@ struct rk_i2s_soc_data {
 };
 
 static const struct txrx_config rk3568_txrx_config[] = {
+    // base addr, reg, txonly, rxonly
     { 0xfe410000, 0x504, RK3568_I2S1_CLK_TXONLY, RK3568_I2S1_CLK_RXONLY },
 };
 
 static int common_soc_init(struct device *dev, u32 addr)
 {
     struct rk3568_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(dev);
-    AUDIO_DRIVER_LOG_INFO("i2s_tdm addr = %p ", i2s_tdm);
+    AUDIO_DEVICE_LOG_DEBUG("i2s_tdm addr = %p ", i2s_tdm);
     regmap_write(i2s_tdm->grf, rk3568_txrx_config[0].reg, rk3568_txrx_config[0].txonly);
     return 0;
 }
 
 static const struct rk_i2s_soc_data rk3568_i2s_soc_data = {
-    .softrst_offset = 0x0400,
+    .softrst_offset = 0x0400,     // offset
     .configs = rk3568_txrx_config,
     .config_count = 1,
     .init = common_soc_init,
@@ -132,6 +133,7 @@ static bool rockchip_i2s_tdm_precious_reg(struct device *dev, unsigned int reg)
     }
 }
 
+// regs init value map
 static const struct reg_default rockchip_i2s_tdm_reg_defaults[] = {
     {0x00, 0x7200000f},
     {0x04, 0x01c8000f},
@@ -198,13 +200,13 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
 
     int ret;
     int val;
-    AUDIO_DRIVER_LOG_INFO("enter ");
+    AUDIO_DEVICE_LOG_DEBUG("enter ");
     temp_i2s_dev = &pdev->dev;
     if (strcmp(dev_name(temp_i2s_dev), "fe410000.i2s") != 0) {
         AUDIO_DRIVER_LOG_INFO("failed dmaDevice->name %s ", dev_name(temp_i2s_dev));
         return 0;
     }
-    AUDIO_DRIVER_LOG_INFO("dmaDevice->name %s ", dev_name(temp_i2s_dev));
+    AUDIO_DEVICE_LOG_DEBUG("dmaDevice->name %s ", dev_name(temp_i2s_dev));
     i2s_tdm = devm_kzalloc(&pdev->dev, sizeof(*i2s_tdm), GFP_KERNEL);
     if (!i2s_tdm) {
         return -ENOMEM;

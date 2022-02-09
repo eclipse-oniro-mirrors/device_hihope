@@ -73,12 +73,12 @@ int32_t Rk809DeviceInit(struct AudioCard *audioCard, const struct CodecDevice *d
 int32_t Rk809DeviceRegRead(uint32_t reg, uint32_t *val);
 int32_t Rk809DeviceRegWrite(uint32_t reg, uint32_t value);
 int32_t RK809CodecReadReg(unsigned long virtualAddress, uint32_t reg, uint32_t *val);
-int32_t RK809CodecWriteReg(unsigned long virtualAddress, uint32_t reg, uint32_t value);
-int32_t RK809RegBitsUpdate(struct AudioMixerControl regAttr);
+int32_t Rk809CodecWriteReg(unsigned long virtualAddress, uint32_t reg, uint32_t value);
+int32_t Rk809RegBitsUpdate(struct AudioMixerControl regAttr);
 int32_t Rk809DaiDeviceInit(struct AudioCard *card, const struct DaiDevice *device);
 int32_t Rk809DaiStartup(const struct AudioCard *card, const struct DaiDevice *device);
 int32_t Rk809DaiHwParams(const struct AudioCard *card, const struct AudioPcmHwParams *param);
-int32_t RK809NormalTrigger(const struct AudioCard *card, int cmd, const struct DaiDevice *device);
+int32_t Rk809NormalTrigger(const struct AudioCard *card, int cmd, const struct DaiDevice *device);
 
 #ifdef __cplusplus
 #if __cplusplus
