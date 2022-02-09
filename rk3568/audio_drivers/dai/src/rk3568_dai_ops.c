@@ -225,7 +225,6 @@ int32_t RK3568I2sTdmSetMclk(struct rk3568_i2s_tdm_dev *i2s_tdm, struct clk **mcl
     unsigned int mclk_rate, bclk_rate, div_bclk, div_lrck;
     int32_t fmt = 0;
     int32_t channels = 0;
-    AUDIO_DEVICE_LOG_DEBUG("i2s_tdm->mclk_tx = %p, i2s_tdm->mclk_tx_freq = %u", i2s_tdm->mclk_tx, i2s_tdm->mclk_tx_freq);
     ret = clk_set_rate(i2s_tdm->mclk_tx, i2s_tdm->mclk_tx_freq);
     if (ret) {
         AUDIO_DEVICE_LOG_ERR(" clk_set_rate ret = %d", ret);
