@@ -194,7 +194,6 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
     const struct of_device_id *of_id;
     struct rk3568_i2s_tdm_dev *i2s_tdm;
     struct resource *res;
-    void __iomem *regs;
     struct device *temp_i2s_dev;
 
     int ret;
@@ -205,12 +204,11 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
         AUDIO_DRIVER_LOG_INFO("failed dmaDevice->name %s ", dev_name(temp_i2s_dev));
         return 0;
     }
-    AUDIO_DRIVER_LOG_INFO("okokok dmaDevice->name %s ", dev_name(temp_i2s_dev));
+    AUDIO_DRIVER_LOG_INFO("dmaDevice->name %s ", dev_name(temp_i2s_dev));
     i2s_tdm = devm_kzalloc(&pdev->dev, sizeof(*i2s_tdm), GFP_KERNEL);
     if (!i2s_tdm) {
         return -ENOMEM;
     }
-    AUDIO_DRIVER_LOG_INFO("i2s_tdm %p ", i2s_tdm);
     i2s_tdm->dev = &pdev->dev;
 
     of_id = of_match_device(rockchip_i2s_tdm_match, &pdev->dev);
@@ -279,12 +277,8 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
     }
 
     res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-    regs = devm_ioremap_resource(&pdev->dev, res);
-    if (IS_ERR(regs)) {
-        return PTR_ERR(regs);
-    }
 
-    i2s_tdm->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
+    i2s_tdm->regmap = devm_regmap_init_mmio(&pdev->dev, devm_ioremap_resource(&pdev->dev, res),
         &rockchip_i2s_tdm_regmap_config);
     if (IS_ERR(i2s_tdm->regmap)) {
         return PTR_ERR(i2s_tdm->regmap);
@@ -304,8 +298,6 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
         I2S_DMACR_RDL(16)); // Receive Data Level MASK with 16bit
     regmap_update_bits(i2s_tdm->regmap, I2S_CKR,
         I2S_CKR_TRCM_MASK, i2s_tdm->clk_trcm);
-
-    AUDIO_DRIVER_LOG_INFO("exit ");
     return 0;
 }
 
