@@ -3,7 +3,8 @@
     "parts": {
         "rockchip_products": {
             "module_list": [
-                "//device/hihope/build:products_group"
+                "//device/hihope/build:products_group",
+                "//vendor/hihope/rk3568/bluetooth:libbt_vendor"
             ]
         }
     }
