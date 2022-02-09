@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Institute of Software, CAS. 
+ * Copyright (c) 2022 Institute of Software, CAS.
  * Author : huangji@nj.iscas.ac.cn 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,63 +109,47 @@ static int32_t Rk809DriverInit(struct HdfDeviceObject *device)
         AUDIO_DEVICE_LOG_ERR("codeDev not ready");
         return HDF_FAILURE;
     }
-
     g_chip = devm_kzalloc(&codeDev->dev, sizeof(struct Rk809ChipData), GFP_KERNEL);
     if (!g_chip) {
-        AUDIO_DEVICE_LOG_ERR("no memory");
         return HDF_ERR_MALLOC_FAIL;
     }
     g_chip->codec = g_rk809Data;
     g_chip->dai = g_rk809DaiData;
     platform_set_drvdata(codeDev, g_chip);
     g_chip->pdev = codeDev;
-
     struct rk808 *rk808 = dev_get_drvdata(g_chip->pdev->dev.parent);
     if (!rk808) {
-        AUDIO_DEVICE_LOG_ERR("%s: rk808 is NULL\n", __func__);
-        ret = HDF_FAILURE;
         RK809ChipRelease();
-        return ret;
+        return HDF_FAILURE;
     }
-    g_chip->regmap = devm_regmap_init_i2c(rk808->i2c,
-        &codecRegmapCfg);
+    g_chip->regmap = devm_regmap_init_i2c(rk808->i2c, &codecRegmapCfg);
     if (IS_ERR(g_chip->regmap)) {
         AUDIO_DEVICE_LOG_ERR("failed to allocate regmap: %ld\n", PTR_ERR(g_chip->regmap));
         RK809ChipRelease();
         return ret;
     }
-
     ret = CodecGetConfigInfo(device, &(g_chip->codec));
     if (ret !=  HDF_SUCCESS) {
-        AUDIO_DEVICE_LOG_ERR("get config info failed.");
         RK809ChipRelease();
         return ret;
     }
     if (CodecSetConfigInfo(&(g_chip->codec),  &(g_chip->dai)) != HDF_SUCCESS) {
-        AUDIO_DEVICE_LOG_ERR("set config info failed.");
         return HDF_FAILURE;
     }
-
     ret = GetServiceName(device);
     if (ret !=  HDF_SUCCESS) {
-        AUDIO_DEVICE_LOG_ERR("GetServiceName failed.");
         RK809ChipRelease();
         return ret;
     }
-    
     ret = CodecGetDaiName(device,  &(g_chip->dai.drvDaiName));
     if (ret != HDF_SUCCESS) {
-        AUDIO_DEVICE_LOG_ERR("CodecGetDaiName failed.");
         return HDF_FAILURE;
     }
-
     ret = AudioRegisterCodec(device, &(g_chip->codec), &(g_chip->dai));
     if (ret !=  HDF_SUCCESS) {
-        AUDIO_DEVICE_LOG_ERR("AudioRegisterCodec failed.");
         RK809ChipRelease();
         return ret;
     }
-
     return HDF_SUCCESS;
 }
 

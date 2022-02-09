@@ -409,55 +409,43 @@ static void Rk3568TxAndRxSetReg(struct rk3568_i2s_tdm_dev *i2s_tdm,
         if (streamType == AUDIO_RENDER_STREAM) {
             clk_prepare_enable(i2s_tdm->mclk_tx);
             regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
-                I2S_DMACR_TDE_ENABLE,
-                I2S_DMACR_TDE_ENABLE);
+                I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_ENABLE);
         } else {
             clk_prepare_enable(i2s_tdm->mclk_rx);
             regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
-                I2S_DMACR_RDE_ENABLE,
-                I2S_DMACR_RDE_ENABLE);
+                I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_ENABLE);
             if (regmap_read(i2s_tdm->regmap, I2S_DMACR, &val)) {
                 AUDIO_DEVICE_LOG_ERR("read register fail: [%04x]", I2S_DMACR);
                 return ;
             }
-            AUDIO_DEVICE_LOG_ERR("i2s reg: 0x%x = 0x%x ", I2S_DMACR, val);
         }
 
         if (atomic_inc_return(&i2s_tdm->refcount) == 1) {
             regmap_update_bits(i2s_tdm->regmap, I2S_XFER,
-                I2S_XFER_TXS_START | I2S_XFER_RXS_START,
-                I2S_XFER_TXS_START | I2S_XFER_RXS_START);
+                I2S_XFER_TXS_START | I2S_XFER_RXS_START, I2S_XFER_TXS_START | I2S_XFER_RXS_START);
             if (regmap_read(i2s_tdm->regmap, I2S_XFER, &val)) {
                 AUDIO_DEVICE_LOG_ERR("read register fail: [%04x]", I2S_XFER);
                 return ;
             }
-            AUDIO_DEVICE_LOG_ERR("i2s reg: 0x%x = 0x%x ", I2S_XFER, val);
         }
     } else {
         if (streamType == AUDIO_RENDER_STREAM) {
             clk_disable_unprepare(i2s_tdm->mclk_tx);
             regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
-                I2S_DMACR_TDE_ENABLE,
-                I2S_DMACR_TDE_DISABLE);
+                I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_DISABLE);
         } else {
             clk_disable_unprepare(i2s_tdm->mclk_rx);
             regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
-                I2S_DMACR_RDE_ENABLE,
-                I2S_DMACR_RDE_DISABLE);
+                I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_DISABLE);
         }
 
         if (atomic_dec_and_test(&i2s_tdm->refcount)) {
             regmap_update_bits(i2s_tdm->regmap, I2S_XFER,
-                I2S_XFER_TXS_START | I2S_XFER_RXS_START,
-                I2S_XFER_TXS_STOP | I2S_XFER_RXS_STOP);
-
+                I2S_XFER_TXS_START | I2S_XFER_RXS_START, I2S_XFER_TXS_STOP | I2S_XFER_RXS_STOP);
             udelay(150);
             regmap_update_bits(i2s_tdm->regmap, I2S_CLR,
-                I2S_CLR_TXC | I2S_CLR_RXC,
-                I2S_CLR_TXC | I2S_CLR_RXC);
-
+                I2S_CLR_TXC | I2S_CLR_RXC, I2S_CLR_TXC | I2S_CLR_RXC);
             regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
-
             /* Should wait for clear operation to finish */
             while (val && retry > 0) {
                 regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
