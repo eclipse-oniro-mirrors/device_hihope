@@ -39,7 +39,6 @@ struct PlatformData g_platformData = {
 static int32_t PlatformDriverBind(struct HdfDeviceObject *device)
 {
     struct PlatformHost *platformHost = NULL;
-    AUDIO_DEVICE_LOG_DEBUG("entry!");
 
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("input para is NULL.");
@@ -64,7 +63,6 @@ static int32_t PlatformGetServiceName(const struct HdfDeviceObject *device)
     const struct DeviceResourceNode *node = NULL;
     struct DeviceResourceIface *drsOps = NULL;
     int32_t ret;
-    AUDIO_DEVICE_LOG_DEBUG("entry!");
 
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("para is NULL.");
@@ -96,7 +94,6 @@ static int32_t PlatformGetServiceName(const struct HdfDeviceObject *device)
 static int32_t PlatformDriverInit(struct HdfDeviceObject *device)
 {
     int32_t ret;
-    AUDIO_DEVICE_LOG_DEBUG("entry.\n");
 
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("device is NULL.");
@@ -122,7 +119,6 @@ static int32_t PlatformDriverInit(struct HdfDeviceObject *device)
 static void PlatformDriverRelease(struct HdfDeviceObject *device)
 {
     struct PlatformHost *platformHost = NULL;
-    AUDIO_DEVICE_LOG_DEBUG("entry.\n");
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("device is NULL");
         return;

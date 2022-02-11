@@ -36,14 +36,13 @@ struct DaiData g_dspDaiData = {
 
 static int32_t DspDriverBind(struct HdfDeviceObject *device)
 {
-    AUDIO_DRIVER_LOG_INFO("entry");
-
+    struct AudioHost *audioHost;
     if (device == NULL) {
         AUDIO_DRIVER_LOG_ERR("device is NULL.");
         return HDF_ERR_INVALID_OBJECT;
     }
 
-    struct AudioHost *audioHost = AudioHostCreateAndBind(device);
+    audioHost = AudioHostCreateAndBind(device);
     if (audioHost == NULL) {
         AUDIO_DRIVER_LOG_ERR("audioHost create failed!");
         return HDF_FAILURE;
@@ -55,6 +54,7 @@ static int32_t DspDriverBind(struct HdfDeviceObject *device)
 
 static int32_t DspDriverInit(struct HdfDeviceObject *device)
 {
+    int32_t ret = 0;
     AUDIO_DRIVER_LOG_INFO("entry");
 
     if (device == NULL) {
@@ -62,7 +62,7 @@ static int32_t DspDriverInit(struct HdfDeviceObject *device)
         return HDF_ERR_INVALID_OBJECT;
     }
 
-    int32_t ret = DspGetServiceName(device, &g_dspData.drvDspName);
+    ret = DspGetServiceName(device, &g_dspData.drvDspName);
     if (ret != HDF_SUCCESS) {
         return ret;
     }
@@ -84,13 +84,14 @@ static int32_t DspDriverInit(struct HdfDeviceObject *device)
 
 static void DspDriverRelease(struct HdfDeviceObject *device)
 {
+    struct DspHost *dspHost;
     AUDIO_DRIVER_LOG_INFO("entry");
     if (device == NULL) {
         AUDIO_DRIVER_LOG_ERR("device is NULL");
         return;
     }
 
-    struct DspHost *dspHost = (struct DspHost *)device->service;
+    dspHost = (struct DspHost *)device->service;
     if (dspHost == NULL) {
         AUDIO_DRIVER_LOG_ERR("DspHost is NULL");
         return;

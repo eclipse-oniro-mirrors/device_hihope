@@ -82,12 +82,13 @@ static int32_t GetServiceName(const struct HdfDeviceObject *device)
 /* HdfDriverEntry implementations */
 static int32_t Rk809DriverBind(struct HdfDeviceObject *device)
 {
+    struct CodecHost *codecHost;
     if (device == NULL) {
         AUDIO_DRIVER_LOG_ERR("input para is NULL.");
         return HDF_FAILURE;
     }
 
-    struct CodecHost *codecHost = (struct CodecHost *)OsalMemCalloc(sizeof(*codecHost));
+    codecHost = (struct CodecHost *)OsalMemCalloc(sizeof(*codecHost));
     if (codecHost == NULL) {
         AUDIO_DRIVER_LOG_ERR("malloc codecHost fail!");
         return HDF_FAILURE;
@@ -105,6 +106,7 @@ static int32_t Rk809DriverInit(struct HdfDeviceObject *device)
     int32_t ret;
     struct regmap_config codecRegmapCfg = getCodecRegmap();
     struct platform_device *codeDev = GetCodecPlatformDevice();
+    struct rk808 *rk808;
     if (!codeDev) {
         AUDIO_DEVICE_LOG_ERR("codeDev not ready");
         return HDF_FAILURE;
@@ -117,7 +119,7 @@ static int32_t Rk809DriverInit(struct HdfDeviceObject *device)
     g_chip->dai = g_rk809DaiData;
     platform_set_drvdata(codeDev, g_chip);
     g_chip->pdev = codeDev;
-    struct rk808 *rk808 = dev_get_drvdata(g_chip->pdev->dev.parent);
+    rk808 = dev_get_drvdata(g_chip->pdev->dev.parent);
     if (!rk808) {
         RK809ChipRelease();
         return HDF_FAILURE;
@@ -168,6 +170,7 @@ static void RK809ChipRelease(void)
 
 static void RK809DriverRelease(struct HdfDeviceObject *device)
 {
+    struct CodecHost *codecHost;
     if (device == NULL) {
         AUDIO_DRIVER_LOG_ERR("device is NULL");
         return;
@@ -176,7 +179,7 @@ static void RK809DriverRelease(struct HdfDeviceObject *device)
     if (device->priv != NULL) {
         OsalMemFree(device->priv);
     }
-    struct CodecHost *codecHost = (struct CodecHost *)device->service;
+    codecHost = (struct CodecHost *)device->service;
     if (codecHost == NULL) {
         HDF_LOGE("CodecDriverRelease: codecHost is NULL");
         return;

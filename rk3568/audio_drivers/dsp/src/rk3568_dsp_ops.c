@@ -35,15 +35,14 @@ int32_t DspDeviceInit(const struct DspDevice *device)
     (void)device;
     return HDF_SUCCESS;
 }
-
-int32_t DspDeviceReadReg(const struct DspDevice *device, const uint8_t *msgs, const uint32_t len)
+int32_t DspDeviceReadReg(const struct DspDevice *device, const void *msgs, const uint32_t len)
 {
     (void)device;
     (void)msgs;
     return HDF_SUCCESS;
 }
 
-int32_t DspDeviceWriteReg(const struct DspDevice *device, const uint8_t *msgs, const uint32_t len)
+int32_t DspDeviceWriteReg(const struct DspDevice *device, const void *msgs, const uint32_t len)
 {
     (void)device;
     (void)msgs;
