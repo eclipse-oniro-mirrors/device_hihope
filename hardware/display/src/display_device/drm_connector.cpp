@@ -133,6 +133,9 @@ int32_t DrmConnector::SetBrightness(uint32_t level)
         DISPLAY_LOGE("memset_s failed\n");
         return DISPLAY_FAILURE;
     }
+    if (level < 10) {
+        level = 10;
+    }
     int bytes = sprintf_s(buffer, sizeof(buffer), "%d\n", level);
     if (bytes < 0) {
         DISPLAY_LOGE("change failed\n");
