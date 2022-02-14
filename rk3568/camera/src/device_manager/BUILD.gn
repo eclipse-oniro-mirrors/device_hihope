@@ -70,12 +70,12 @@ ohos_shared_library("camera_device_manager") {
     "//utils/native/base/include",
     "//drivers/framework/include/utils",
     "//drivers/adapter/uhdf2/osal/include",
-    "//foundation/multimedia/camera_standard/frameworks/innerkitsimpl/metadata/include",
+    "//foundation/multimedia/camera_standard/frameworks/native/metadata/include",
   ]
 
   deps = [
     "$camera_path/adapter/platform/v4l2/src/driver_adapter:camera_v4l2_adapter",
-    "//foundation/multimedia/camera_standard/frameworks/innerkitsimpl/metadata:metadata",
+    "//foundation/multimedia/camera_standard/frameworks/native/metadata:metadata",
     "//utils/native/base:utils",
   ]
 
