@@ -330,7 +330,7 @@ int32_t Rk3568DmaSubmit(const struct PlatformData *data, const enum AudioStreamT
     return 0;
 }
 
-int32_t Rk3568DmaPending(const struct PlatformData *data, const enum AudioStreamType streamType)
+int32_t Rk3568DmaPending(struct PlatformData *data, const enum AudioStreamType streamType)
 {
     struct DmaRuntimeData *dmaRtd = NULL;
     struct dma_chan *dmaChan;
@@ -418,11 +418,7 @@ int32_t Rk3568DmaResume(const struct PlatformData *data, const enum AudioStreamT
         AUDIO_DEVICE_LOG_ERR("call Rk3568DmaSubmit failed");
         return HDF_FAILURE;
     }
-    ret = Rk3568DmaPending(data, currentStreamType);
-    if (ret != HDF_SUCCESS) {
-        AUDIO_DEVICE_LOG_ERR("call Rk3568DmaPending failed");
-        return HDF_FAILURE;
-    }
+    dma_async_issue_pending(dmaChan);
 
     AUDIO_DEVICE_LOG_DEBUG("success");
     return HDF_SUCCESS;
