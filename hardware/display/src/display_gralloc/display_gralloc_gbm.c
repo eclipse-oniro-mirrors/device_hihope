@@ -299,7 +299,7 @@ int32_t GbmAllocMem(const AllocInfo *info, BufferHandle **buffer)
     priBuffer = (PriBufferHandle *)malloc(sizeof(PriBufferHandle));
     DISPLAY_CHK_RETURN((priBuffer == NULL), DISPLAY_NULL_PTR, DISPLAY_LOGE("bufferhandle malloc failed"); goto error);
     errno_t eok = memset_s(priBuffer, sizeof(PriBufferHandle), 0, sizeof(PriBufferHandle));
-    if (!eok) {
+    if (eok != EOK) {
         DISPLAY_LOGE("memset_s failed");
     }
     DISPLAY_CHK_RETURN((eok != EOK), DISPLAY_PARAM_ERR, DISPLAY_LOGE("memset_s failed"); goto error);
