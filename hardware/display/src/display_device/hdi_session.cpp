@@ -88,11 +88,11 @@ static int32_t GetDisplayCapability(uint32_t devId, DisplayCapability *info)
     return HdiSession::GetInstance().CallDisplayFunction(devId, &HdiDisplay::GetDisplayCapability, info);
 }
 
-static int32_t GetDisplaySuppportedModes(uint32_t devId, int *num, DisplayModeInfo *modes)
+static int32_t GetDisplaySupportedModes(uint32_t devId, int *num, DisplayModeInfo *modes)
 {
     DISPLAY_DEBUGLOG();
     DISPLAY_CHK_RETURN(num == nullptr, DISPLAY_NULL_PTR, DISPLAY_LOGE("num is nullptr"));
-    return HdiSession::GetInstance().CallDisplayFunction(devId, &HdiDisplay::GetDisplaySuppportedModes, num, modes);
+    return HdiSession::GetInstance().CallDisplayFunction(devId, &HdiDisplay::GetDisplaySupportedModes, num, modes);
 }
 
 static int32_t GetDisplayMode(uint32_t devId, uint32_t *mode)
@@ -329,7 +329,7 @@ int32_t DeviceInitialize(DeviceFuncs **funcs)
 
     dFuncs->RegHotPlugCallback = RegHotPlugCallback;
     dFuncs->GetDisplayCapability = GetDisplayCapability;
-    dFuncs->GetDisplaySuppportedModes = GetDisplaySuppportedModes;
+    dFuncs->GetDisplaySupportedModes = GetDisplaySupportedModes;
     dFuncs->GetDisplayMode = GetDisplayMode;
     dFuncs->SetDisplayMode = SetDisplayMode;
     dFuncs->GetDisplayPowerStatus = GetDisplayPowerStatus;

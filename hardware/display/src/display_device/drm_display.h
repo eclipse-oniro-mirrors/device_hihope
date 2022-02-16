@@ -36,7 +36,7 @@ public:
 
     int32_t Init() override;
     int32_t GetDisplayCapability(DisplayCapability *info) override;
-    int32_t GetDisplaySuppportedModes(int *num, DisplayModeInfo *modes) override;
+    int32_t GetDisplaySupportedModes(int *num, DisplayModeInfo *modes) override;
     int32_t GetDisplayMode(uint32_t *modeId) override;
     int32_t SetDisplayMode(uint32_t modeId) override;
     int32_t GetDisplayPowerStatus(DispPowerStatus *status) override;
