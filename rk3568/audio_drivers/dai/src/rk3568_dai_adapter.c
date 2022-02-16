@@ -90,6 +90,7 @@ static int32_t DaiGetServiceName(const struct HdfDeviceObject *device)
 
 static int32_t DaiDriverInit(struct HdfDeviceObject *device)
 {
+    int32_t ret = 0;
     AUDIO_DRIVER_LOG_DEBUG("entry!");
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("device is nullptr.");
@@ -106,7 +107,7 @@ static int32_t DaiDriverInit(struct HdfDeviceObject *device)
         return HDF_FAILURE;
     }
 
-    int32_t ret = AudioSocRegisterDai(device, (void *)&g_daiData);
+    ret = AudioSocRegisterDai(device, (void *)&g_daiData);
     if (ret !=  HDF_SUCCESS) {
         AUDIO_DEVICE_LOG_ERR("register dai fail.");
         return ret;
@@ -118,6 +119,7 @@ static int32_t DaiDriverInit(struct HdfDeviceObject *device)
 
 static void DaiDriverRelease(struct HdfDeviceObject *device)
 {
+    struct DaiHost *daiHost;
     AUDIO_DRIVER_LOG_DEBUG("entry!");
     if (device == NULL) {
         AUDIO_DEVICE_LOG_ERR("device is NULL");
@@ -126,7 +128,7 @@ static void DaiDriverRelease(struct HdfDeviceObject *device)
 
     OsalMutexDestroy(&g_daiData.mutex);
 
-    struct DaiHost *daiHost = (struct DaiHost *)device->service;
+    daiHost = (struct DaiHost *)device->service;
     if (daiHost == NULL) {
         AUDIO_DEVICE_LOG_ERR("daiHost is NULL");
         return;

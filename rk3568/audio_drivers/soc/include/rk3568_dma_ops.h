@@ -21,14 +21,14 @@ extern "C" {
 int32_t AudioDmaDeviceInit(const struct AudioCard *card, const struct PlatformDevice *platform);
 int32_t Rk3568DmaBufAlloc(struct PlatformData *data, const enum AudioStreamType streamType);
 int32_t Rk3568DmaBufFree(struct PlatformData *data, const enum AudioStreamType streamType);
-int32_t Rk3568DmaRequestChannel(struct PlatformData *data, const enum AudioStreamType streamType);
-int32_t Rk3568DmaConfigChannel(struct PlatformData *data, const enum AudioStreamType streamType);
+int32_t Rk3568DmaRequestChannel(const struct PlatformData *data, const enum AudioStreamType streamType);
+int32_t Rk3568DmaConfigChannel(const struct PlatformData *data, const enum AudioStreamType streamType);
 int32_t Rk3568PcmPointer(struct PlatformData *data, const enum AudioStreamType streamType, uint32_t *pointer);
-int32_t Rk3568DmaPrep(struct PlatformData *data, const enum AudioStreamType streamType);
-int32_t Rk3568DmaSubmit(struct PlatformData *data, const enum AudioStreamType streamType);
+int32_t Rk3568DmaPrep(const struct PlatformData *data, const enum AudioStreamType streamType);
+int32_t Rk3568DmaSubmit(const struct PlatformData *data, const enum AudioStreamType streamType);
 int32_t Rk3568DmaPending(struct PlatformData *data, const enum AudioStreamType streamType);
 int32_t Rk3568DmaPause(struct PlatformData *data, const enum AudioStreamType streamType);
-int32_t Rk3568DmaResume(struct PlatformData *data, const enum AudioStreamType streamType);
+int32_t Rk3568DmaResume(const struct PlatformData *data, const enum AudioStreamType streamType);
 
 #ifdef __cplusplus
 #if __cplusplus
