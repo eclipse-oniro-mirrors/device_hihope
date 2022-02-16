@@ -76,9 +76,9 @@ int32_t DrmDisplay::GetDisplayCapability(DisplayCapability *info)
     return DISPLAY_SUCCESS;
 }
 
-int32_t DrmDisplay::GetDisplaySuppportedModes(int *num, DisplayModeInfo *modes)
+int32_t DrmDisplay::GetDisplaySupportedModes(int *num, DisplayModeInfo *modes)
 {
-    mConnector->GetDisplaySuppportedModes(num, modes);
+    mConnector->GetDisplaySupportedModes(num, modes);
     return DISPLAY_SUCCESS;
 }
 
@@ -248,7 +248,7 @@ int32_t DrmDisplay::ChosePreferenceMode()
     int32_t modeId = mConnector->GetPreferenceId();
     if (modeId == INVALID_MODE_ID) {
         int32_t num = 0;
-        ret = GetDisplaySuppportedModes(&num, nullptr);
+        ret = GetDisplaySupportedModes(&num, nullptr);
         DISPLAY_CHK_RETURN((num == 0) && (ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("can not get modes"));
         modeId = 0;
     }

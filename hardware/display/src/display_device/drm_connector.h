@@ -79,7 +79,7 @@ public:
     void GetDisplayCap(DisplayCapability &cap);
     int32_t Init(DrmDevice &drmDevice);
     int32_t PickIdleCrtcId(IdMapPtr<DrmEncoder> &encoders, IdMapPtr<DrmCrtc> &crtcs, uint32_t &crtcId);
-    int32_t GetDisplaySuppportedModes(int *num, DisplayModeInfo *modes);
+    int32_t GetDisplaySupportedModes(int *num, DisplayModeInfo *modes);
     int32_t GetPreferenceId() const
     {
         return mPreferenceId;
