@@ -44,10 +44,17 @@ cp -rf ${3}/kernel/logo* ${KERNEL_SRC_TMP_PATH}/
 cp -rf ${KERNEL_CONFIG_FILE} ${KERNEL_SRC_TMP_PATH}/arch/arm64/configs/rockchip_linux_defconfig
 
 #±àÒëÄÚºË
-./make-ohos.sh TB-RK3568X0 > kernel_build.log 2>&1
+if [ "enable_ramdisk" == "${6}" ]; then
+	./make-ohos.sh TB-RK3568X0 enable_ramdisk
+else
+    ./make-ohos.sh TB-RK3568X0 disable_ramdisk
+fi
 
 mkdir -p ${2}
-cp boot_linux.img ${2}/boot_linux.img
+
+if [ "enable_ramdisk" != "${6}" ]; then
+	cp boot_linux.img ${2}/boot_linux.img
+fi
 cp resource.img ${2}/resource.img
 cp ${3}/loader/parameter_5_10.txt ${2}/parameter.txt
 cp ${3}/loader/MiniLoaderAll.bin ${2}/MiniLoaderAll.bin
