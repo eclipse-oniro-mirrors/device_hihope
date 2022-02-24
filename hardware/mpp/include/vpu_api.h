@@ -208,7 +208,6 @@ typedef struct EncoderOut {
     RK_S32 size;
     RK_S64 timeUs;
     RK_S32 keyFrame;
-
 } EncoderOut_t;
 
 /*
@@ -269,13 +268,12 @@ typedef enum VPU_API_ERR {
 typedef enum VPU_FRAME_ERR {
     VPU_FRAME_ERR_UNKNOW           = 0x0001,
     VPU_FRAME_ERR_UNSUPPORT        = 0x0002,
-
 } VPU_FRAME_ERR;
 
 typedef struct EncParameter {
     RK_S32 width;
     RK_S32 height;
-    RK_S32 rc_mode;                 /* 0 - CQP mode; 1 - CBR mode; 2 - FIXQP mode*/
+    RK_S32 rc_mode;                 /* 0 - CQP mode; 1 - CBR mode; 2 - FIXQP mode */
     RK_S32 bitRate;                 /* target bitrate */
     RK_S32 framerate;
     RK_S32 qp;
@@ -326,7 +324,6 @@ typedef struct VpuCodecContext {
      ** 1: error state(not working)  0: working
     */
     RK_S32 decoder_err;
-
 
     /**
      * Allocate and initialize an VpuCodecContext.
@@ -427,7 +424,7 @@ RK_S32 vpu_close_context(struct VpuCodecContext **ctx);
     RK_S32 (*put_used)(vpu_display_mem_pool *p, void *hdl); \
     RK_S32 (*reset)(vpu_display_mem_pool *p); \
     RK_S32 (*get_unused_num)(vpu_display_mem_pool *p); \
-    RK_S32 buff_size;\
+    RK_S32 buff_size; \
     float version; \
     RK_S32 res[18];
 

@@ -38,7 +38,7 @@ typedef struct {
     // base flow context
     MppCtx ctx;
     MppApi *mpi;
-	MppEncCfg cfg;
+    MppEncCfg cfg;
 
     // input / output
     MppBufferGroup buf_grp;

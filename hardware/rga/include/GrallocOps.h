@@ -18,4 +18,4 @@
 
 #ifndef _rk_graphic_buffer_h_
 #define _rk_graphic_buffer_h_
-#endif  //_rk_graphic_buffer_h_
+#endif  // _rk_graphic_buffer_h_

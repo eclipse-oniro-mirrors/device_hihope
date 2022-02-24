@@ -38,8 +38,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "RgaSingleton.h"
 
-class RockchipRga :public Singleton<RockchipRga> {
-    public:
+class RockchipRga : public Singleton<RockchipRga> {
+public:
 
     static inline RockchipRga& get() {
         return getInstance();
@@ -62,21 +62,24 @@ class RockchipRga :public Singleton<RockchipRga> {
     int         RkRgaCollorFill(rga_info *dst);
     int         RkRgaCollorPalette(rga_info *src, rga_info *dst, rga_info *lut);
     int         RkRgaFlush();
-    void        RkRgaSetLogOnceFlag(int log) {
+    void        RkRgaSetLogOnceFlag(int log)
+    {
         mLogOnce = log;
     }
-    void        RkRgaSetAlwaysLogFlag(bool log) {
+    void        RkRgaSetAlwaysLogFlag(bool log)
+    {
         mLogAlways = log;
     }
     void        RkRgaLogOutRgaReq(struct rga_req rgaReg);
     int         RkRgaLogOutUserPara(rga_info *rgaInfo);
-    inline bool RkRgaIsReady() {
+    inline bool RkRgaIsReady()
+    {
         return mSupportRga;
     }
 
     RockchipRga();
     ~RockchipRga();
-    private:
+private:
     bool                            mSupportRga;
     int                             mLogOnce;
     int                             mLogAlways;

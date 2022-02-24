@@ -69,7 +69,6 @@ typedef enum {
     IM_NN_QUANTIZE              = 1 << 23,
     IM_ROP                      = 1 << 24,
     IM_ALPHA_BLEND_PRE_MUL      = 1 << 25,
-
 } IM_USAGE;
 
 typedef enum {

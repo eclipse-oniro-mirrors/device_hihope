@@ -28,8 +28,9 @@
 
 template <typename TYPE>
 class Singleton {
-  public:
-    static TYPE& getInstance() {
+public:
+    static TYPE& getInstance()
+    {
         Mutex::Autolock _l(sLock);
         TYPE* instance = sInstance;
         if (instance == nullptr) {
@@ -38,17 +39,17 @@ class Singleton {
         }
         return *instance;
     }
-
-    static bool hasInstance() {
+    static bool hasInstance()
+    {
         Mutex::Autolock _l(sLock);
         return sInstance != nullptr;
     }
 
-  protected:
+protected:
     ~Singleton() { }
     Singleton() { }
 
-  private:
+private:
     Singleton(const Singleton&);
     Singleton& operator = (const Singleton&);
     static Mutex sLock;

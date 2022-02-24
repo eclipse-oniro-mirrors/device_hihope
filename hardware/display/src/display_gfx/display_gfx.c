@@ -38,7 +38,7 @@ int32_t rkDeinitGfx()
 RgaSURF_FORMAT colorSpaceModeChange(PixelFormat color, uint8_t *isYuv)
 {
     RgaSURF_FORMAT rkFormat;
-    switch(color) {
+    switch (color) {
         case PIXEL_FMT_RGB_565:          /**< RGB565 format */
             rkFormat = RK_FORMAT_RGB_565;
             *isYuv = 0;
@@ -178,7 +178,7 @@ int32_t rkFillRect(ISurface *iSurface, IRect *rect, uint32_t color, GfxOpt *opt)
         DISPLAY_LOGE("source iSurface address error");
         return DISPLAY_PARAM_ERR;
     }
-    DISPLAY_LOGE("gfx vir %{public}p phy 0x%{public}x fd %{public}d",dst.vir_addr, (int32_t)dst.phy_addr, dst.fd);
+    DISPLAY_LOGE("gfx vir %{public}p phy 0x%{public}x fd %{public}d", dst.vir_addr, (int32_t)dst.phy_addr, dst.fd);
     dst.width = iSurface->width;
     dst.height = iSurface->height;
     dst.wstride = ALIGN_UP(iSurface->width, 16);
@@ -189,7 +189,6 @@ int32_t rkFillRect(ISurface *iSurface, IRect *rect, uint32_t color, GfxOpt *opt)
     if (opt->enGlobalAlpha)
         dst.global_alpha = opt->globalAlpha;
     ret = imfill(dst, imRect, color);
-
     if (ret != IM_STATUS_SUCCESS)
         return DISPLAY_FAILURE;
     else
@@ -199,7 +198,7 @@ int32_t rkFillRect(ISurface *iSurface, IRect *rect, uint32_t color, GfxOpt *opt)
 int32_t blendTypeChange(BlendType blendType)
 {
     int32_t rkBlendType;
-    switch(blendType) {
+    switch (blendType) {
         case BLEND_SRC:              /**< SRC blending */
             rkBlendType = IM_ALPHA_BLEND_SRC;
             break;
@@ -228,7 +227,7 @@ int32_t blendTypeChange(BlendType blendType)
 //        BLEND_AKS:              /**< AKS blending */
 //        BLEND_AKD:              /**< AKD blending */
 //        BLEND_BUTT:              /**< Null operation */
-          rkBlendType = IM_STATUS_NOT_SUPPORTED;
+            rkBlendType = IM_STATUS_NOT_SUPPORTED;
             break;
     }
     return rkBlendType;
@@ -237,7 +236,7 @@ int32_t blendTypeChange(BlendType blendType)
 int32_t TransformTypeChange(TransformType type)
 {
     int32_t rkRotateType;
-    switch(type) {
+    switch (type) {
         case ROTATE_90:            /**< Rotation by 90 degrees */
             rkRotateType = IM_HAL_TRANSFORM_ROT_90;
             break;
@@ -257,7 +256,7 @@ int32_t TransformTypeChange(TransformType type)
 int32_t mirrorTypeChange(MirrorType type)
 {
     int32_t rkMirrorType;
-    switch(type) {
+    switch (type) {
         case MIRROR_LR:            /**< Left and right mirrors */
             rkMirrorType = IM_HAL_TRANSFORM_FLIP_H;
             break;
@@ -493,6 +492,7 @@ int32_t GfxInitialize(GfxFuncs **funcs)
     errno_t eok = memset_s((void *)gfxFuncs, sizeof(GfxFuncs), 0, sizeof(GfxFuncs));
     if (eok != EOK) {
         DISPLAY_LOGE("memset_s failed");
+        free(gfxFuncs);
         return false;
     }
     gfxFuncs->InitGfx = rkInitGfx;

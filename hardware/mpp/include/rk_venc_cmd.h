@@ -862,7 +862,6 @@ typedef struct MppEncH265CuCfg_t {
     RK_U32  strong_intra_smoothing_enabled_flag;    /* INTRA_SMOOTH */
     RK_U32  pcm_enabled_flag;                       /* default: 0, enable ipcm */
     RK_U32  pcm_loop_filter_disabled_flag;
-
 } MppEncH265CuCfg;
 
 typedef struct MppEncH265RefCfg_t {

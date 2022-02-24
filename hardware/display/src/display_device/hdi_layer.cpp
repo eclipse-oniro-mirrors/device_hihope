@@ -15,7 +15,7 @@
 
 #include "hdi_layer.h"
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
 
 namespace OHOS {
 namespace HDI {
@@ -89,8 +89,8 @@ int32_t HdiLayer::Init()
 int32_t HdiLayer::SetLayerSize(IRect *rect)
 {
     DISPLAY_CHK_RETURN((rect == nullptr), DISPLAY_NULL_PTR, DISPLAY_LOGE("in rect is nullptr"));
-    DISPLAY_DEBUGLOG(" displayRect x: %{public}d y : %{public}d w : %{public}d h : %{public}d", rect->x, rect->y, rect->w,
-        rect->h);
+    DISPLAY_DEBUGLOG(" displayRect x: %{public}d y : %{public}d w : %{public}d h : %{public}d", rect->x, rect->y,
+        rect->w, rect->h);
     mDisplayRect = *rect;
     return DISPLAY_SUCCESS;
 }
@@ -98,8 +98,8 @@ int32_t HdiLayer::SetLayerSize(IRect *rect)
 int32_t HdiLayer::SetLayerCrop(IRect *rect)
 {
     DISPLAY_CHK_RETURN((rect == nullptr), DISPLAY_NULL_PTR, DISPLAY_LOGE("in rect is nullptr"));
-    DISPLAY_DEBUGLOG("id : %{public}d crop x: %{public}d y : %{public}d w : %{public}d h : %{public}d", mId, rect->x,
-        rect->y, rect->w, rect->h);
+    DISPLAY_DEBUGLOG("id : %{public}d crop x: %{public}d y : %{public}d w : %{public}d h : %{public}d", mId,
+        rect->x, rect->y, rect->w, rect->h);
     mCrop = *rect;
     return DISPLAY_SUCCESS;
 }

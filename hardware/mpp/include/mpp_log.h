@@ -32,10 +32,10 @@
 #define mpp_err(fmt, ...)   _mpp_err(MODULE_TAG, fmt, NULL, ## __VA_ARGS__)
 
 #define _mpp_dbg(debug, flag, fmt, ...) \
-             do { \
-                if (debug & flag) \
-                    mpp_log(fmt, ## __VA_ARGS__); \
-             } while (0)
+    do { \
+            if (debug & flag) \
+            mpp_log(fmt, ## __VA_ARGS__); \
+    } while (0)
 
 #define mpp_dbg(flag, fmt, ...) _mpp_dbg(mpp_debug, flag, fmt, ## __VA_ARGS__)
 
@@ -45,10 +45,10 @@
 #define mpp_log_f(fmt, ...)  _mpp_log(MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
 #define mpp_err_f(fmt, ...)  _mpp_err(MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
 #define _mpp_dbg_f(debug, flag, fmt, ...) \
-            do { \
-               if (debug & flag) \
-                   mpp_log_f(fmt, ## __VA_ARGS__); \
-            } while (0)
+    do { \
+            if (debug & flag) \
+            mpp_log_f(fmt, ## __VA_ARGS__); \
+    } while (0)
 
 #define mpp_dbg_f(flag, fmt, ...) _mpp_dbg_f(mpp_debug, flag, fmt, ## __VA_ARGS__)
 
