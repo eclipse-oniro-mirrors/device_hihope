@@ -362,7 +362,7 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
     MppCtx ctx;
     MppEncCfg cfg;
 
-    if (NULL == p)
+    if (p == NULL)
         return MPP_ERR_NULL_PTR;
 
     mpi = p->mpi;

@@ -31,8 +31,7 @@ typedef void *(*node_destructor)(void *);
 
 struct mpp_list_node;
 
-class mpp_list : public MppMutexCond
-{
+class mpp_list : public MppMutexCond {
 public:
     mpp_list(node_destructor func = NULL);
     ~mpp_list();

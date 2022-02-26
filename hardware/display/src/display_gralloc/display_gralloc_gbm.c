@@ -21,11 +21,11 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
-#include <linux/dma-buf.h>
 #include <pthread.h>
 #include <sys/mman.h>
 #include <xf86drm.h>
 #include <securec.h>
+#include <linux/dma-buf.h>
 #include "wayland_drm_auth_client.h"
 #include "drm_fourcc.h"
 #include "hisilicon_drm.h"
@@ -48,7 +48,7 @@ typedef struct {
     const char *str;
 } ValueStrMap;
 
-static GrallocManager *GetGrallocManager()
+static GrallocManager *GetGrallocManager(void)
 {
     if (g_grallocManager == NULL) {
         g_grallocManager = (GrallocManager *)malloc(sizeof(GrallocManager));

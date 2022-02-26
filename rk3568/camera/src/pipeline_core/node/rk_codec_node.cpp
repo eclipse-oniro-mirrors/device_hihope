@@ -56,7 +56,7 @@ RetCode RKCodecNode::Flush(const int32_t streamId)
 }
 
 void RKCodecNode::encodeJpegToMemory(unsigned char* image, int width, int height,
-        const char* comment, size_t* jpegSize, unsigned char** jpegBuf)
+    const char* comment, size_t* jpegSize, unsigned char** jpegBuf)
 {
     struct jpeg_compress_struct cInfo;
     struct jpeg_error_mgr jErr;
@@ -154,7 +154,6 @@ void RKCodecNode::SerchIFps(unsigned char* buf, size_t bufSize, std::shared_ptr<
         CAMERA_LOGI("ForkNode::ForkBuffers SetEsKeyFrame == 0 nalu == 0x%{public}x idx = %{public}d\n",
             nalType, idx);
     }
-
 }
 
 void RKCodecNode::Yuv420ToRGBA8888(std::shared_ptr<IBuffer>& buffer)

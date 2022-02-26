@@ -44,11 +44,11 @@ extern "C"{
  * compatibility with the old C interface, so please do
  * not use ctx, because it is usually a NULL.
  */
-#define RgaInit(ctx) ({ \
+#define RgaInit(ctx) ( { \
     int ret = 0; \
     ret = c_RkRgaInit(); \
     c_RkRgaGetContext(ctx); \
-    ret;\
+    ret; \
 })
 #define RgaDeInit(ctx) { \
     (void)(ctx);        /* unused */ \

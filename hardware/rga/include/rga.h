@@ -86,11 +86,11 @@ enum {
     yuv2yuv_601_limit_2_709_limit   = 0x3 << 8,
     yuv2yuv_601_limit_2_709_full    = 0x4 << 8,
     yuv2yuv_709_limit_2_601_limit   = 0x5 << 8,
-    yuv2yuv_709_limit_2_601_full    = 0x6 << 8,     //not support
+    yuv2yuv_709_limit_2_601_full    = 0x6 << 8,     // not support
     yuv2yuv_601_full_2_709_limit    = 0x7 << 8,
-    yuv2yuv_601_full_2_709_full     = 0x8 << 8,     //not support
-    yuv2yuv_709_full_2_601_limit    = 0x9 << 8,     //not support
-    yuv2yuv_709_full_2_601_full     = 0xa << 8,     //not support
+    yuv2yuv_601_full_2_709_full     = 0x8 << 8,     // not support
+    yuv2yuv_709_full_2_601_limit    = 0x9 << 8,     // not support
+    yuv2yuv_709_full_2_601_full     = 0xa << 8,     // not support
     full_csc_mask = 0xf00,
 };
 
@@ -201,7 +201,7 @@ typedef struct rga_img_info_t {
     unsigned int uv_addr;        /* cb/cr   mem addr         */
     unsigned int v_addr;         /* cr      mem addr         */
 #endif
-    unsigned int format;         //definition by RK_FORMAT
+    unsigned int format;         // definition by RK_FORMAT
     unsigned short act_w;
     unsigned short act_h;
     unsigned short x_offset;
@@ -210,7 +210,7 @@ typedef struct rga_img_info_t {
     unsigned short vir_w;
     unsigned short vir_h;
 
-    unsigned short endian_mode; //for BPP
+    unsigned short endian_mode; // for BPP
     unsigned short alpha_swap;
 }
 rga_img_info_t;
@@ -260,7 +260,7 @@ typedef struct MMU {
 #else
     unsigned int base_addr;
 #endif
-    unsigned int mmu_flag;     /* [0] mmu enable [1] src_flush [2] dst_flush [3] CMD_flush [4~5] page size*/
+    unsigned int mmu_flag;     /* [0] mmu enable [1] src_flush [2] dst_flush [3] CMD_flush [4~5] page size */
 } MMU;
 
 
@@ -276,7 +276,7 @@ typedef struct COLOR_FILL {
     short gr_x_r;
     short gr_y_r;
 
-    //u8  cp_gr_saturation;
+    // u8  cp_gr_saturation;
 }
 COLOR_FILL;
 
@@ -329,7 +329,7 @@ struct rga_req {
 #endif
 
     RECT clip;                            /* dst clip window default value is dst_vir */
-                                          /* value from [0, w-1] / [0, h-1]*/
+                                          /* value from [0, w-1] / [0, h-1] */
 
     int sina;                             /* dst angle  default value 0  16.16 scan from table */
     int cosa;                             /* dst angle  default value 0  16.16 scan from table */
@@ -364,15 +364,15 @@ struct rga_req {
 
     unsigned char alpha_global_value;     /* global alpha value */
 
-    unsigned short rop_code;              /* rop2/3/4 code  scan from rop code table*/
+    unsigned short rop_code;              /* rop2/3/4 code  scan from rop code table */
 
-    unsigned char bsfilter_flag;          /* [2] 0 blur 1 sharp / [1:0] filter_type*/
+    unsigned char bsfilter_flag;          /* [2] 0 blur 1 sharp / [1:0] filter_type */
 
-    unsigned char palette_mode;           /* (enum) color palatte  0/1bpp, 1/2bpp 2/4bpp 3/8bpp*/
+    unsigned char palette_mode;           /* (enum) color palatte  0/1bpp, 1/2bpp 2/4bpp 3/8bpp */
 
     unsigned char yuv2rgb_mode;           /* (enum) BT.601 MPEG / BT.601 JPEG / BT.709  */
 
-    unsigned char endian_mode;            /* 0/big endian 1/little endian*/
+    unsigned char endian_mode;            /* 0/big endian 1/little endian */
 
     unsigned char rotate_mode;            /* (enum) rotate mode  */
                                           /* 0x0,     no rotate  */
