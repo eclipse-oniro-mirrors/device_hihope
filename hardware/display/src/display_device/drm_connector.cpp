@@ -251,7 +251,7 @@ int32_t DrmConnector::UpdateModes()
     return DISPLAY_SUCCESS;
 }
 
-int32_t DrmConnector::GetDisplaySupportedModes(int *num, DisplayModeInfo *modes)
+int32_t DrmConnector::GetDisplaySupportedModes(uint32_t *num, DisplayModeInfo *modes)
 {
     DISPLAY_CHK_RETURN((num == nullptr), DISPLAY_NULL_PTR, DISPLAY_LOGE("num is nullptr"));
     *num = static_cast<int32_t>(mModes.size());

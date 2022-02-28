@@ -59,7 +59,7 @@ public:
     {
         return DISPLAY_NOT_SUPPORT;
     }
-    virtual int32_t GetDisplaySupportedModes(int *num, DisplayModeInfo *modes)
+    virtual int32_t GetDisplaySupportedModes(uint32_t *num, DisplayModeInfo *modes)
     {
         return DISPLAY_NOT_SUPPORT;
     }
