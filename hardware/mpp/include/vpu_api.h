@@ -17,7 +17,6 @@
 #define __VPU_API_H__
 
 #include "rk_type.h"
-#include "mpp_err.h"
 
 /**
  * @brief rockchip media process interface

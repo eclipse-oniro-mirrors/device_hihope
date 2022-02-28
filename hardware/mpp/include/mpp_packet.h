@@ -16,7 +16,7 @@
 #ifndef __MPP_PACKET_H__
 #define __MPP_PACKET_H__
 
-#include "mpp_meta.h"
+// #include "mpp_meta.h"
 
 #ifdef __cplusplus
 extern "C" {

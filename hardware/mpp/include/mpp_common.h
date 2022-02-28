@@ -26,8 +26,8 @@
 #define MPP_MAX3(a, b, c)       MPP_MAX(MPP_MAX(a, b), c)
 #define MPP_MAX4(a, b, c, d)    MPP_MAX((a), MPP_MAX3((b), (c), (d)))
 
-#define MPP_MIN(a, b)            ((a) > (b) ? (b) : (a))
-#define MPP_MIN3(a, b, c)         MPP_MIN(MPP_MIN(a, b), c)
+#define MPP_MIN(a, b)           ((a) > (b) ? (b) : (a))
+#define MPP_MIN3(a, b, c)       MPP_MIN(MPP_MIN(a, b), c)
 #define MPP_MIN4(a, b, c, d)    MPP_MIN((a), MPP_MIN3((b), (c), (d)))
 
 #define MPP_DIV(a, b)           ((b) ? (a) / (b) : (a))

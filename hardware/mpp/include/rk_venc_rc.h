@@ -16,8 +16,6 @@
 #ifndef __RK_VENC_RC_H__
 #define __RK_VENC_RC_H__
 
-#include "rk_type.h"
-
 /* Rate control parameter */
 typedef enum MppEncRcMode_e {
     MPP_ENC_RC_MODE_VBR,
