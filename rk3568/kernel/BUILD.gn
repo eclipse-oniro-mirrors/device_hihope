@@ -21,7 +21,7 @@ action("kernel") {
   sources = [ kernel_source_dir ]
 
   product_path = "vendor/$product_company/$product_name"
-  outputs = [ "$root_build_dir/packages/phone/images" ]
+  outputs = [ "$root_build_dir/../kernel/src_tmp/linux-5.10/boot_linux" ]
   args = [
     rebase_path(kernel_build_script_dir, root_build_dir),
     rebase_path("$root_build_dir/packages/phone/images"),
@@ -29,4 +29,7 @@ action("kernel") {
     product_path,
     rebase_path("$root_build_dir/../.."),
   ]
+  if (enable_ramdisk) {
+    args += [ "enable_ramdisk" ]
+  }
 }
