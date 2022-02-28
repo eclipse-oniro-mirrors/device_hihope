@@ -16,7 +16,7 @@ import("//build/ohos.gni")
 ohos_prebuilt_etc("init.rk3568.cfg") {
   source = "init.rk3568.cfg"
   part_name = "rockchip_products"
-  install_images = [ "system" ]
+  install_images = [ chipset_base_dir ]
   install_enable = true
 }
 
@@ -31,21 +31,7 @@ ohos_prebuilt_executable("weston.cfg") {
 ohos_prebuilt_etc("init.rk3568.usb.cfg") {
   source = "init.rk3568.usb.cfg"
   part_name = "rockchip_products"
-  install_images = [ "system" ]
-  install_enable = true
-}
-
-ohos_prebuilt_etc("init.without_two_stages.cfg") {
-  source = "init.without_two_stages.cfg"
-  part_name = "rockchip_products"
-  install_images = [ "system" ]
-  install_enable = true
-}
-
-ohos_prebuilt_etc("init.cfg") {
-  source = "init.cfg"
-  part_name = "rockchip_products"
-  install_images = [ "system" ]
+  install_images = [ chipset_base_dir ]
   install_enable = true
 }
 
@@ -56,21 +42,33 @@ ohos_prebuilt_etc("fstab.rk3568") {
   install_enable = true
 }
 
-ohos_prebuilt_etc("fstab.required") {
-  source = "fstab.required"
-  part_name = "rockchip_products"
-  install_images = [ "system" ]
-  install_enable = true
+if (enable_ramdisk) {
+  ohos_copy("fstab.required") {
+    sources = [ "fstab.rk3568" ]
+    outputs = [ "$root_build_dir/fstab.required" ]
+  }
+  ohos_copy("ramdisk_resource_config.ini") {
+    sources = [ "ramdisk_resource_config.ini" ]
+    outputs = [ "$root_build_dir/../../build/ohos/images/mkimage/ramdisk_resource_config.ini" ]
+  }
+} else {
+  ohos_prebuilt_etc("fstab.required") {
+    source = "fstab.required"
+    part_name = "rockchip_products"
+    install_images = [ "system" ]
+    install_enable = true
+  }
 }
 
 group("init_configs") {
   deps = [
     ":fstab.required",
     ":fstab.rk3568",
-    ":init.cfg",
     ":init.rk3568.cfg",
     ":init.rk3568.usb.cfg",
-    ":init.without_two_stages.cfg",
     ":weston.cfg",
   ]
+  if (enable_ramdisk) {
+    deps += [ ":ramdisk_resource_config.ini" ]
+  }
 }
