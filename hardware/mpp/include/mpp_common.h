@@ -23,11 +23,11 @@
 #define MPP_ABS(x)              ((x) < (0) ? -(x) : (x))
 
 #define MPP_MAX(a, b)           ((a) > (b) ? (a) : (b))
-#define MPP_MAX3(a, b, c)       MPP_MAX(MPP_MAX(a,b),c)
+#define MPP_MAX3(a, b, c)       MPP_MAX(MPP_MAX(a, b), c)
 #define MPP_MAX4(a, b, c, d)    MPP_MAX((a), MPP_MAX3((b), (c), (d)))
 
-#define MPP_MIN(a,b)            ((a) > (b) ? (b) : (a))
-#define MPP_MIN3(a,b,c)         MPP_MIN(MPP_MIN(a,b), c)
+#define MPP_MIN(a, b)            ((a) > (b) ? (b) : (a))
+#define MPP_MIN3(a, b, c)         MPP_MIN(MPP_MIN(a, b), c)
 #define MPP_MIN4(a, b, c, d)    MPP_MIN((a), MPP_MIN3((b), (c), (d)))
 
 #define MPP_DIV(a, b)           ((b) ? (a) / (b) : (a))
@@ -36,7 +36,7 @@
 #define MPP_SIGN(a)             ((a) < (0) ? (-1) : (1))
 #define MPP_DIV_SIGN(a, b)      (((a) + (MPP_SIGN(a) * (b)) / 2) / (b))
 
-#define MPP_SWAP(type, a, b)    do {type SWAP_tmp = b; b = a; a = SWAP_tmp;} while(0)
+#define MPP_SWAP(type, a, b)    do {type SWAP_tmp = b; b = a; a = SWAP_tmp; } while(0)
 #define MPP_ARRAY_ELEMS(a)      (sizeof(a) / sizeof((a)[0]))
 #define MPP_ALIGN(x, a)         (((x)+(a)-1)&~((a)-1))
 #define MPP_VSWAP(a, b)         { (a) ^= (b); (b) ^= (a); (a) ^= (b); }
@@ -159,9 +159,9 @@
 #define __FAILED                __Failed
 
 #define ARG_T(t)                t
-#define ARG_N(a,b,c,d,N,...)    N
+#define ARG_N(a, b, c, d, N, ...)    N
 #define ARG_N_HELPER(...)       ARG_T(ARG_N(__VA_ARGS__))
-#define COUNT_ARG(...)          ARG_N_HELPER(__VA_ARGS__,4,3,2,1,0)
+#define COUNT_ARG(...)          ARG_N_HELPER(__VA_ARGS__, 4, 3, 2, 1, 0)
 
 #define SZ_1K                   (1024)
 #define SZ_2K                   (SZ_1K*2)
