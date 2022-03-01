@@ -88,7 +88,7 @@ static int32_t GetDisplayCapability(uint32_t devId, DisplayCapability *info)
     return HdiSession::GetInstance().CallDisplayFunction(devId, &HdiDisplay::GetDisplayCapability, info);
 }
 
-static int32_t GetDisplaySupportedModes(uint32_t devId, int *num, DisplayModeInfo *modes)
+static int32_t GetDisplaySupportedModes(uint32_t devId, uint32_t *num, DisplayModeInfo *modes)
 {
     DISPLAY_DEBUGLOG();
     DISPLAY_CHK_RETURN(num == nullptr, DISPLAY_NULL_PTR, DISPLAY_LOGE("num is nullptr"));
