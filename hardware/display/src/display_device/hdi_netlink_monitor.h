@@ -27,7 +27,7 @@ public:
     virtual ~HdiNetLinkMonitor();
 
 private:
-    Void MonitorThread();
+    void MonitorThread();
     volatile bool mRunning = false;
     int mScoketFd = -1;
     std::unique_ptr<std::thread> mThread;

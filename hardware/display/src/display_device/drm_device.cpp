@@ -284,9 +284,38 @@ std::vector<std::shared_ptr<DrmPlane>> DrmDevice::GetDrmPlane(uint32_t pipe, uin
     return planes;
 }
 
+bool DrmDevice::HandleHotplug(uint32_t dispId, bool plugIn)
+{
+    uint32_t find = 0;
+    uint32_t connectorId;
+
+    for (auto &dispConnectorIdMap : dispConnectorIdMaps_) {
+        if (dispConnectorIdMap.first == dispId) {
+            connectorId = dispConnectorIdMap.second;
+            find = 1;
+            break;
+        }
+    }
+    if (find) {
+        for (auto &connectorPair : mConnectors) {
+            auto connector = connectorPair.second;
+            if (connectorId == connector->GetId()) {
+                if (connector->HandleHotplug() == true) {
+                    connector->Init(*this);
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
 
 std::unordered_map<uint32_t, std::shared_ptr<HdiDisplay>> DrmDevice::DiscoveryDisplay()
 {
+    uint32_t dispId;
+    uint32_t connectorId;
+
+    dispConnectorIdMaps_.clear();
     mDisplays.clear();
     drmModeResPtr res = drmModeGetResources(GetDrmFd());
     DISPLAY_CHK_RETURN((res == nullptr), mDisplays, DISPLAY_LOGE("can not get drm resource"));
@@ -318,7 +347,10 @@ std::unordered_map<uint32_t, std::shared_ptr<HdiDisplay>> DrmDevice::DiscoveryDi
         std::shared_ptr<HdiDisplay> display = std::make_shared<DrmDisplay>(connector, crtc, mInstance);
         DISPLAY_DEBUGLOG();
         display->Init();
-        mDisplays.emplace(display->GetId(), std::move(display));
+        dispId = display->GetId();
+        connectorId = connector->GetId();
+        mDisplays.emplace(dispId, std::move(display));
+        dispConnectorIdMaps_.emplace(dispId, connectorId);
     }
     DISPLAY_DEBUGLOG("find display size %{public}zd", mDisplays.size());
     return mDisplays;

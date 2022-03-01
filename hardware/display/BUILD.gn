@@ -124,6 +124,7 @@ ohos_shared_library("display_device") {
     "src/display_device/hdi_drm_layer.cpp",
     "src/display_device/hdi_gfx_composition.cpp",
     "src/display_device/hdi_layer.cpp",
+    "src/display_device/hdi_netlink_monitor.cpp",
     "src/display_device/hdi_session.cpp",
   ]
   output_name = "display_device"

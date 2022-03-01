@@ -19,6 +19,7 @@
 #include "display_common.h"
 #include "display_device.h"
 #include "display_layer.h"
+#include "hdi_netlink_monitor.h"
 
 namespace OHOS {
 namespace HDI {
@@ -45,6 +46,21 @@ void HdiSession::Init()
          */
         for (auto display : displays) {
             mHdiDisplays[display.first] = display.second;
+        }
+    }
+    std::shared_ptr<HdiNetLinkMonitor> mNetLinkMonitor = std::make_shared<HdiNetLinkMonitor>();
+    mNetLinkMonitor->Init();
+}
+
+void HdiSession::HandleHotplug(bool plugIn)
+{
+    for (auto device : mHdiDevices) {
+        for (auto displayMap : mHdiDisplays) {
+            auto display = displayMap.second;
+            auto isSuccess = device->HandleHotplug(display->GetId(), plugIn);
+            if (isSuccess == true) {
+                DoHotPlugCallback(display->GetId(), plugIn);
+            }
         }
     }
 }
