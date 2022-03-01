@@ -76,6 +76,7 @@ public:
     std::unordered_map<uint32_t, std::shared_ptr<HdiDisplay>> DiscoveryDisplay() override;
     int32_t Init() override;
     void DeInit() override;
+    bool HandleHotplug(uint32_t dispId, bool plugIn) override;
 
 private:
     static FdPtr mDrmFd;
@@ -90,6 +91,7 @@ private:
     IdMapPtr<DrmEncoder> mEncoders;
     IdMapPtr<DrmConnector> mConnectors;
     std::vector<std::shared_ptr<DrmPlane>> mPlanes;
+    std::unordered_map<uint32_t, uint32_t> dispConnectorIdMaps_;
 };
 } // namespace OHOS
 } // namespace HDI
