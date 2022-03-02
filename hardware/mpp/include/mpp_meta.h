@@ -97,7 +97,6 @@ typedef enum MppMetaKey_e {
 #define mpp_meta_get(meta) mpp_meta_get_with_tag(meta, MODULE_TAG, __FUNCTION__)
 
 #include "mpp_frame.h"
-#include "mpp_packet.h"
 
 #ifdef __cplusplus
 extern "C" {
