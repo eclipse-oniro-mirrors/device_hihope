@@ -187,4 +187,5 @@ typedef enum {
     MPI_CMD_BUTT,
 } MpiCmd;
 
+
 #endif /* __RK_MPI_CMD_H__ */
