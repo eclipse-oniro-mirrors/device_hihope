@@ -251,6 +251,21 @@ int32_t DrmConnector::UpdateModes()
     return DISPLAY_SUCCESS;
 }
 
+bool DrmConnector::HandleHotplug()
+{
+    int drmFd = mDrmFdPtr->GetFd();
+    drmModeConnectorPtr c = drmModeGetConnector(drmFd, mId);
+    DISPLAY_CHK_RETURN((c == nullptr), false, DISPLAY_LOGE("can not get connector"));
+    if (mConnectState == c->connection) {
+        drmModeFreeConnector(c);
+        return false;
+    } else {
+        mConnectState = c->connection;
+        InitModes(*c);
+        drmModeFreeConnector(c);
+        return true;
+    }
+}
 int32_t DrmConnector::GetDisplaySupportedModes(uint32_t *num, DisplayModeInfo *modes)
 {
     DISPLAY_CHK_RETURN((num == nullptr), DISPLAY_NULL_PTR, DISPLAY_LOGE("num is nullptr"));

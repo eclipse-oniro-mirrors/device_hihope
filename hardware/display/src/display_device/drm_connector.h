@@ -100,6 +100,7 @@ public:
     }
     int32_t SetDpmsState(uint64_t dmps);
     bool IsConnected();
+    bool HandleHotplug();
 
     int32_t GetBrightness(uint32_t& level);
     int32_t SetBrightness(uint32_t level);

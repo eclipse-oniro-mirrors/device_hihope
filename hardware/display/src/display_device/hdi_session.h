@@ -59,6 +59,7 @@ public:
 
     int32_t RegHotPlugCallback(HotPlugCallback callback, void *data);
     void DoHotPlugCallback(uint32_t devId, bool connect);
+    void HandleHotplug(bool plugIn);
 
 private:
     std::unordered_map<uint32_t, std::shared_ptr<HdiDisplay>> mHdiDisplays;
