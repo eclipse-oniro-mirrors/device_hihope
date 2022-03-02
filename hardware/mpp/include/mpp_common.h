@@ -36,7 +36,7 @@
 #define MPP_SIGN(a)             ((a) < (0) ? (-1) : (1))
 #define MPP_DIV_SIGN(a, b)      (((a) + (MPP_SIGN(a) * (b)) / 2) / (b))
 
-#define MPP_SWAP(type, a, b)    do {type SWAP_tmp = b; b = a; a = SWAP_tmp; } while(0)
+#define MPP_SWAP(type, a, b)    do {type SWAP_tmp = b; b = a; a = SWAP_tmp; } while (0)
 #define MPP_ARRAY_ELEMS(a)      (sizeof(a) / sizeof((a)[0]))
 #define MPP_ALIGN(x, a)         (((x)+(a)-1)&~((a)-1))
 #define MPP_VSWAP(a, b)         { (a) ^= (b); (b) ^= (a); (a) ^= (b); }
@@ -44,13 +44,13 @@
 #define MPP_RB16(x)  ((((const RK_U8*)(x))[0] << 8) | ((const RK_U8*)(x))[1])
 #define MPP_WB16(p, d) do { \
         ((RK_U8*)(p))[1] = (d); \
-        ((RK_U8*)(p))[0] = (d)>>8; } while(0)
+        ((RK_U8*)(p))[0] = (d)>>8; } while (0)
 
 #define MPP_RL16(x)  ((((const RK_U8*)(x))[1] << 8) | \
                      ((const RK_U8*)(x))[0])
 #define MPP_WL16(p, d) do { \
         ((RK_U8*)(p))[0] = (d); \
-        ((RK_U8*)(p))[1] = (d)>>8; } while(0)
+        ((RK_U8*)(p))[1] = (d)>>8; } while (0)
 
 #define MPP_RB32(x)  ((((const RK_U8*)(x))[0] << 24) | \
                      (((const RK_U8*)(x))[1] << 16) | \
@@ -60,7 +60,7 @@
         ((RK_U8*)(p))[3] = (d); \
         ((RK_U8*)(p))[2] = (d)>>8; \
         ((RK_U8*)(p))[1] = (d)>>16; \
-        ((RK_U8*)(p))[0] = (d)>>24; } while(0)
+        ((RK_U8*)(p))[0] = (d)>>24; } while (0)
 
 #define MPP_RL32(x) ((((const RK_U8*)(x))[3] << 24) | \
                     (((const RK_U8*)(x))[2] << 16) | \
@@ -70,7 +70,7 @@
         ((RK_U8*)(p))[0] = (d); \
         ((RK_U8*)(p))[1] = (d)>>8; \
         ((RK_U8*)(p))[2] = (d)>>16; \
-        ((RK_U8*)(p))[3] = (d)>>24; } while(0)
+        ((RK_U8*)(p))[3] = (d)>>24; } while (0)
 
 #define MPP_RB64(x)  (((RK_U64)((const RK_U8*)(x))[0] << 56) | \
                      ((RK_U64)((const RK_U8*)(x))[1] << 48) | \
@@ -88,7 +88,7 @@
         ((RK_U8*)(p))[3] = (d)>>32; \
         ((RK_U8*)(p))[2] = (d)>>40; \
         ((RK_U8*)(p))[1] = (d)>>48; \
-        ((RK_U8*)(p))[0] = (d)>>56; } while(0)
+        ((RK_U8*)(p))[0] = (d)>>56; } while (0)
 
 #define MPP_RL64(x)  (((RK_U64)((const RK_U8*)(x))[7] << 56) | \
                      ((RK_U64)((const RK_U8*)(x))[6] << 48) | \
@@ -106,7 +106,7 @@
         ((RK_U8*)(p))[4] = (d)>>32; \
         ((RK_U8*)(p))[5] = (d)>>40; \
         ((RK_U8*)(p))[6] = (d)>>48; \
-        ((RK_U8*)(p))[7] = (d)>>56; } while(0)
+        ((RK_U8*)(p))[7] = (d)>>56; } while (0)
 
 #define MPP_RB24(x)  ((((const RK_U8*)(x))[0] << 16) | \
                      (((const RK_U8*)(x))[1] <<  8) | \
@@ -114,7 +114,7 @@
 #define MPP_WB24(p, d) do { \
         ((RK_U8*)(p))[2] = (d); \
         ((RK_U8*)(p))[1] = (d)>>8; \
-        ((RK_U8*)(p))[0] = (d)>>16; } while(0)
+        ((RK_U8*)(p))[0] = (d)>>16; } while (0)
 
 #define MPP_RL24(x)  ((((const RK_U8*)(x))[2] << 16) | \
                      (((const RK_U8*)(x))[1] <<  8) | \
@@ -123,7 +123,7 @@
 #define MPP_WL24(p, d) do { \
         ((RK_U8*)(p))[0] = (d); \
         ((RK_U8*)(p))[1] = (d)>>8; \
-        ((RK_U8*)(p))[2] = (d)>>16; } while(0)
+        ((RK_U8*)(p))[2] = (d)>>16; } while (0)
 
 #include <stdio.h>
 #if defined(_WIN32) && !defined(__MINGW32CE__)
