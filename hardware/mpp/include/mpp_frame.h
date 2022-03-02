@@ -17,7 +17,6 @@
 #define __MPP_FRAME_H__
 
 #include "mpp_buffer.h"
-// #include "mpp_meta.h"
 
 /*
  * bit definition for mode flag in MppFrame
