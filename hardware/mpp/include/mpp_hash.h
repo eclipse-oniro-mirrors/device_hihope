@@ -168,24 +168,27 @@ static inline void hlist_move_list(struct hlist_head *old,
        ____ptr ? hlist_entry(____ptr, type, member) : NULL; \
     })
 
-#define hlist_for_each_entry(pos, head, member) \
+#define hlist_for_each_entry(pos, head, member) do { \
     for ((pos) = hlist_entry_safe((head)->first, typeof(*(pos)), member); \
          (pos); \
-         (pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
+         (pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member)) \
+} while (0)
 
-#define hlist_for_each_entry_continue(pos, member) \
+#define hlist_for_each_entry_continue(pos, member) do { \
     for ((pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member); \
          (pos); \
-         (pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
+         (pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member)) \
+} while (0)
 
 #define hlist_for_each_entry_from(pos, member) \
     for (; (pos); \
          (pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
 
-#define hlist_for_each_entry_safe(pos, n, head, member) \
+#define hlist_for_each_entry_safe(pos, n, head, member) do { \
     for ((pos) = hlist_entry_safe((head)->first, typeof(*(pos)), member); \
          (pos) && ( { n = (pos)->member.next; 1; }); \
-         (pos) = hlist_entry_safe(n, typeof(*(pos)), member))
+         (pos) = hlist_entry_safe(n, typeof(*(pos)), member)) \
+} while (0)
 
 #define DEFINE_HASHTABLE(name, bits) \
     struct hlist_head name[1 << (bits)] = \
