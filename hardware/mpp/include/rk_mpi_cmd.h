@@ -187,10 +187,4 @@ typedef enum {
     MPI_CMD_BUTT,
 } MpiCmd;
 
-#include "rk_vdec_cmd.h"
-#include "rk_vdec_cfg.h"
-#include "rk_venc_cmd.h"
-#include "rk_venc_cfg.h"
-#include "rk_venc_ref.h"
-
 #endif /* __RK_MPI_CMD_H__ */
