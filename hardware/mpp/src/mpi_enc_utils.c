@@ -311,7 +311,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
     switch (p->fmt & MPP_FRAME_FMT_MASK) {
         case MPP_FMT_YUV420SP:
         case MPP_FMT_YUV420P: {
-            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * 3 / 2; // 64 3 2
+            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * 3 / 2;
         }
             break;
 
@@ -327,11 +327,11 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         case MPP_FMT_BGR555 :
         case MPP_FMT_RGB565 :
         case MPP_FMT_BGR565 : {
-            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * 2; // 64 2
+            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * 2;
         }
             break;
         default: {
-            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * 4; // 64 4
+            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * 4;
         }
             break;
     }
@@ -664,7 +664,6 @@ int hal_mpp_get_sps(void *ctx, unsigned char *buf, size_t *buf_size)
 
     void *ptr = mpp_packet_get_pos(packet);
     size_t len = mpp_packet_get_length(packet);
-
     if (*buf_size < len) {
         mpp_err("mpi buffer size too small\n");
         ret = MPP_NOK;
