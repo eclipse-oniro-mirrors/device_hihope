@@ -143,8 +143,8 @@ struct list_head {
          (pos) = (n), (n) = list_prev_entry(n, type, member))
 
 static __inline void _list_add(struct list_head * _new,
-                                struct list_head * prev,
-                                struct list_head * next)
+                              struct list_head * prev,
+                              struct list_head * next)
 {
     next->prev = _new;
     _new->next = next;
