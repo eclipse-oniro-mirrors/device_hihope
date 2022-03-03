@@ -113,7 +113,8 @@ RK_S64 mpp_stopwatch_elapsed_time(MppStopwatch stopwatch);
 #endif
 
 #ifdef __cplusplus
-class AutoTiming {
+// class AutoTiming {
+class Mpp_Time {
 public:
     AutoTiming(const char *name = __FUNCTION__);
     ~AutoTiming();
