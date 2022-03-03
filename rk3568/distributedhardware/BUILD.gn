@@ -14,7 +14,9 @@ import("//build/ohos.gni")
 
 ohos_prebuilt_etc("distributed_hardware_components_cfg") {
   source = "distributed_hardware_components_cfg.json"
-  part_name = "distributed_hardware_fwk"
+  install_enable = true
+  module_install_dir = "etc"
+  part_name = "rockchip_products"
 }
 
 group("distributedhardware") {
@@ -22,5 +24,3 @@ group("distributedhardware") {
     ":distributed_hardware_components_cfg",
   ]
 }
-
-
