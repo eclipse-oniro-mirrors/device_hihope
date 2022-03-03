@@ -73,7 +73,7 @@ static inline int hlist_empty(const struct hlist_head *h)
     return !READ_ONCE(h->first);
 }
 
-static inline void __hlist_del(struct hlist_node *n)
+static inline void _hlist_del(struct hlist_node *n)
 {
     struct hlist_node *next = n->next;
     struct hlist_node **pprev = n->pprev;
@@ -86,7 +86,7 @@ static inline void __hlist_del(struct hlist_node *n)
 
 static inline void hlist_del(struct hlist_node *n)
 {
-    __hlist_del(n);
+    _hlist_del(n);
     n->next = (struct hlist_node*)LIST_POISON1;
     n->pprev = (struct hlist_node**)LIST_POISON2;
 }
@@ -94,7 +94,7 @@ static inline void hlist_del(struct hlist_node *n)
 static inline void hlist_del_init(struct hlist_node *n)
 {
     if (!hlist_unhashed(n)) {
-        __hlist_del(n);
+        _hlist_del(n);
         INIT_HLIST_NODE(n);
     }
 }
@@ -168,27 +168,24 @@ static inline void hlist_move_list(struct hlist_head *old,
        ____ptr ? hlist_entry(____ptr, type, member) : NULL; \
     })
 
-#define hlist_for_each_entry(pos, head, member) do { \
+#define hlist_for_each_entry(pos, head, member) \
     for ((pos) = hlist_entry_safe((head)->first, typeof(*(pos)), member); \
          (pos); \
-         (pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member)) \
-} while (0)
+         (pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
 
-#define hlist_for_each_entry_continue(pos, member) do { \
+#define hlist_for_each_entry_continue(pos, member) \
     for ((pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member); \
          (pos); \
-         (pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member)) \
-} while (0)
+         (pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
 
 #define hlist_for_each_entry_from(pos, member) \
     for (; (pos); \
          (pos) = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
 
-#define hlist_for_each_entry_safe(pos, n, head, member) do { \
+#define hlist_for_each_entry_safe(pos, n, head, member) \
     for ((pos) = hlist_entry_safe((head)->first, typeof(*(pos)), member); \
          (pos) && ( { n = (pos)->member.next; 1; }); \
-         (pos) = hlist_entry_safe(n, typeof(*(pos)), member)) \
-} while (0)
+         (pos) = hlist_entry_safe(n, typeof(*(pos)), member))
 
 #define DEFINE_HASHTABLE(name, bits) \
     struct hlist_head name[1 << (bits)] = \
@@ -323,7 +320,7 @@ static inline RK_U32 hash_32(RK_U32 val, unsigned int bits)
     return hash >> (32 - bits); // 32:32bits
 }
 
-static inline RK_U32 __hash_32(RK_U32 val)
+static inline RK_U32 _hash_32(RK_U32 val)
 {
     return val * GOLDEN_RATIO_32;
 }
@@ -364,7 +361,7 @@ static inline bool hash_hashed(struct hlist_node *node)
     return !hlist_unhashed(node);
 }
 
-static inline bool __hash_empty(struct hlist_head *ht, unsigned int sz)
+static inline bool _hash_empty(struct hlist_head *ht, unsigned int sz)
 {
     unsigned int i;
 
