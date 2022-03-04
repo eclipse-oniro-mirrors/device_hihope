@@ -22,13 +22,13 @@
 namespace OHOS {
 namespace HDI {
 namespace DISPLAY {
-class HdiFd {
+class HdiSharedFd {
 public:
-    HdiFd()
+    HdiSharedFd()
     {
         DISPLAY_DEBUGLOG();
     }
-    explicit HdiFd(int fd) : mFd(fd)
+    explicit HdiSharedFd(int fd) : mFd(fd)
     {
         DISPLAY_DEBUGLOG("mFd %{public}d", mFd);
     }
@@ -37,7 +37,7 @@ public:
         return mFd;
     };
 
-    HdiFd &operator = (int fd)
+    HdiSharedFd &operator = (int fd)
     {
         if (mFd >= 0) {
             close(mFd);
@@ -46,7 +46,7 @@ public:
         return *this;
     }
 
-    virtual ~HdiFd()
+    virtual ~HdiSharedFd()
     {
         if (mFd >= 0) {
             close(mFd);
@@ -57,7 +57,7 @@ private:
     int mFd = -1;
 };
 
-using FdPtr = std::shared_ptr<HdiFd>;
+using FdPtr = std::shared_ptr<HdiSharedFd>;
 } // OHOS
 } // HDIO
 } // DISPLAY

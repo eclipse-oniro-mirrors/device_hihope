@@ -18,13 +18,11 @@
 
 #ifndef _RGA_DRIVER_H_
 #define _RGA_DRIVER_H_
-
+#include <stdint.h>
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include <stdint.h>
 
 #define RGA_BLIT_SYNC   0x5017
 #define RGA_BLIT_ASYNC  0x5018
@@ -275,8 +273,6 @@ typedef struct COLOR_FILL {
     short gr_y_g;
     short gr_x_r;
     short gr_y_r;
-
-    // u8  cp_gr_saturation;
 }
 COLOR_FILL;
 

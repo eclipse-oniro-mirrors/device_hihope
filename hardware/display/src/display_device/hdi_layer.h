@@ -159,8 +159,8 @@ private:
     static std::unordered_set<uint32_t> mIdSets;
 
     uint32_t mId = 0;
-    HdiFd mAcquireFence;
-    HdiFd mReleaseFence;
+    HdiSharedFd mAcquireFence;
+    HdiSharedFd mReleaseFence;
     LayerType mType;
 
     IRect mDisplayRect;
