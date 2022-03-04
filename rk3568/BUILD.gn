@@ -16,9 +16,9 @@ import("//build/ohos.gni")
 print("rk3568_group in")
 group("rk3568_group") {
   deps = [
-    "kernel:kernel",
-    "build/rootfs:init_configs",
     "bootanimation:bootanimation",
+    "build/rootfs:init_configs",
     "distributedhardware:distributedhardware",
+    "kernel:kernel",
   ]
 }
