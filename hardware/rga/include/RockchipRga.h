@@ -80,10 +80,10 @@ public:
     RockchipRga();
     ~RockchipRga();
 private:
-    bool                            mSupportRga;
-    int                             mLogOnce;
-    int                             mLogAlways;
-    void *                          mContext;
+    bool mSupportRga;
+    int mLogOnce;
+    int mLogAlways;
+    void *mContext;
 
     friend class Singleton<RockchipRga>;
 };

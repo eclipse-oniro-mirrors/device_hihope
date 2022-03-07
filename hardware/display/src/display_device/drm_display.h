@@ -29,8 +29,8 @@ namespace HDI {
 namespace DISPLAY {
 class DrmDisplay : public HdiDisplay {
 public:
-    DrmDisplay(std::shared_ptr<DrmConnector> connector, std::shared_ptr<DrmCrtc> crtc,
-        std::shared_ptr<DrmDevice> drmDevice);
+    DrmDisplay(std::shared_ptr<DrmConnector> &connector, std::shared_ptr<DrmCrtc> &crtc,
+        std::shared_ptr<DrmDevice> &drmDevice);
 
     ~DrmDisplay() override;
 

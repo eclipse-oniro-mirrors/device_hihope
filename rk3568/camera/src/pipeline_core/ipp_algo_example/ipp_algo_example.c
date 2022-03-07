@@ -72,7 +72,7 @@ int Process(IppAlgoBuffer *inBuffer[], int inBufferCount, IppAlgoBuffer *outBuff
         return 0;
     }
 
-    if (inBufferCount == 2) {
+    if (inBufferCount == 2) { // 2:The total number of buffers in the buffer pool
         if (inBuffer[0] == NULL || inBuffer[1] == NULL || inBuffer[0]->addr == NULL || inBuffer[1]->addr == NULL) {
             return -1;
         }

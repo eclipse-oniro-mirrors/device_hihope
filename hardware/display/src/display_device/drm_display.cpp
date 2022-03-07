@@ -29,8 +29,8 @@
 namespace OHOS {
 namespace HDI {
 namespace DISPLAY {
-DrmDisplay::DrmDisplay(std::shared_ptr<DrmConnector> connector, std::shared_ptr<DrmCrtc> crtc,
-    std::shared_ptr<DrmDevice> drmDevice)
+DrmDisplay::DrmDisplay(std::shared_ptr<DrmConnector> &connector, std::shared_ptr<DrmCrtc> &crtc,
+    std::shared_ptr<DrmDevice> &drmDevice)
     : mDrmDevice(drmDevice), mConnector(connector), mCrtc(crtc)
 {}
 
@@ -133,7 +133,7 @@ int32_t DrmDisplay::SetDisplayPowerStatus(DispPowerStatus status)
         DISPLAY_LOGE("ioctl fb0 failed\n");
         return DISPLAY_FAILURE;
     }
-    
+
     return DISPLAY_SUCCESS;
 }
 
