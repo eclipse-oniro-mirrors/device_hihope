@@ -50,7 +50,7 @@ void mpp_clock_put(MppClock clock);
 void mpp_clock_enable(MppClock clock, RK_U32 enable);
 
 /*
- * Clock basic operation function:
+ * Clock basic operation function
  * start : let clock start timing counter
  * pause : let clock pause and return the diff to start time
  * reset : let clock counter to all zero
@@ -74,7 +74,7 @@ const char *mpp_clock_get_name(MppClock clock);
  * It will provide the ability to repeat doing something until it is
  * disalble or put.
  *
- * Timer work flow:
+ * Timer work flow
  *
  * 1. mpp_timer_get
  * 2. mpp_timer_set_callback
@@ -93,7 +93,7 @@ void mpp_timer_put(MppTimer timer);
 /*
  * MppStopwatch is for timer to record event and time
  *
- * Stopwatch work flow:
+ * Stopwatch work flow
  *
  * 1. mpp_stopwatch_get
  * 2. mpp_stopwatch_setup(max_count, show_on_exit)
@@ -113,18 +113,17 @@ RK_S64 mpp_stopwatch_elapsed_time(MppStopwatch stopwatch);
 #endif
 
 #ifdef __cplusplus
-class AutoTiming
-{
+class mpp_time {
 public:
-    AutoTiming(const char *name = __FUNCTION__);
-    ~AutoTiming();
+    mpp_time(const char *name = __FUNCTION__);
+    ~mpp_time();
 private:
     const char  *mName;
     RK_S64      mStart;
     RK_S64      mEnd;
 
-    AutoTiming(const AutoTiming &);
-    AutoTiming &operator = (const AutoTiming&);
+    mpp_time(const AutoTiming &);
+    mpp_time  &operator = (const AutoTiming&);
 };
 
 #endif

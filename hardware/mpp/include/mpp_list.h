@@ -108,7 +108,7 @@ struct list_head {
 #define list_last_entry(ptr, type, member) \
         list_entry((ptr)->prev, type, member)
 
-#define list_first_entry_or_null(ptr, type, member) ({ \
+#define list_first_entry_or_null(ptr, type, member)({ \
         struct list_head *head__ = (ptr); \
         struct list_head *pos__ = head__->next; \
         pos__ != head__ ? list_entry(pos__, type, member) : NULL; \
@@ -142,9 +142,9 @@ struct list_head {
          &(pos)->member != (head);                    \
          (pos) = (n), (n) = list_prev_entry(n, type, member))
 
-static __inline void __list_add(struct list_head * _new,
-                                struct list_head * prev,
-                                struct list_head * next)
+static __inline void _list_add(struct list_head * _new,
+                               struct list_head * prev,
+                               struct list_head * next)
 {
     next->prev = _new;
     _new->next = next;
@@ -154,15 +154,15 @@ static __inline void __list_add(struct list_head * _new,
 
 static __inline void list_add(struct list_head *_new, struct list_head *head)
 {
-    __list_add(_new, head, head->next);
+    _list_add(_new, head, head->next);
 }
 
 static __inline void list_add_tail(struct list_head *_new, struct list_head *head)
 {
-    __list_add(_new, head->prev, head);
+    _list_add(_new, head->prev, head);
 }
 
-static __inline void __list_del(struct list_head * prev, struct list_head * next)
+static __inline void _list_del(struct list_head * prev, struct list_head * next)
 {
     next->prev = prev;
     prev->next = next;
@@ -170,7 +170,7 @@ static __inline void __list_del(struct list_head * prev, struct list_head * next
 
 static __inline void list_del_init(struct list_head *entry)
 {
-    __list_del(entry->prev, entry->next);
+    _list_del(entry->prev, entry->next);
 
     INIT_LIST_HEAD(entry);
 }

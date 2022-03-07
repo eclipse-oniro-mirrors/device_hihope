@@ -17,7 +17,6 @@
 #define __MPP_FRAME_H__
 
 #include "mpp_buffer.h"
-#include "mpp_meta.h"
 
 /*
  * bit definition for mode flag in MppFrame
@@ -150,9 +149,9 @@ typedef enum {
  *                1st 2nd       1st 2nd horizontal luma sample positions
  *                 v   v         v   v
  *                 ______        ______
- *1st luma line > |X   X ...    |3 4 X ...     X are luma samples,
+ * 1st luma line > |X   X ...    |3 4 X ...     X are luma samples,
  *                |             |1 2           1-6 are possible chroma positions
- *2nd luma line > |X   X ...    |5 6 X ...     0 is undefined/unknown position
+ * 2nd luma line > |X   X ...    |5 6 X ...     0 is undefined/unknown position
  */
 typedef enum {
     MPP_CHROMA_LOC_UNSPECIFIED = 0,

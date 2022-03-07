@@ -18,17 +18,16 @@
 
 #include "mpp_list.h"
 
-class MppQueue : public mpp_list
-{
-private:
-    sem_t mQueuePending;
-    int mFlushFlag;
+class MppQueue : public mpp_list {
 public:
     MppQueue(node_destructor func);
     ~MppQueue();
     RK_S32 push(void *data, RK_S32 size);
     RK_S32 pull(void *data, RK_S32 size);
     RK_S32 flush();
+private:
+    sem_t mQueuePending;
+    int mFlushFlag;
 };
 
 #endif

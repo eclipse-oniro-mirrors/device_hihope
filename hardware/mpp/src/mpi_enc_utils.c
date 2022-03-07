@@ -664,7 +664,6 @@ int hal_mpp_get_sps(void *ctx, unsigned char *buf, size_t *buf_size)
 
     void *ptr = mpp_packet_get_pos(packet);
     size_t len = mpp_packet_get_length(packet);
-
     if (*buf_size < len) {
         mpp_err("mpi buffer size too small\n");
         ret = MPP_NOK;
