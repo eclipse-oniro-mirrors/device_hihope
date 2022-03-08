@@ -171,10 +171,10 @@ inline int32_t Mutex::tryLock() {
 inline int32_t Mutex::timedLock(int64_t timeoutNs) {
     timespec now;
     clock_gettime(CLOCK_REALTIME, &now);
-    timeoutNs += now.tv_sec * 1000000000 + now.tv_nsec; // 1000000000:unit conversion
+    timeoutNs += now.tv_sec*1000000000 + now.tv_nsec;
     const struct timespec ts = {
-        static_cast<time_t>(timeoutNs / 1000000000), // 1000000000:unit conversion
-        static_cast<long>(timeoutNs % 1000000000), // 1000000000:unit conversion
+        static_cast<time_t>(timeoutNs / 1000000000), /* .tv_sec = */
+        static_cast<long>(timeoutNs % 1000000000), /* .tv_nsec = */
     };
     return -pthread_mutex_timedlock(&mMutex, &ts);
 }

@@ -28,6 +28,7 @@
 #include <unistd.h>
 
 #include <sys/mman.h>
+#include <linux/stddef.h>
 
 #include "drmrga.h"
 #include "rga.h"

@@ -290,39 +290,34 @@ int32_t GbmAllocMem(const AllocInfo *info, BufferHandle **buffer)
         GRALLOC_UNLOCK());
     struct gbm_bo *bo =
         hdi_gbm_bo_create(grallocManager->gbmDevice, info->width, info->height, drmFmt, ConvertUsageToGbm(info->usage));
-    DISPLAY_CHK_RETURN((bo == NULL), DISPLAY_NOMEM,
-        DISPLAY_LOGE("gbm create bo failed");
-        GRALLOC_UNLOCK());
+    DISPLAY_CHK_RETURN((bo == NULL), DISPLAY_NOMEM, DISPLAY_LOGE("gbm create bo failed"); GRALLOC_UNLOCK());
 
     int fd = hdi_gbm_bo_get_fd(bo);
-    DISPLAY_CHK_RETURN((fd < 0), DISPLAY_FD_ERR,
-        DISPLAY_LOGE("gbm can not get fd");
-        hdi_gbm_bo_destroy(bo);
+    DISPLAY_CHK_RETURN((fd < 0), DISPLAY_FD_ERR, DISPLAY_LOGE("gbm can not get fd"); hdi_gbm_bo_destroy(bo);
         GRALLOC_UNLOCK());
 
     priBuffer = (PriBufferHandle *)malloc(sizeof(PriBufferHandle));
-    if (priBuffer == NULL) {
-        DISPLAY_LOGE("bufferhandle malloc failed");
-        close(fd);
-        hdi_gbm_bo_destroy(bo);
-        GRALLOC_UNLOCK();
-        return DISPLAY_FAILURE;
-    }
+    DISPLAY_CHK_RETURN((priBuffer == NULL), DISPLAY_NULL_PTR, DISPLAY_LOGE("bufferhandle malloc failed"); goto error);
     errno_t eok = memset_s(priBuffer, sizeof(PriBufferHandle), 0, sizeof(PriBufferHandle));
     if (eok != EOK) {
         DISPLAY_LOGE("memset_s failed");
-        close(fd);
-        hdi_gbm_bo_destroy(bo);
-        GRALLOC_UNLOCK();
-        return DISPLAY_FAILURE;
     }
+    DISPLAY_CHK_RETURN((eok != EOK), DISPLAY_PARAM_ERR, DISPLAY_LOGE("memset_s failed"); goto error);
 
     InitBufferHandle(bo, fd, info, priBuffer);
+//    priBuffer->hdl.phyAddr = GetPhysicalAddr(grallocManager->drmFd, fd);
     *buffer = &priBuffer->hdl;
     hdi_gbm_bo_destroy(bo);
-    close(fd);
     GRALLOC_UNLOCK();
     return DISPLAY_SUCCESS;
+error:
+    close(fd);
+    hdi_gbm_bo_destroy(bo);
+    if (priBuffer != NULL) {
+        free(priBuffer);
+    }
+    GRALLOC_UNLOCK();
+    return DISPLAY_FAILURE;
 }
 
 static void CloseBufferHandle(BufferHandle *handle)
@@ -427,13 +422,10 @@ int32_t GbmGrallocInitialize(void)
     DISPLAY_DEBUGLOG();
     GRALLOC_LOCK();
     GrallocManager *grallocManager = GetGrallocManager();
-    DISPLAY_CHK_RETURN((grallocManager == NULL), DISPLAY_PARAM_ERR,
-        DISPLAY_LOGE("gralloc manager failed");
+    DISPLAY_CHK_RETURN((grallocManager == NULL), DISPLAY_PARAM_ERR, DISPLAY_LOGE("gralloc manager failed");
         GRALLOC_UNLOCK());
     int ret = InitGbmDevice(g_drmFileNode, grallocManager);
-    DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), ret,
-        DISPLAY_LOGE("gralloc manager failed");
-        GRALLOC_UNLOCK());
+    DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), ret, DISPLAY_LOGE("gralloc manager failed"); GRALLOC_UNLOCK());
     grallocManager->referCount++;
     GRALLOC_UNLOCK();
     return DISPLAY_SUCCESS;

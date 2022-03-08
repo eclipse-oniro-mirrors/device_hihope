@@ -489,12 +489,11 @@ int32_t GfxInitialize(GfxFuncs **funcs)
 {
     DISPLAY_CHK_RETURN((funcs == NULL), DISPLAY_PARAM_ERR, DISPLAY_LOGE("info is null"));
     GfxFuncs *gfxFuncs = (GfxFuncs *)malloc(sizeof(GfxFuncs));
-    DISPLAY_CHK_RETURN((gfxFuncs == NULL), DISPLAY_NULL_PTR, DISPLAY_LOGE("gfxFuncs is nullptr"));
     errno_t eok = memset_s((void *)gfxFuncs, sizeof(GfxFuncs), 0, sizeof(GfxFuncs));
     if (eok != EOK) {
         DISPLAY_LOGE("memset_s failed");
         free(gfxFuncs);
-        return DISPLAY_FAILURE;
+        return false;
     }
     gfxFuncs->InitGfx = rkInitGfx;
     gfxFuncs->DeinitGfx = rkDeinitGfx;

@@ -106,7 +106,7 @@ int RKCodecNode::findStartCode(unsigned char *data, size_t dataSz)
 
     if ((dataSz > dataSize) && (data[0] == 0) && (data[1] == 0) && \
         (data[dataBit2] == 0) && (data[dataBit3] == 1)) {
-        return 4; // 4:start node
+        return 4;
     }
 
     return -1;

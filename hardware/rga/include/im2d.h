@@ -201,6 +201,8 @@ typedef enum {
     RGA_2_ENHANCE              = 0x6,
 } RGA_VERSION_NUM;
 
+//struct AHardwareBuffer AHardwareBuffer;
+
 typedef struct {
     RGA_VERSION_NUM version;
     unsigned int input_resolution;
@@ -352,6 +354,7 @@ IM_API rga_buffer_t wrapbuffer_fd_t(int fd, int width, int height, int wstride, 
  *
  * @returns a usage describing properties of RGA.
  */
+//IM_API int rga_get_info(rga_info_table_entry *);
 IM_API IM_STATUS rga_get_info(rga_info_table_entry *return_table);
 
 /*

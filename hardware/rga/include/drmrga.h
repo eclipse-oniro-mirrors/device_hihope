@@ -19,6 +19,8 @@
 #ifndef _rk_drm_rga_
 #define _rk_drm_rga_
 
+#include <stdint.h>
+
 /* flip source image horizontally (around the vertical axis) */
 #define HAL_TRANSFORM_FLIP_H     0x01
 /* flip source image vertically (around the horizontal axis) */
