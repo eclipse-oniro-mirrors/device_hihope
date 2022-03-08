@@ -71,7 +71,7 @@ ohos_shared_library("camera_pipeline_core") {
     "$camera_path/pipeline_core/pipeline_impl/src/strategy/stream_pipeline_strategy.cpp",
     "$camera_path/pipeline_core/pipeline_impl/src/stream_pipeline_core.cpp",
     "$camera_path/pipeline_core/src/pipeline_core.cpp",
-    "//device/hihope/hardware/mpp/src/mpi_enc_utils.c",
+    "//device/soc/rockchip/hardware/mpp/src/mpi_enc_utils.c",
   ]
   include_dirs = [
     "//utils/native/base/include",
@@ -116,8 +116,8 @@ ohos_shared_library("camera_pipeline_core") {
     "//utils/native/base/include",
     "//foundation/multimedia/camera_standard/frameworks/native/metadata/include",
     "$camera_device_name_path/camera/src/pipeline_core/node",
-    "//device/hihope/hardware/rga/include",
-    "//device/hihope/hardware/mpp/include",
+    "//device/soc/rockchip/hardware/rga/include",
+    "//device/soc/rockchip/hardware/mpp/include",
     "//third_party/libjpeg",
 
     # hcs parser
@@ -132,8 +132,8 @@ ohos_shared_library("camera_pipeline_core") {
   deps = [
     "$camera_path/buffer_manager:camera_buffer_manager",
     "$camera_path/device_manager:camera_device_manager",
-    "//device/hihope/hardware/mpp:libmpp",
-    "//device/hihope/hardware/rga:librga",
+    "//device/soc/rockchip/hardware/mpp:libmpp",
+    "//device/soc/rockchip/hardware/rga:librga",
     "//foundation/multimedia/camera_standard/frameworks/native/metadata:metadata",
     "//third_party/libjpeg:libjpeg_static",
 

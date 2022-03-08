@@ -25,7 +25,7 @@ action("kernel") {
   args = [
     rebase_path(kernel_build_script_dir, root_build_dir),
     rebase_path("$root_build_dir/packages/phone/images"),
-    rebase_path("//device/hihope/$device_name"),
+    rebase_path("//device/board/hihope/$device_name"),
     product_path,
     rebase_path("$root_build_dir/../.."),
   ]
