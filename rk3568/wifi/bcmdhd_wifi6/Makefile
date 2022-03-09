@@ -5,7 +5,7 @@
 
 # Execute Makefile in the kernel root directory
 #include drivers/net/wireless/rockchip_wlan/rkwifi/bcmdhd_wifi6/hdfwifi_bdh6.mk
-include ../../../../device/hihope/drivers/rkwifi/bcmdhd_wifi6/hdfwifi_bdh6.mk
+include ../../../../device/board/hihope/drivers/rkwifi/bcmdhd_wifi6/hdfwifi_bdh6.mk
 
 #$(info lijg: $(HDF_FRAMEWORKS_INC))
 $(info lijg: srctree=$(srctree)  src=$(src))
@@ -51,9 +51,9 @@ DHDCFLAGS = -Wall -Wstrict-prototypes -Dlinux -DBCMDRIVER                 \
 	-DWL_EXT_IAPSTA -DWL_ESCAN -DCCODE_LIST                               \
 	-DENABLE_INSMOD_NO_FW_LOAD                                            \
 	$(HDF_BDH6_WIFI_CFLAGS)                                               \
-	-I../../../../device/hihope/drivers/rkwifi/bcmdhd_wifi6 \
-	-I../../../../device/hihope/drivers/rkwifi/bcmdhd_wifi6/include \
-	-I../../../../device/hihope/drivers/rkwifi/bcmdhd_wifi6/hdfadapt \
+	-I../../../../device/board/hihope/drivers/rkwifi/bcmdhd_wifi6 \
+	-I../../../../device/board/hihope/drivers/rkwifi/bcmdhd_wifi6/include \
+	-I../../../../device/board/hihope/drivers/rkwifi/bcmdhd_wifi6/hdfadapt \
 	$(HDF_FRAMEWORKS_INC) \
 	$(HDF_WIFI_FRAMEWORKS_INC) \
 	$(HDF_WIFI_ADAPTER_INC) \

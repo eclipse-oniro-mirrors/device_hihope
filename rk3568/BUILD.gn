@@ -17,8 +17,9 @@ print("rk3568_group in")
 group("rk3568_group") {
   deps = [
     "bootanimation:bootanimation",
-    "build/rootfs:init_configs",
+    "cfg:init_configs",
     "distributedhardware:distributedhardware",
     "kernel:kernel",
+    "//device/soc/rockchip/hardware:hardware_group",
   ]
 }

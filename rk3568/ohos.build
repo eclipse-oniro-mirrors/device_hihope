@@ -1,0 +1,12 @@
+{
+    "subsystem": "rockchip_products",
+    "parts": {
+        "rockchip_products": {
+            "module_list": [
+                "//device/board/hihope/rk3568:rk3568_group",
+                "//vendor/hihope/rk3568/bluetooth:libbt_vendor",
+                "//vendor/hihope/rk3568/bluetooth:BCM4362A2.hcd"
+            ]
+        }
+    }
+}
