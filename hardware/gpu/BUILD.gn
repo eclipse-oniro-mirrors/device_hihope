@@ -31,7 +31,7 @@ ohos_prebuilt_shared_library("mali-bifrost-g52-g2p0-ohos") {
   } else if (target_cpu == "arm64") {
     source = "lib64/libmali-bifrost-g52-g2p0-wayland.so"
   }
-  install_images = [ chipset_base_dir ]
+  install_images = [ system_base_dir ]
   subsystem_name = "hdf"
   part_name = "display_device_driver"
   install_enable = true
