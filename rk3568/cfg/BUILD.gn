@@ -20,14 +20,6 @@ ohos_prebuilt_etc("init.rk3568.cfg") {
   install_enable = true
 }
 
-ohos_prebuilt_executable("weston.cfg") {
-  install_enable = true
-  source = "weston.cfg"
-  module_install_dir = "etc/init"
-  install_images = [ chipset_base_dir ]
-  part_name = "rockchip_products"
-}
-
 ohos_prebuilt_etc("init.rk3568.usb.cfg") {
   source = "init.rk3568.usb.cfg"
   part_name = "rockchip_products"
@@ -66,7 +58,6 @@ group("init_configs") {
     ":fstab.rk3568",
     ":init.rk3568.cfg",
     ":init.rk3568.usb.cfg",
-    ":weston.cfg",
   ]
   if (enable_ramdisk) {
     deps += [ ":ramdisk_resource_config.ini" ]
