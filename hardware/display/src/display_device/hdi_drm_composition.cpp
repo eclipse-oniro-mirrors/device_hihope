@@ -281,7 +281,7 @@ int32_t HdiDrmComposition::Apply(bool modeSet)
 
     ret = UpdateMode(modeBlock, *(atomicReqPtr.Get()));
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("update mode failed"));
-    uint32_t flags = DRM_MODE_ATOMIC_ALLOW_MODESET;
+    uint32_t flags = DRM_MODE_ATOMIC_NONBLOCK;
 
     ret = drmModeAtomicCommit(drmFd, atomicReqPtr.Get(), flags, nullptr);
     DISPLAY_CHK_RETURN((ret != 0), DISPLAY_FAILURE,
