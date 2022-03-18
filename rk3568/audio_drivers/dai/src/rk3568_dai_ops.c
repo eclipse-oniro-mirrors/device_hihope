@@ -308,8 +308,8 @@ int32_t Rk3568DaiHwParams(const struct AudioCard *card, const struct AudioPcmHwP
     }
     data->pcmInfo.channels = param->channels;
 
-    if (AudioFramatToBitWidth(param->format, &bitWidth) != HDF_SUCCESS) {
-        AUDIO_DEVICE_LOG_ERR("AudioFramatToBitWidth error");
+    if (AudioFormatToBitWidth(param->format, &bitWidth) != HDF_SUCCESS) {
+        AUDIO_DEVICE_LOG_ERR("AudioFormatToBitWidth error");
         return HDF_FAILURE;
     }
     data->pcmInfo.bitWidth = bitWidth;

@@ -577,7 +577,7 @@ int32_t Rk809DaiHwParams(const struct AudioCard *card, const struct AudioPcmHwPa
         return HDF_FAILURE;
     }
 
-    ret = AudioFramatToBitWidth(param->format, &bitWidth);
+    ret = AudioFormatToBitWidth(param->format, &bitWidth);
     if (ret != HDF_SUCCESS) {
         return HDF_FAILURE;
     }
