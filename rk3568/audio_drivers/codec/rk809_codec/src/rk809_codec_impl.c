@@ -272,7 +272,7 @@ int32_t RK809UpdateRenderParams(struct AudioRegCfgGroupNode **regCfgGroup,
 {
     int32_t ret;
     struct AudioMixerControl *regAttr = NULL;
-    int32_t itemNum = regCfgGroup[AUDIO_DAI_PATAM_GROUP]->itemNum;
+    int32_t itemNum;
     int16_t i = 0;
 
     ret = (regCfgGroup == NULL
@@ -283,6 +283,7 @@ int32_t RK809UpdateRenderParams(struct AudioRegCfgGroupNode **regCfgGroup,
         return HDF_FAILURE;
     }
 
+    itemNum = regCfgGroup[AUDIO_DAI_PATAM_GROUP]->itemNum;
     regAttr = regCfgGroup[AUDIO_DAI_PATAM_GROUP]->regCfgItem;
 
     for (i = 0; i < itemNum; i++) {
@@ -321,7 +322,7 @@ int32_t RK809UpdateCaptureParams(struct AudioRegCfgGroupNode **regCfgGroup,
 {
     int32_t ret;
     struct AudioMixerControl *regAttr = NULL;
-    int32_t itemNum = regCfgGroup[AUDIO_DAI_PATAM_GROUP]->itemNum;
+    int32_t itemNum;
     int16_t i = 0;
 
     ret = (regCfgGroup == NULL
@@ -332,6 +333,7 @@ int32_t RK809UpdateCaptureParams(struct AudioRegCfgGroupNode **regCfgGroup,
         return HDF_FAILURE;
     }
 
+    itemNum = regCfgGroup[AUDIO_DAI_PATAM_GROUP]->itemNum;
     regAttr = regCfgGroup[AUDIO_DAI_PATAM_GROUP]->regCfgItem;
 
     for (i = 0; i < itemNum; i++) {
@@ -577,7 +579,7 @@ int32_t Rk809DaiHwParams(const struct AudioCard *card, const struct AudioPcmHwPa
         return HDF_FAILURE;
     }
 
-    ret = AudioFramatToBitWidth(param->format, &bitWidth);
+    ret = AudioFormatToBitWidth(param->format, &bitWidth);
     if (ret != HDF_SUCCESS) {
         return HDF_FAILURE;
     }
