@@ -19,12 +19,11 @@
 #ifndef _RGA_DRIVER_H_
 #define _RGA_DRIVER_H_
 
+#include <stdint.h>
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include <stdint.h>
 
 #define RGA_BLIT_SYNC   0x5017
 #define RGA_BLIT_ASYNC  0x5018
@@ -263,9 +262,6 @@ typedef struct MMU {
     unsigned int mmu_flag;     /* [0] mmu enable [1] src_flush [2] dst_flush [3] CMD_flush [4~5] page size */
 } MMU;
 
-
-
-
 typedef struct COLOR_FILL {
     short gr_x_a;
     short gr_y_a;
@@ -275,8 +271,6 @@ typedef struct COLOR_FILL {
     short gr_y_g;
     short gr_x_r;
     short gr_y_r;
-
-    // u8  cp_gr_saturation;
 }
 COLOR_FILL;
 

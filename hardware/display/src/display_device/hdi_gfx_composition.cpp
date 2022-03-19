@@ -19,10 +19,6 @@
 #include "display_gfx.h"
 #include "hdi_gfx_composition.h"
 
-#define LIB_HDI_GFX_NAME "libdisplay_gfx.z.so"
-#define LIB_GFX_FUNC_INIT "GfxInitialize"
-#define LIB_GFX_FUNC_DEINIT "GfxUninitialize"
-
 namespace OHOS {
 namespace HDI {
 namespace DISPLAY {
@@ -40,12 +36,12 @@ int32_t HdiGfxComposition::Init(void)
 int32_t HdiGfxComposition::GfxModuleInit(void)
 {
     DISPLAY_DEBUGLOG();
-    mGfxModule = dlopen(LIB_HDI_GFX_NAME, RTLD_NOW | RTLD_NOLOAD);
+    mGfxModule = dlopen("libdisplay_gfx.z.so", RTLD_NOW | RTLD_NOLOAD);
     if (mGfxModule != nullptr) {
-        DISPLAY_LOGI("Module '%{public}s' already loaded", LIB_HDI_GFX_NAME);
+        DISPLAY_LOGI("Module '%{public}s' already loaded", "libdisplay_gfx.z.so");
     } else {
-        DISPLAY_LOGI("Loading module '%{public}s'", LIB_HDI_GFX_NAME);
-        mGfxModule = dlopen(LIB_HDI_GFX_NAME, RTLD_NOW);
+        DISPLAY_LOGI("Loading module '%{public}s'", "libdisplay_gfx.z.so");
+        mGfxModule = dlopen("libdisplay_gfx.z.so", RTLD_NOW);
         if (mGfxModule == nullptr) {
             DISPLAY_LOGE("Failed to load module: %{public}s", dlerror());
             return DISPLAY_FAILURE;
@@ -53,9 +49,9 @@ int32_t HdiGfxComposition::GfxModuleInit(void)
     }
 
     using InitFunc = int32_t (*)(GfxFuncs **funcs);
-    InitFunc func = reinterpret_cast<InitFunc>(dlsym(mGfxModule, LIB_GFX_FUNC_INIT));
+    InitFunc func = reinterpret_cast<InitFunc>(dlsym(mGfxModule, "GfxInitialize"));
     if (func == nullptr) {
-        DISPLAY_LOGE("Failed to lookup %{public}s function: %s", LIB_GFX_FUNC_INIT, dlerror());
+        DISPLAY_LOGE("Failed to lookup %{public}s function: %s", "GfxInitialize", dlerror());
         dlclose(mGfxModule);
         return DISPLAY_FAILURE;
     }
@@ -68,9 +64,9 @@ int32_t HdiGfxComposition::GfxModuleDeinit(void)
     int32_t ret = DISPLAY_SUCCESS;
     if (mGfxModule == nullptr) {
         using DeinitFunc = int32_t (*)(GfxFuncs *funcs);
-        DeinitFunc func = reinterpret_cast<DeinitFunc>(dlsym(mGfxModule, LIB_GFX_FUNC_DEINIT));
+        DeinitFunc func = reinterpret_cast<DeinitFunc>(dlsym(mGfxModule, "GfxUninitialize"));
         if (func == nullptr) {
-            DISPLAY_LOGE("Failed to lookup %{public}s function: %s", LIB_GFX_FUNC_DEINIT, dlerror());
+            DISPLAY_LOGE("Failed to lookup %{public}s function: %s", "GfxUninitialize", dlerror());
         } else {
             ret = func(mGfxFuncs);
         }

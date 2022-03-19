@@ -30,6 +30,8 @@
                 <policyitem type="copyright" name="Institute of Software, CAS." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed By ISCAS"/>           
                 <policyitem type="license" name="GPL" path=".*" desc="linux kernel adapter codes"/>
                 <policyitem type="license" name="BSD" path=".*" desc="huawei codes"/>
+                <policyitem type="license" name="MIT" path=".*" desc="Intel code"/>
+                <policyitem type="copyright" name="Intel Corporation" path=".*" desc="Intel code"/>
 	        </policy>
         </policylist>
         <filefilterlist>
