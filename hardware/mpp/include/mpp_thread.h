@@ -76,9 +76,8 @@ public:
 
     class Autolock {
     public:
-        inline Autolock(Mutex* mutex, RK_U32 enable = 1) :
-        mEnabled(enable),
-        mLock(*mutex)
+        inline Autolock(Mutex* mutex, RK_U32 enable = 1)
+	    : mEnabled(enable), mLock(*mutex)
         {
             if (mEnabled)
                     mLock.lock();
