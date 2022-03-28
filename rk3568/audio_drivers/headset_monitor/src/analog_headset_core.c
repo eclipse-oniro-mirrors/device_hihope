@@ -6,25 +6,19 @@
  * See the LICENSE file in the root of this repository for complete details.
  */
 
-#include <linux/debugfs.h>
 #include <linux/delay.h>
 #include <linux/err.h>
 #include <linux/errno.h>
 #include <linux/gpio.h>
-#include <linux/i2c.h>
 #include <linux/iio/consumer.h>
-#include <linux/init.h>
-#include <linux/module.h>
-#include <linux/moduleparam.h>
 #include <linux/of_gpio.h>
 #include <linux/platform_device.h>
-#include <linux/pm.h>
-#include <linux/spi/spi.h>
 #include "analog_headset.h"
+#include "device_resource_if.h"
+#include "osal_mem.h"
 #include "securec.h"
 
 #define HDF_LOG_TAG analog_headset_core
-#define USING_HDF_ENTRY
 
 static struct HeadsetPdata *g_pdataInfo = NULL;
 static struct HdfDeviceObject *g_hdfDevice = NULL;
@@ -91,15 +85,15 @@ static int32_t TraceInfo(const struct HeadsetPdata *pdata)
         return -EINVAL;
     }
 
-    HDF_LOGI("\n hsGpioFlags = %d, isHookAdcMode = %d",
-        pdata->hsGpioFlags, pdata->isHookAdcMode ? 1 : 0);
+    HDF_LOGD("%s: hsGpioFlags = %d, isHookAdcMode = %s",
+        __func__, pdata->hsGpioFlags, pdata->isHookAdcMode ? "true" : "false");
 #ifdef CONFIG_MODEM_MIC_SWITCH
-    HDF_LOGI("\n micGpioFlags = %d, micSwitchGpio = %d, hpMicIoValue = %d, mainMicIoValue = %d.",
-        pdata->micGpioFlags, pdata->micSwitchGpio, pdata->hpMicIoValue, pdata->mainMicIoValue);
+    HDF_LOGD("%s: micGpioFlags = %d, micSwitchGpio = %u, hpMicIoValue = %u, mainMicIoValue = %u.",
+        __func__, pdata->micGpioFlags, pdata->micSwitchGpio, pdata->hpMicIoValue, pdata->mainMicIoValue);
 #endif
 
-    HDF_LOGI("\n hsGpio = %d, hookGpio = %d, hookDownType = %d, hsGpio = %d, hsWakeup = %s.",
-        pdata->hsGpio, pdata->hookGpio, pdata->hookDownType, pdata->hsGpio, pdata->hsWakeup ? "true" : "false");
+    HDF_LOGD("%s: hsGpio = %u, hookGpio = %u, hookDownType = %u, hsWakeup = %s.", __func__,
+        pdata->hsGpio, pdata->hookGpio, pdata->hookDownType, pdata->hsWakeup ? "true" : "false");
     HDF_LOGI("%s: done.", __func__);
 
     return 0;
@@ -139,8 +133,8 @@ static int32_t LinuxReadMicConfig(struct device_node *node, struct HeadsetPdata 
 
 static int32_t LinuxReadConfig(struct device_node *node, struct HeadsetPdata *pdata)
 {
-    int ret;
-    int wakeup;
+    int32_t ret;
+    int32_t wakeup;
 
     if ((node == NULL) || (pdata == NULL)) {
         HDF_LOGE("%s: node or pdata is NULL.", __func__);
@@ -182,6 +176,125 @@ static int32_t LinuxReadConfig(struct device_node *node, struct HeadsetPdata *pd
     }
 
     return 0;
+}
+
+static int32_t ReadHookModeConfig(struct DeviceResourceIface *parser,
+    const struct DeviceResourceNode *node, struct HeadsetPdata *pdata)
+{
+    int32_t ret;
+
+    if ((pdata == NULL) || (node == NULL) || (parser == NULL)) {
+        HDF_LOGE("%s: pdata, node or parser is NULL.", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    pdata->isHookAdcMode = true;
+    ret = parser->GetUint32(node, "hook_gpio", &pdata->hookGpio, 0);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGI("%s: [GetUint32]-[hook_gpio] is null.", __func__);
+        pdata->isHookAdcMode = false;
+    }
+
+    if (pdata->isHookAdcMode) { /* hook adc mode */
+        HDF_LOGI("%s: headset have hook adc mode.", __func__);
+        ret = parser->GetUint32(node, "adc_controller_no", &pdata->adcConfig.devNum, 0);
+        if (ret != HDF_SUCCESS) {
+            HDF_LOGE("%s: [GetUint32]-[adc_controller_no] failed.", __func__);
+            return ret;
+        }
+        ret = parser->GetUint32(node, "adc_channel", &pdata->adcConfig.chanNo, 0);
+        if (ret != HDF_SUCCESS) {
+            HDF_LOGE("%s: [GetUint32]-[adc_channel] failed.", __func__);
+            return ret;
+        }
+    } else { /* hook interrupt mode */
+        ret = parser->GetUint32(node, "hook_down_type", &pdata->hookDownType, 0);
+        if (ret != HDF_SUCCESS) {
+            HDF_LOGE("%s: [GetUint32]-[hook_down_type] failed.", __func__);
+            return ret;
+        }
+    }
+    HDF_LOGI("%s: hook mode: %s.", __func__, pdata->isHookAdcMode ? "sar-adc" : "gpio-int");
+
+    return HDF_SUCCESS;
+}
+
+static int32_t ReadMicConfig(struct DeviceResourceIface *parser,
+    const struct DeviceResourceNode *node, struct HeadsetPdata *pdata)
+{
+#ifdef CONFIG_MODEM_MIC_SWITCH
+    /* mic */
+    int32_t ret;
+
+    if ((pdata == NULL) || (parser == NULL) || (node == NULL)) {
+        HDF_LOGE("%s: node or pdata is NULL.", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    ret = parser->GetUint32(node, "mic_switch_gpio", &pdata->hsGpio, 0);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s: [mic_switch_gpio] failed.", __func__);
+        return ret;
+    }
+
+    ret = parser->GetUint32(node, "hp_mic_io_value", &pdata->hpMicIoValue, 0);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s: [hp_mic_io_value] failed.", __func__);
+        return ret;
+    }
+    ret = parser->GetUint32(node, "main_mic_io_value", &pdata->mainMicIoValue, 1);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s: [main_mic_io_value] failed.", __func__);
+        return ret;
+    }
+#endif
+
+    return HDF_SUCCESS;
+}
+
+static int32_t ReadConfig(const struct DeviceResourceNode *node, struct HeadsetPdata *pdata)
+{
+    int32_t ret;
+    int32_t temp;
+    struct DeviceResourceIface *parser = DeviceResourceGetIfaceInstance(HDF_CONFIG_SOURCE);
+
+    if ((pdata == NULL) || (node == NULL) || (parser == NULL)) {
+        HDF_LOGE("%s: pdata, node or parser is NULL.", __func__);
+        return HDF_FAILURE;
+    }
+    ret = parser->GetString(node, "dev_name", &pdata->devName, NULL);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s: [GetString]-[dev_name] failed.", __func__);
+        return ret;
+    }
+    /* headset */
+    ret = parser->GetUint32(node, "headset_gpio", &pdata->hsGpio, 0);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s: [headset_gpio] failed.", __func__);
+        return ret;
+    }
+    ret = parser->GetUint32(node, "headset_gpio_flag", &pdata->hsGpioFlag, OF_GPIO_ACTIVE_LOW);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s: [headset_gpio_flag] failed.", __func__);
+        return ret;
+    }
+    /* hook */
+    ret = ReadHookModeConfig(parser, node, pdata);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s: [ReadHookModeConfig] failed.", __func__);
+        return ret;
+    }
+    /* mic */
+    (void)ReadMicConfig(parser, node, pdata);
+
+    ret = parser->GetUint32(node, "headset_wakeup", &temp, 0);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGW("%s: [GetUint32]-[headset_wakeup] failed.", __func__);
+        temp = 1;
+    }
+    pdata->hsWakeup = (temp == 0) ? false : true;
+
+    return HDF_SUCCESS;
 }
 
 static int32_t AnalogHeadsetInit(struct platform_device *pdev, struct HeadsetPdata *pdata)
@@ -240,12 +353,12 @@ static int AudioHeadsetProbe(struct platform_device *pdev)
     int32_t ret;
 
     HDF_LOGI("%s: enter.", __func__);
-    pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+    pdata = (struct HeadsetPdata *)OsalMemCalloc(sizeof(*pdata));
     if (pdata == NULL) {
-        HDF_LOGI("%s: failed to allocate driver data.", __func__);
-        return -ENOMEM;
+        HDF_LOGE("%s: [OsalMemCalloc] failed!", __func__);
+        return HDF_ERR_MALLOC_FAIL;
     }
-    InitHeadsetPdata(pdata); // this needs to add.
+    InitHeadsetPdata(pdata);
     g_pdataInfo = pdata;
 
     ret = LinuxReadConfig(node, pdata);
@@ -305,24 +418,6 @@ static struct platform_driver AudioHeadsetDriver = {
     },
 };
 
-#ifndef USING_HDF_ENTRY
-static int __init AudioHeadsetInit(void)
-{
-    platform_driver_register(&AudioHeadsetDriver);
-    return 0;
-}
-
-static void __exit AudioHeadsetExit(void)
-{
-    platform_driver_unregister(&AudioHeadsetDriver);
-}
-
-late_initcall(AudioHeadsetInit);
-module_exit(AudioHeadsetExit);
-
-MODULE_DESCRIPTION("Rockchip Headset Core Driver");
-MODULE_LICENSE("GPL");
-#else
 static int32_t HdfHeadsetBindDriver(struct HdfDeviceObject *device)
 {
     if (device == NULL) {
@@ -338,13 +433,15 @@ static int32_t HdfHeadsetBindDriver(struct HdfDeviceObject *device)
 
 static int32_t HdfHeadsetInit(struct HdfDeviceObject *device)
 {
+    int32_t ret;
     static struct IDeviceIoService headsetService = {
         .object.objectId = 1,
     };
+    const struct DeviceResourceNode *node = NULL;
+    static struct HeadsetPdata pdata;
 
     HDF_LOGI("%s: enter.", __func__);
     platform_driver_register(&AudioHeadsetDriver);
-
     if (device == NULL) {
         HDF_LOGE("%s:  is NULL.", __func__);
         return HDF_ERR_INVALID_PARAM;
@@ -354,6 +451,13 @@ static int32_t HdfHeadsetInit(struct HdfDeviceObject *device)
         HDF_LOGE("%s: g_pdataInfo is NULL!", __func__);
         return HDF_ERR_MALLOC_FAIL;
     }
+
+    node = device->property;
+    ret = ReadConfig(node, &pdata);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s: [ReadConfig] failed.", __func__);
+    }
+    (void)TraceInfo(&pdata);
 
     g_pdataInfo->device = device;
     g_pdataInfo->ioService = headsetService;
@@ -366,6 +470,8 @@ static int32_t HdfHeadsetInit(struct HdfDeviceObject *device)
 
 static void HdfHeadsetExit(struct HdfDeviceObject *device)
 {
+    struct HeadsetPdata *drvData = NULL;
+
     HDF_LOGI("%s: enter.", __func__);
     if (device == NULL) {
         HDF_LOGE("%s: device or device->service is NULL.", __func__);
@@ -373,8 +479,22 @@ static void HdfHeadsetExit(struct HdfDeviceObject *device)
     }
 
     platform_driver_unregister(&AudioHeadsetDriver);
+
+    if ((device == NULL) || (device->priv == NULL)) {
+        HDF_LOGE("%s: device or device->priv is NULL.", __func__);
+        return;
+    }
+    drvData = (struct HeadsetPdata *)device->priv;
+    if (drvData->chan != NULL) { // hook adc mode
+        AnalogHeadsetAdcRelease(drvData);
+    } else { // hook interrupt mode and not hook
+        AnalogHeadsetGpioRelease(drvData);
+    }
+    OsalMemFree(drvData);
+    device->priv = NULL;
     g_pdataInfo = NULL;
     g_hdfDevice = NULL;
+
     HDF_LOGI("%s: done.", __func__);
 }
 
@@ -388,4 +508,3 @@ struct HdfDriverEntry g_headsetDevEntry = {
 };
 
 HDF_INIT(g_headsetDevEntry);
-#endif

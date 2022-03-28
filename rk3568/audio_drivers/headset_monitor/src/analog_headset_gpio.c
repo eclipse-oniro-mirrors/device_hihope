@@ -6,7 +6,6 @@
  * See the LICENSE file in the root of this repository for complete details.
  */
 
-#include <asm/atomic.h>
 #include <linux/debugfs.h>
 #include <linux/delay.h>
 #include <linux/device.h>
@@ -19,29 +18,23 @@
 #include <linux/fs.h>
 #include <linux/gpio.h>
 #include <linux/hrtimer.h>
-#include <linux/i2c.h>
 #include <linux/input.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
-#include <linux/module.h>
 #include <linux/mutex.h>
 #include <linux/of_gpio.h>
 #include <linux/platform_device.h>
-#include <linux/pm.h>
-#include <linux/spi/spi.h>
-#include <linux/types.h>
 #include <linux/wakelock.h>
-#include <linux/workqueue.h>
 #include "analog_headset.h"
 #include "analog_headset_base.h"
 #include "hdf_log.h"
+#include "hdf_workqueue.h"
+#include "osal_time.h"
+#include "osal_timer.h"
 #include "osal_mem.h"
+#include "osal_mutex.h"
 
 #define HDF_LOG_TAG analog_headset_gpio
-
-#define HEADSET                 0
-#define HOOK                    1
-
 #define HEADSET_IN              1
 #define HEADSET_OUT             0
 #define HOOK_DOWN               1
@@ -49,22 +42,25 @@
 #define ENABLE_FLAG             1
 #define DISABLE_FLAG            0
 
+#define HEADSET_TIMER_INTERVAL  1 /* unit in ms, about 100 jiffies. */
+
 /* headset private data */
 struct HeadsetPriv {
     struct input_dev *inDev;
     struct HeadsetPdata *pdata;
-    unsigned int hsStatus : 1;
-    unsigned int hookStatus : 1;
-    bool isMic;
-    unsigned int ishookIrq : 1;
-    int curHsStatus;
-    unsigned int irq[2];
-    unsigned int irqType[2];
-    struct delayed_work hDelayedWork[2];
+    uint32_t hsStatus : 1;
+    uint32_t hookStatus : 1;
+    uint32_t ishookIrq : 1;
+    int32_t curHsStatus;
+    uint32_t irq[HS_HOOK_COUNT];
+    uint32_t irqType[HS_HOOK_COUNT];
+    HdfWorkQueue workQueue;
+    HdfWork hDelayedWork[HS_HOOK_COUNT];
     struct extcon_dev *edev;
-    struct mutex mutexLk[2];
-    struct timer_list hsTimer;
+    struct OsalMutex mutexLk[HS_HOOK_COUNT];
+    OsalTimer hsTimer;
     unsigned char *keycodes;
+    bool isMic;
 };
 
 static struct HeadsetPriv *g_hsInfo = NULL;
@@ -119,7 +115,7 @@ static int ExtconSetStateSync(struct HeadsetPriv *hs, unsigned int id, bool stat
 
     extcon_set_state_sync(hs->edev, id, state);
     SetStateSync(id, state);
-    HDF_LOGI("%s: id = %d, state = %s.", __func__, id, state ? "in" : "out");
+    HDF_LOGI("%s: id = %u, state = %s.", __func__, id, state ? "in" : "out");
 
     return 0;
 }
@@ -134,7 +130,7 @@ static void InputReportKeySync(struct HeadsetPriv *hs, unsigned int code, int va
     input_report_key(hs->inDev, code, value);
     input_sync(hs->inDev);
     SetStateSync(code, value);
-    HDF_LOGI("%s: code = %d, value = %s.", __func__, code, value ? "in" : "out");
+    HDF_LOGI("%s: code = %u, value = %s.", __func__, code, value ? "in" : "out");
 }
 
 static void InitHeadsetPriv(struct HeadsetPriv *hs, struct HeadsetPdata *pdata)
@@ -150,18 +146,19 @@ static void InitHeadsetPriv(struct HeadsetPriv *hs, struct HeadsetPdata *pdata)
     hs->ishookIrq = DISABLE_FLAG;
     hs->curHsStatus = BIT_HEADSET_NULL;
     hs->isMic = false;
+    HDF_LOGD("%s, LINE = %d: isMic = %s.", __func__, __LINE__, hs->isMic ? "true" : "false");
 }
 
 static int ReadGpio(int gpio)
 {
-    int i;
-    int level;
+    int32_t i;
+    int32_t level;
 
     for (i = 0; i < GET_GPIO_REPEAT_TIMES; i++) {
         level = gpio_get_value(gpio);
         if (level < 0) {
-            HDF_LOGW("%s: get pin level again,pin=%d,i=%d.", __func__, gpio, i);
-            msleep(IRQ_CONFIRM_MS1);
+            HDF_LOGW("%s: get pin level again, pin = %d, i = %d.", __func__, gpio, i);
+            OsalMSleep(IRQ_CONFIRM_MS1);
             continue;
         }
         break;
@@ -176,7 +173,6 @@ static irqreturn_t HeadsetInterrupt(int irq, void *devId)
 {
     struct HeadsetPriv *hs = g_hsInfo;
 
-    HDF_LOGD("%s: enter.", __func__);
     if (hs == NULL) {
         HDF_LOGE("%s: hs is NULL.", __func__);
         return -EINVAL;
@@ -184,7 +180,7 @@ static irqreturn_t HeadsetInterrupt(int irq, void *devId)
 
     (void)irq;
     (void)devId;
-    schedule_delayed_work(&hs->hDelayedWork[HEADSET], msecs_to_jiffies(DELAY_WORK_MS50));
+    (void)HdfAddDelayedWork(&hs->workQueue, &hs->hDelayedWork[HEADSET], DELAY_WORK_MS50);
     return IRQ_HANDLED;
 }
 
@@ -192,7 +188,6 @@ static irqreturn_t HookInterrupt(int irq, void *devId)
 {
     struct HeadsetPriv *hs = g_hsInfo;
 
-    HDF_LOGD("%s: enter.", __func__);
     if (hs == NULL) {
         HDF_LOGE("%s: hs is NULL.", __func__);
         return -EINVAL;
@@ -200,16 +195,16 @@ static irqreturn_t HookInterrupt(int irq, void *devId)
 
     (void)irq;
     (void)devId;
-    schedule_delayed_work(&hs->hDelayedWork[HOOK], msecs_to_jiffies(DELAY_WORK_MS100));
+    (void)HdfAddDelayedWork(&hs->workQueue, &hs->hDelayedWork[HOOK], DELAY_WORK_MS100);
     return IRQ_HANDLED;
 }
 
 static int32_t CheckState(struct HeadsetPriv *hs, bool *beChange)
 {
-    int level = 0;
-    int level2 = 0;
+    int32_t level = 0;
+    int32_t level2 = 0;
     struct HeadsetPdata *pdata = NULL;
-    static unsigned int oldStatus = 0;
+    static uint32_t oldStatus = 0;
 
     HDF_LOGI("%s: enter.", __func__);
     if ((hs == NULL) || (hs->pdata == NULL) || (beChange == NULL)) {
@@ -222,7 +217,7 @@ static int32_t CheckState(struct HeadsetPriv *hs, bool *beChange)
     if (level < 0) {
         return HDF_FAILURE;
     }
-    msleep(IRQ_CONFIRM_MS100);
+    OsalMSleep(IRQ_CONFIRM_MS100);
     level2 = ReadGpio(pdata->hsGpio);
     if (level2 < 0) {
         return HDF_FAILURE;
@@ -253,7 +248,7 @@ static int32_t CheckState(struct HeadsetPriv *hs, bool *beChange)
 static int32_t ReportCurrentState(struct HeadsetPriv *hs)
 {
     struct HeadsetPdata *pdata = NULL;
-    unsigned int type;
+    uint32_t type;
     bool bePlugIn;
 
     HDF_LOGI("%s: enter.", __func__);
@@ -268,10 +263,9 @@ static int32_t ReportCurrentState(struct HeadsetPriv *hs)
         type = (pdata->hsInsertType == HEADSET_IN_HIGH) ? IRQF_TRIGGER_FALLING : IRQF_TRIGGER_RISING;
         irq_set_irq_type(hs->irq[HEADSET], type);
         if (pdata->hookGpio) {
-            /* Start the timer, wait for switch to the headphone channel */
-            del_timer(&hs->hsTimer);
-            hs->hsTimer.expires = jiffies + TIMER_EXPIRES_JIFFIES;
-            add_timer(&hs->hsTimer);
+            /* Start the timer, wait for press the hook-key, use OsalTimerStartOnce replace
+               'del_timer(&t), t.expires = jiffies + TIMER_EXPIRES_JIFFIES, add_timer(&t)' */
+            OsalTimerStartOnce(&hs->hsTimer);
             return HDF_SUCCESS;
         }
     } else {
@@ -286,35 +280,33 @@ static int32_t ReportCurrentState(struct HeadsetPriv *hs)
         irq_set_irq_type(hs->irq[HEADSET], type);
     }
     bePlugIn = (hs->curHsStatus != BIT_HEADSET_NULL) ? true : false;
-    (void)ExtconSetStateSync(hs, EXTCON_JACK_HEADPHONE, bePlugIn);
-    HDF_LOGD("%s: curHsStatus = %d.", __func__, hs->curHsStatus);
+    (void)ExtconSetStateSync(hs, KEY_JACK_HEADPHONE, bePlugIn);
+    HDF_LOGD("%s: curHsStatus = %d(0: NULL, 1: HEADSET, 2:HEADPHONE).", __func__, hs->curHsStatus);
 
     return HDF_SUCCESS;
 }
 
-static void HeadsetObserveWork(struct work_struct *work)
+static void HeadsetObserveWork(void *arg)
 {
     int32_t ret;
-    struct HeadsetPriv *hs = g_hsInfo;
+    struct HeadsetPriv *hs = (struct HeadsetPriv *)arg;
     bool beChange = false;
 
-    HDF_LOGI("%s: enter.", __func__);
-    (void)work;
     if (hs == NULL) {
         HDF_LOGE("%s: hs is NULL.", __func__);
         return;
     }
 
-    mutex_lock(&hs->mutexLk[HEADSET]);
+    (void)OsalMutexLock(&hs->mutexLk[HEADSET]);
     ret = CheckState(hs, &beChange);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("%s: [CheckState] failed.", __func__);
-        mutex_unlock(&hs->mutexLk[HEADSET]);
+        (void)OsalMutexUnlock(&hs->mutexLk[HEADSET]);
         return;
     }
     if (!beChange) {
-        HDF_LOGE("%s: read headset io level old status == now status =%d.", __func__, hs->hsStatus);
-        mutex_unlock(&hs->mutexLk[HEADSET]);
+        HDF_LOGE("%s: read headset io level old status == now status = %u.", __func__, hs->hsStatus);
+        (void)OsalMutexUnlock(&hs->mutexLk[HEADSET]);
         return;
     }
 
@@ -322,62 +314,67 @@ static void HeadsetObserveWork(struct work_struct *work)
     if (ret != HDF_SUCCESS) {
         HDF_LOGD("%s: [ReportCurentState] failed.", __func__);
     }
-    mutex_unlock(&hs->mutexLk[HEADSET]);
+    (void)OsalMutexUnlock(&hs->mutexLk[HEADSET]);
 }
 
-static void HookWorkCallback(struct work_struct *work)
+static void HookWorkCallback(void *arg)
 {
-    int level = 0;
-    struct HeadsetPdata *pdata = g_hsInfo->pdata;
-    static unsigned int oldStatus = HOOK_UP;
-    unsigned int type;
+    int32_t level;
+    struct HeadsetPriv *hs = (struct HeadsetPriv *)arg;
+    struct HeadsetPdata *pdata = NULL;
+    static uint32_t oldStatus = HOOK_UP;
+    uint32_t type;
 
-    (void)work;
-    mutex_lock(&g_hsInfo->mutexLk[HOOK]);
-    if (g_hsInfo->hsStatus == HEADSET_OUT) {
+    if ((hs == NULL) || (hs->pdata == NULL)) {
+        HDF_LOGE("%s: hs or hs->pdata is NULL.", __func__);
+        return;
+    }
+    pdata = hs->pdata;
+    (void)OsalMutexLock(&hs->mutexLk[HOOK]);
+    if (hs->hsStatus == HEADSET_OUT) {
         HDF_LOGD("%s: Headset is out.", __func__);
-        mutex_unlock(&g_hsInfo->mutexLk[HOOK]);
+        (void)OsalMutexUnlock(&hs->mutexLk[HOOK]);
         return;
     }
     level = ReadGpio(pdata->hookGpio);
     if (level < 0) {
-        HDF_LOGD("%s: [mutex_unlock] failed.", __func__);
-        mutex_unlock(&g_hsInfo->mutexLk[HOOK]);
+        HDF_LOGE("%s: [ReadGpio] failed.", __func__);
+        (void)OsalMutexUnlock(&hs->mutexLk[HOOK]);
         return;
     }
-    oldStatus = g_hsInfo->hookStatus;
+    oldStatus = hs->hookStatus;
     HDF_LOGD("%s: Hook_work -- level = %d.", __func__, level);
     if (level == 0) {
-        g_hsInfo->hookStatus = (pdata->hookDownType == HOOK_DOWN_HIGH) ? HOOK_UP : HOOK_DOWN;
+        hs->hookStatus = (pdata->hookDownType == HOOK_DOWN_HIGH) ? HOOK_UP : HOOK_DOWN;
     } else if (level > 0) {
-        g_hsInfo->hookStatus = (pdata->hookDownType == HOOK_DOWN_HIGH) ? HOOK_DOWN : HOOK_UP;
+        hs->hookStatus = (pdata->hookDownType == HOOK_DOWN_HIGH) ? HOOK_DOWN : HOOK_UP;
     } else {
         ; // do nothing.
     }
-    if (oldStatus == g_hsInfo->hookStatus) {
-        HDF_LOGD("%s: oldStatus == g_hsInfo->hookStatus.", __func__);
-        mutex_unlock(&g_hsInfo->mutexLk[HOOK]);
+    if (oldStatus == hs->hookStatus) {
+        HDF_LOGD("%s: oldStatus == hs->hookStatus.", __func__);
+        (void)OsalMutexUnlock(&hs->mutexLk[HOOK]);
         return;
     }
     HDF_LOGD("%s: Hook_work -- level = %d  hook status is %s.", __func__, level,
-        g_hsInfo->hookStatus ? "key down" : "key up");
-    if (g_hsInfo->hookStatus == HOOK_DOWN) {
+        hs->hookStatus ? "key down" : "key up");
+    if (hs->hookStatus == HOOK_DOWN) {
         type = (pdata->hookDownType == HOOK_DOWN_HIGH) ? IRQF_TRIGGER_FALLING : IRQF_TRIGGER_RISING;
     } else {
         type = (pdata->hookDownType == HOOK_DOWN_HIGH) ? IRQF_TRIGGER_RISING : IRQF_TRIGGER_FALLING;
     }
-    irq_set_irq_type(g_hsInfo->irq[HOOK], type);
-    InputReportKeySync(g_hsInfo, HOOK_KEY_CODE, g_hsInfo->hookStatus);
-    mutex_unlock(&g_hsInfo->mutexLk[HOOK]);
+    irq_set_irq_type(hs->irq[HOOK], type);
+    InputReportKeySync(hs, HOOK_KEY_CODE, hs->hookStatus);
+    (void)OsalMutexUnlock(&hs->mutexLk[HOOK]);
 }
 
-static void HeadsetTimerCallback(struct timer_list *t)
+static void HeadsetTimerCallback(uintptr_t arg)
 {
-    struct HeadsetPriv *hs = from_timer(hs, t, hsTimer);
+    struct HeadsetPriv *hs = (struct HeadsetPriv *)arg;
     struct HeadsetPdata *pdata = NULL;
-    int level = 0;
+    int32_t level;
     bool bePlugIn;
-    unsigned int type;
+    uint32_t type;
 
     HDF_LOGI("%s: enter.", __func__);
     if (hs == NULL) {
@@ -406,17 +403,17 @@ static void HeadsetTimerCallback(struct timer_list *t)
     } else {
         hs->isMic = false;
     }
-    HDF_LOGI("%s: hs->isMic = %d.", __func__, hs->isMic);
+    HDF_LOGD("%s, LINE = %d: isMic = %s.", __func__, __LINE__, hs->isMic ? "true" : "false");
     hs->curHsStatus = hs->isMic ? BIT_HEADSET : BIT_HEADSET_NO_MIC;
     bePlugIn = hs->isMic;
-    (void)ExtconSetStateSync(hs, EXTCON_JACK_MICROPHONE, bePlugIn);
-    HDF_LOGD("%s: hs->curHsStatus = %d.", __func__, hs->curHsStatus);
+    (void)ExtconSetStateSync(hs, KEY_JACK_HEADSET, bePlugIn);
+    HDF_LOGD("%s: hs->curHsStatus = %d(0: NULL, 1: HEADSET, 2:HEADPHONE).", __func__, hs->curHsStatus);
 }
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
 static void HeadsetEarlyResume(struct early_suspend *h)
 {
-    schedule_delayed_work(&g_hsInfo->hDelayedWork[HEADSET], msecs_to_jiffies(DELAY_WORK_MS10));
+    (void)HdfAddDelayedWork(&g_hsInfo->workQueue, &g_hsInfo->hDelayedWork[HEADSET], DELAY_WORK_MS10);
     HDF_LOGD("%s: done.", __func__);
 }
 
@@ -437,8 +434,8 @@ static void AnalogHskeyClose(struct input_dev *dev)
 }
 
 static const unsigned int g_hsCable[] = {
-    EXTCON_JACK_MICROPHONE,
-    EXTCON_JACK_HEADPHONE,
+    KEY_JACK_HEADSET,
+    KEY_JACK_HEADPHONE,
     EXTCON_NONE,
 };
 
@@ -471,11 +468,15 @@ static int32_t InitWorkData(struct HeadsetPriv *hs)
 {
     if (hs == NULL) {
         HDF_LOGE("%s: hs is NULL.", __func__);
-        return -EINVAL;
+        return HDF_ERR_INVALID_PARAM;
     }
 
-    INIT_DELAYED_WORK(&hs->hDelayedWork[HEADSET], HeadsetObserveWork);
-    INIT_DELAYED_WORK(&hs->hDelayedWork[HOOK], HookWorkCallback);
+    if (HdfWorkQueueInit(&hs->workQueue, HDF_HEADSET_WORK_QUEUE_NAME) != HDF_SUCCESS) {
+        HDF_LOGE("%s: Init work queue failed", __func__);
+        return HDF_FAILURE;
+    }
+    HdfDelayedWorkInit(&hs->hDelayedWork[HEADSET], HeadsetObserveWork, hs);
+    HdfDelayedWorkInit(&hs->hDelayedWork[HOOK], HookWorkCallback, hs);
 
     return HDF_SUCCESS;
 }
@@ -518,7 +519,7 @@ static int32_t SetHeadsetIrqEnable(struct device *dev, struct HeadsetPriv *hs)
 {
     int32_t ret;
     struct HeadsetPdata *pdata = NULL;
-    unsigned int irqType;
+    uint32_t irqType;
 
     if ((hs == NULL) || (hs->pdata == NULL) || (dev == NULL)) {
         HDF_LOGE("%s: hs, pdata or dev is NULL.", __func__);
@@ -557,32 +558,35 @@ static int32_t SetHeadsetIrqEnable(struct device *dev, struct HeadsetPriv *hs)
     return 0;
 }
 
-int AnalogHeadsetGpioInit(struct platform_device *pdev, struct HeadsetPdata *pdata)
+int32_t AnalogHeadsetGpioInit(struct platform_device *pdev, struct HeadsetPdata *pdata)
 {
-    int ret;
+    int32_t ret;
     struct HeadsetPriv *hs;
-
     HDF_LOGI("%s: enter.", __func__);
-    hs = devm_kzalloc(&pdev->dev, sizeof(*hs), GFP_KERNEL);
+    hs = (struct HeadsetPriv *)OsalMemCalloc(sizeof(*hs));
     if (hs == NULL) {
         HDF_LOGE("%s: failed to allocate driver data.", __func__);
-        return -ENOMEM;
+        return HDF_ERR_MALLOC_FAIL;
     }
-    InitHeadsetPriv(hs, pdata);
     g_hsInfo = hs;
+    InitHeadsetPriv(hs, pdata);
     ret = CreateAndRegisterEdev(&pdev->dev, hs);
     if (ret < 0) {
         HDF_LOGE("%s: [CreateAndRegisterEdev] failed.", __func__);
         return ret;
     }
-    mutex_init(&hs->mutexLk[HEADSET]);
-    mutex_init(&hs->mutexLk[HOOK]);
+    (void)OsalMutexInit(&hs->mutexLk[HEADSET]);
+    (void)OsalMutexInit(&hs->mutexLk[HOOK]);
     ret = InitWorkData(hs);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("%s: [InitWorkData] failed", __func__);
         return ret;
     }
-    timer_setup(&hs->hsTimer, HeadsetTimerCallback, 0);
+    ret = OsalTimerCreate(&hs->hsTimer, HEADSET_TIMER_INTERVAL, HeadsetTimerCallback, (uintptr_t)hs);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s: [OsalTimerCreate] failed[%d]", __func__, ret);
+        return ret;
+    }
     /* Create and register the input driver */
     ret = CreateAndRegisterInputDevice(pdev, hs);
     if (ret != 0) {
@@ -605,7 +609,32 @@ int AnalogHeadsetGpioInit(struct platform_device *pdev, struct HeadsetPdata *pda
         HDF_LOGE("%s: [SetHeadsetIrqEnable] failed", __func__);
         return ret;
     }
-    schedule_delayed_work(&hs->hDelayedWork[HEADSET], msecs_to_jiffies(DELAY_WORK_MS500));
+    (void)HdfAddDelayedWork(&hs->workQueue, &hs->hDelayedWork[HEADSET], DELAY_WORK_MS500);
     HDF_LOGI("%s: success.", __func__);
     return 0;
+}
+
+void AnalogHeadsetGpioRelease(struct HeadsetPdata *pdata)
+{
+    struct HeadsetPriv *hs = g_hsInfo;
+
+    (void)pdata;
+    if (hs == NULL) {
+        HDF_LOGE("%s: hs is NULL.", __func__);
+        return;
+    }
+
+    (void)OsalMutexLock(&hs->mutexLk[HEADSET]);
+    g_hsInfo = NULL;
+    OsalMutexUnlock(&hs->mutexLk[HEADSET]);
+
+    OsalTimerDelete(&hs->hsTimer);
+    HdfWorkDestroy(&hs->hDelayedWork[HEADSET]);
+    HdfWorkDestroy(&hs->hDelayedWork[HOOK]);
+    HdfWorkQueueDestroy(&hs->workQueue);
+    DestroyHdfInputDevice();
+    OsalMutexDestroy(&hs->mutexLk[HEADSET]);
+    OsalMutexDestroy(&hs->mutexLk[HOOK]);
+    OsalMemFree(hs);
+    hs = NULL;
 }
