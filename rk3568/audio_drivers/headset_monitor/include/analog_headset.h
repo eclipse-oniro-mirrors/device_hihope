@@ -22,6 +22,12 @@
 #include "hdf_base.h"
 #include "hdf_device_desc.h"
 #include "hdf_log.h"
+#include "platform_if.h"
+
+#define HDF_HEADSET_WORK_QUEUE_NAME    "hdf_headset_work_queue"
+#define HEADSET                 0
+#define HOOK                    1
+#define HS_HOOK_COUNT           2
 
 #define HEADSET_IN_HIGH         0x00000001
 #define HEADSET_IN_LOW          0x00000000
@@ -49,36 +55,46 @@
 #define GET_GPIO_REPEAT_TIMES   3
 #define TIMER_EXPIRES_JIFFIES   100
 
+struct AdcCtrlConfig {
+    DevHandle handle;
+    uint32_t devNum;
+    uint32_t chanNo;
+};
+
 struct HeadsetPdata {
     struct IDeviceIoService ioService;
     struct HdfDeviceObject *device;
     uint32_t devType;
     const char *devName;
     /* heaset about */
-    unsigned int hsGpio;
-    /* Headphones into the state level */
-    unsigned int hsInsertType;
-    bool isHookAdcMode;
+    uint32_t hsGpio;
     enum of_gpio_flags hsGpioFlags;
+    /* Headphones into the state level */
+    uint32_t hsInsertType;
+    uint32_t hsGpioFlag;
+    bool isHookAdcMode;
     /* hook about */
-    unsigned int hookGpio;
+    uint32_t hookGpio;
     /* Hook key down status */
-    unsigned int hookDownType;
+    uint32_t hookDownType;
 #ifdef CONFIG_MODEM_MIC_SWITCH
     /* mic about */
     enum of_gpio_flags micGpioFlags;
-    unsigned int micSwitchGpio;
-    unsigned int hpMicIoValue;
-    unsigned int mainMicIoValue;
+    uint32_t micSwitchGpio;
+    uint32_t hpMicIoValue;
+    uint32_t mainMicIoValue;
 #endif
     struct iio_channel *chan;
+    struct AdcCtrlConfig adcConfig;
     bool hsWakeup;
 };
 
-#define HOOK_KEY_CODE KEY_MEDIA
+#define HOOK_KEY_CODE 226 // KEY_MEDIA
 
-int AnalogHeadsetGpioInit(struct platform_device *pdev, struct HeadsetPdata *pdata);
-int AnalogHeadsetAdcInit(struct platform_device *pdev, struct HeadsetPdata *pdata);
+int32_t AnalogHeadsetGpioInit(struct platform_device *pdev, struct HeadsetPdata *pdata);
+void AnalogHeadsetGpioRelease(struct HeadsetPdata *pdata);
+int32_t AnalogHeadsetAdcInit(struct platform_device *pdev, struct HeadsetPdata *pdata);
+void AnalogHeadsetAdcRelease(struct HeadsetPdata *pdata);
 int AnalogHeadsetAdcSuspend(struct platform_device *pdev, pm_message_t state);
 int AnalogHeadsetAdcResume(struct platform_device *pdev);
 #endif

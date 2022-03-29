@@ -112,3 +112,11 @@ int32_t CreateAndRegisterHdfInputDevice(void *hs, struct HdfDeviceObject *device
 
     return HDF_SUCCESS;
 }
+
+void DestroyHdfInputDevice(void)
+{
+    if (g_hdfInDev != NULL) {
+        UnregisterInputDevice(g_hdfInDev);
+        g_hdfInDev = NULL;
+    }
+}

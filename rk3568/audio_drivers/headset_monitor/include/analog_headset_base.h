@@ -24,4 +24,5 @@
 
 void SetStateSync(unsigned int id, bool state);
 int32_t CreateAndRegisterHdfInputDevice(void *hs, struct HdfDeviceObject *device);
+void DestroyHdfInputDevice(void);
 #endif /* ANALOG_HEADSET_BASE_H */
