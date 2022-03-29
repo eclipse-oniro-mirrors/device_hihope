@@ -20,5 +20,6 @@ group("rk3568_group") {
     "build/rootfs:init_configs",
     "distributedhardware:distributedhardware",
     "kernel:kernel",
+    "system_hap:hap"
   ]
 }

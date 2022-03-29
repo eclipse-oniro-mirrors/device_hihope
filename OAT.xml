@@ -102,6 +102,23 @@
                 <!--filteritem type="filepath" name="abcdefg/.*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
                 <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
             </filefilter>
+			<filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies" >
+                <filteritem type="filepath" name="rk3568/system_hap/Launcher.hap" desc="hap not identify"/>
+                <filteritem type="filepath" name="rk3568/system_hap/Launcher_Settings.hap" desc="hap not identify"/>
+                <filteritem type="filepath" name="rk3568/system_hap/SettingsData.hap" desc="hap not identify"/>
+                <filteritem type="filepath" name="rk3568/system_hap/SystemUI.hap" desc="hap not identify"/>
+                <filteritem type="filepath" name="rk3568/system_hap/SystemUI-NavigationBar.hap" desc="hap not identify"/>
+                <filteritem type="filepath" name="rk3568/system_hap/SystemUI-StatusBar.hap" desc="hap not identify"/>
+                <filteritem type="filepath" name="rk3568/system_hap/SystemUI-NotificationManagement.hap" desc="hap not identify"/>
+                <filteritem type="filepath" name="rk3568/system_hap/SystemUI-VolumePanel.hap" desc="hap not identify"/>
+                <filteritem type="filepath" name="rk3568/system_hap/SystemUI-DropdownPanel.hap" desc="hap not identify"/>
+                <filteritem type="filepath" name="rk3568/system_hap/ScreenShot.hap" desc="hap not identify"/>
+                <filteritem type="filepath" name="rk3568/system_hap/Camera.hap" desc="hap not identify"/>
+                <filteritem type="filepath" name="rk3568/system_hap/Note.hap" desc="hap not identify"/>
+                <filteritem type="filepath" name="rk3568/system_hap/CallUI.hap" desc="hap not identify"/>
+                <filteritem type="filepath" name="rk3568/system_hap/Mms.hap" desc="hap not identif"/>
+                <filteritem type="filepath" name="rk3568/system_hap/Contacts.hap" desc="hap not identif"/>
+            </filefilter>
 
         </filefilterlist>
         <licensematcherlist>
